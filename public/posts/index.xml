@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on My Awesome Blog</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on My Awesome Blog</description>
+    <generator>Hugo -- 0.127.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 14 Jun 2024 10:51:08 -0400</lastBuildDate>
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hello World</title>
+      <link>http://localhost:1313/posts/hello-world/</link>
+      <pubDate>Fri, 14 Jun 2024 10:51:08 -0400</pubDate>
+      <guid>http://localhost:1313/posts/hello-world/</guid>
+      <description>Hello World This is bold text, this is italics
+2nd Level 3rd Level </description>
+    </item>
+  </channel>
+</rss>
