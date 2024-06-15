@@ -78,7 +78,7 @@ plt.show()
 ```
 
     
-![png](/2024/06/post_with_jupyter/output_9_0.png)
+![png](static/2024/06/post_with_jupyter/output_11_0.png)
     
 
 
@@ -114,7 +114,7 @@ plt.show()
 ```
 
     
-![png](/2024/06/post_with_jupyter/output_11_0.png)
+![png](static/2024/06/post_with_jupyter/output_11_0.png)
     
 
 
