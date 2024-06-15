@@ -231,6 +231,7 @@ display(HTML(html_table))
   </tbody>
 </table>
 
+
 {{< /rawhtml >}}
 
 ### Implementación en Python
