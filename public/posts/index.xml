@@ -6,15 +6,14 @@
     <description>Recent content in Posts on My Awesome Blog</description>
     <generator>Hugo -- 0.127.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 14 Jun 2024 10:51:08 -0400</lastBuildDate>
+    <lastBuildDate>Sat, 15 Jun 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Hello World</title>
-      <link>http://localhost:1313/posts/hello-world/</link>
-      <pubDate>Fri, 14 Jun 2024 10:51:08 -0400</pubDate>
-      <guid>http://localhost:1313/posts/hello-world/</guid>
-      <description>Hello World This is bold text, this is italics
-2nd Level 3rd Level </description>
+      <title>Random Forest Estimator</title>
+      <link>http://localhost:1313/posts/random_forest_estimator/</link>
+      <pubDate>Sat, 15 Jun 2024 12:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/random_forest_estimator/</guid>
+      <description>Una breve descripción de tu entrada.</description>
     </item>
   </channel>
 </rss>
