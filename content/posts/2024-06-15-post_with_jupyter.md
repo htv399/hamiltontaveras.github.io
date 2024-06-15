@@ -78,7 +78,8 @@ plt.show()
 ```
 
     
-![png](https://github.com/htv399/hamiltontaveras.github.io/tree/main/static/2024/06/post_with_jupyter/output_8_0.png)    
+![png](/2024/06/post_with_jupyter/output_9_0.png)
+    
 
 
 ##### Histogramas
@@ -113,7 +114,7 @@ plt.show()
 ```
 
     
-![png](https://github.com/htv399/hamiltontaveras.github.io/tree/main/static/2024/06/post_with_jupyter/output_11_0.png)
+![png](/2024/06/post_with_jupyter/output_11_0.png)
     
 
 
