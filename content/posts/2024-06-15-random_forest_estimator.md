@@ -1,6 +1,6 @@
 ---
 date: 2024-06-15
-slug: post_with_jupyter
+slug: random_forest_estimator
 title: Random Forest Estimator
 author: Hamilton Taveras
 categories:
@@ -77,8 +77,8 @@ plt.tight_layout()
 plt.show()
 ```
 
-
-![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_11_0.png)
+    
+![png](https://github.com/htv399/hamiltontaveras.github.io/blob/main/content/posts/2024/06/post_with_jupyter/output_9_0.png)
     
 
 
@@ -114,8 +114,7 @@ plt.show()
 ```
 
     
-![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_11_0.png)
-    
+![png](https://github.com/htv399/hamiltontaveras.github.io/blob/main/content/posts/2024/06/post_with_jupyter/output_11_0.png)    
 
 
 ### Estadísticas Descriptivas
@@ -149,7 +148,8 @@ plt.show()
   }
 </style>
 
-<!-- 
+
+<!--
 ```python
 # Cargar el conjunto de datos de iris
 iris = load_iris()

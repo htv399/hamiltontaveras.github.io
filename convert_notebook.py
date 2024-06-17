@@ -85,7 +85,7 @@ if __name__ == "__main__":
     path = r'C:/Users/Asus/quickstart/random_forest_estimator.ipynb'
     notebook_to_markdown(path=path,
                          date='2024-06-15',
-                         slug='post_with_jupyter',
+                         slug='random_forest_estimator',
                          title='Random Forest Estimator',
                          author='Hamilton Taveras',
                          categories=['Data Science', 'Blogging'],
