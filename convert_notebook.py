@@ -44,7 +44,7 @@ def make_yaml_header(**kwargs):
 
 def notebook_to_markdown(path, date, slug, **kwargs):
     path_nb = Path(path)
-    path_out = Path('static') / date.split('-')[0] / date.split('-')[1] / slug
+    path_out = Path('content/posts') / date.split('-')[0] / date.split('-')[1] / slug
     path_post = Path('content/posts') / (date + '-' + slug + '.md')
 
     assert path_nb.exists(), f"Notebook file {path} does not exist."
