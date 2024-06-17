@@ -77,8 +77,12 @@ plt.tight_layout()
 plt.show()
 ```
 
-    
+
 ![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_9_0.png)
+
+<!--    
+![png](/2024/06/random_forest_estimator/output_9_0.png)
+-->
 
 
 ##### Histogramas
@@ -113,7 +117,8 @@ plt.show()
 ```
 
     
-![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_11_0.png)    
+![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_11_0.png)
+    
 
 
 ### Estadísticas Descriptivas
@@ -167,6 +172,7 @@ html_table = descriptive_stats_rounded.to_html(classes='table table-striped tabl
 display(HTML(html_table))
 ```
 -->
+
 
 <table class="dataframe table table-striped table-bordered">
   <thead>
