@@ -76,11 +76,7 @@ plt.ylabel('Petal Width')
 plt.tight_layout()
 plt.show()
 ```
-
-    
-![png](/2024/06/post_with_jupyter/output_8_0.png)
-    
-
+{{< figure src="/2024/06/post_with_jupyter/output_8_0.png" title="Diagrama de Dispersión" >}}
 
 ##### Histogramas
 
@@ -112,11 +108,7 @@ for ax in axes:
 plt.tight_layout()
 plt.show()
 ```
-
-    
-![png](/2024/06/post_with_jupyter/output_11_0.png)
-    
-
+{{< figure src="/2024/06/post_with_jupyter/output_11_0.png" title="Diagrama de Dispersión" >}}
 
 ### Estadísticas Descriptivas
 
