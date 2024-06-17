@@ -78,8 +78,7 @@ plt.show()
 ```
 
     
-![png](https://github.com/htv399/hamiltontaveras.github.io/blob/main/content/posts/2024/06/post_with_jupyter/output_9_0.png)
-    
+![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_9_0.png)
 
 
 ##### Histogramas
@@ -114,7 +113,7 @@ plt.show()
 ```
 
     
-![png](https://github.com/htv399/hamiltontaveras.github.io/blob/main/content/posts/2024/06/post_with_jupyter/output_11_0.png)    
+![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_11_0.png)    
 
 
 ### Estadísticas Descriptivas
