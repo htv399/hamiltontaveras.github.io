@@ -1,11 +1,11 @@
 +++
 title = 'Acerca de Mí'
 date = 2024-06-17T15:10:33-04:00
-draft = true
 url = "/about/"
 +++
 
-![Mi Foto](content/posts/2024/06/random_forest_estimator/fotoHamiltonTaveras.jpg)
+![Mi Foto](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg)
+
 
 Hola, soy Hamilton Taveras, un apasionado economista con un magíster en Economía, residente en la República Dominicana. Me especializo en ingeniería financiera y económica, con un enfoque particular en la gestión de riesgos y tesorería.
 
