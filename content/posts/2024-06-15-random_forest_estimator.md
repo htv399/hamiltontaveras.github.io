@@ -18,7 +18,7 @@ thumbnailImage: https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_
 
 ## ¿Qué es el Modelo Random Forest?
 
-El Random Forest es uno de los métodos de aprendizajes supervisado que mas se utiliza tanto para clasificación como para regresión. Funciona creando múltiples árboles de decisión durante el entrenamiento y sacando la media de las predicciones de estos árboles para obtener un resultado más preciso y robusto.
+El Random Forest es uno de los métodos de aprendizajes supervisados que mas se utiliza tanto para clasificación como para regresión. Funciona creando múltiples árboles de decisión durante el entrenamiento y sacando la media de las predicciones de estos árboles para obtener un resultado más preciso y robusto.
 
 ### ¿Cómo Funciona?
 
