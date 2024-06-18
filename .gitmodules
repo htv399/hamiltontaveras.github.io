@@ -4,3 +4,7 @@
 [submodule "themes/ananke"]
 	path = themes/ananke
 	url = https://github.com/theNewDynamic/gohugo-theme-ananke
+[submodule "themes/tella"]
+	path = themes/tella
+	url = https://github.com/opera7133/tella.git themes/tella
+
