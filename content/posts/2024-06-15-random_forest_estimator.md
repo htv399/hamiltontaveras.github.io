@@ -13,12 +13,12 @@ tags:
   - Data Science
 summary: Blogging with Jupyter notebooks and Hugo.
 thumbnailImagePosition: left
-thumbnailImage: https://github.com/htv399/hamiltontaveras.github.io/blob/main/static/2024/06/post_with_jupyter/imagenRF.jpg?raw=true
+thumbnailImage: https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/imagenRF.jpg
 ---
 
 ## ¿Qué es el Modelo Random Forest?
 
-El Random Forest es un método de aprendizaje supervisado que se utiliza tanto para clasificación como para regresión. Funciona creando múltiples árboles de decisión durante el entrenamiento y sacando la media de las predicciones de estos árboles para obtener un resultado más preciso y robusto.
+El Random Forest es uno de los métodos de aprendizaje supervisado que se utiliza tanto para clasificación como para regresión. Funciona creando múltiples árboles de decisión durante el entrenamiento y sacando la media de las predicciones de estos árboles para obtener un resultado más preciso y robusto.
 
 ### ¿Cómo Funciona?
 
