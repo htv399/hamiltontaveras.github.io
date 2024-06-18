@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Blogging on Hamilton Taveras</title>
-    <link>https://example.org/categories/blogging/</link>
+    <link>http://localhost:1313/categories/blogging/</link>
     <description>Recent content in Blogging on Hamilton Taveras</description>
     <generator>Hugo -- 0.127.0</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 15 Jun 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://example.org/categories/blogging/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/blogging/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Random Forest Estimator</title>
-      <link>https://example.org/posts/random_forest_estimator/</link>
+      <link>http://localhost:1313/posts/random_forest_estimator/</link>
       <pubDate>Sat, 15 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>https://example.org/posts/random_forest_estimator/</guid>
+      <guid>http://localhost:1313/posts/random_forest_estimator/</guid>
       <description>Blogging with Jupyter notebooks and Hugo.</description>
     </item>
   </channel>
