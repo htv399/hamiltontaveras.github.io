@@ -4,13 +4,60 @@ date = 2024-06-17T15:10:33-04:00
 url = "/about/"
 +++
 
-![Mi Foto](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg)
+<!--
+<img src="https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg" alt="Mi Foto" style="width: 200px; height: auto;">
+-->
 
+<!--
+<p align="center">
+    <img src="https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg" alt="Mi Foto" width="200"/>
+</p>
+-->
 
-Hola, soy Hamilton Taveras, un apasionado economista con un magíster en Economía, residente en la República Dominicana. Me especializo en ingeniería financiera y económica, con un enfoque particular en la gestión de riesgos y tesorería.
+<p align="center">
+    <img src="https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg" alt="Mi Foto" style="width:250px; height:250px; border-radius:50%; object-fit:cover;"/>
+</p>
 
-### Intereses
+<!--
+<img src="https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg" alt="Mi Foto" style="width:200px;"/>
+-->
 
-- **Economía y Finanzas:** Me encanta analizar tendencias económicas y financieras y aplicar mis conocimientos para resolver problemas complejos.
-- **Machine Learning y Deep Learning:** Estoy fascinado por cómo estas tecnologías están transformando la manera en que entendemos y utilizamos los datos.
-- **Salud y Bienestar:** Me esfuerzo por mantener un equilibrio entre mi vida laboral y personal, incluyendo una rutina de levantamiento de pesas y otros cuidados personales.
+<!--
+![Mi Foto](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg)  
+-->
+
+<!--
+![Mi Foto](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/fotoHamiltonTaveras.jpg){ width=200px }
+-->
+
+¡Hola! Soy Hamilton Taveras, economista, profesor y consultor con más de 12 años de experiencia. Actualmente resido en la República Dominicana, en el vibrante entorno del Caribe.
+
+### Experiencia Profesional
+
+Durante mi carrera, he acumulado un amplio conocimiento en diversas áreas:
+
+- **Análisis de Riesgos:** Especializado en la evaluación y gestión de riesgos financieros, he trabajado en proyectos que abarcan desde la identificación de riesgos hasta la implementación de estrategias efectivas de mitigación.
+
+- **Análisis de Incumplimiento Crediticio:** Mi experiencia incluye análisis detallados del comportamiento de los deudores y la predicción de tasas de incumplimiento crediticio, utilizando modelos estadísticos avanzados.
+
+- **Trading Algorítmico:** Apasionado por los mercados financieros, he explorado el trading algorítmico para optimizar estrategias de inversión y maximizar rendimientos.
+
+- **Aprendizaje Automático:** Con un enfoque en la aplicación de técnicas de machine learning en finanzas, busco constantemente nuevas formas de utilizar datos para mejorar la toma de decisiones.
+
+- **Temas Sociales:** Interesado en cuestiones sociales como la violencia y la pobreza, he participado en investigaciones que buscan entender y abordar estos desafíos desde una perspectiva económica y social.
+
+### Intereses y Pasatiempos
+
+En mi tiempo libre, disfruto:
+
+- **Visitar Playas:** Explorar las hermosas playas de la República Dominicana es una de mis mayores pasiones, donde encuentro paz y inspiración.
+
+- **Leer:** Soy ávido lector, especialmente de literatura económica y de ficción que amplía mi visión del mundo.
+
+- **Fútbol:** Jugador entusiasta de fútbol, encuentro en este deporte una forma de mantenerme activo y conectar con amigos.
+
+### Compromiso con el Aprendizaje Continuo
+
+Me apasiona el estudio constante y la mejora personal y profesional. Estoy comprometido con la exploración de nuevas ideas y el desarrollo de soluciones innovadoras en el campo de la economía y más allá.
+
+¡Gracias por visitar mi perfil!

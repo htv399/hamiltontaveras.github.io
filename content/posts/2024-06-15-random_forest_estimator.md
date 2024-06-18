@@ -13,10 +13,8 @@ tags:
   - Data Science
 summary: Blogging with Jupyter notebooks and Hugo.
 thumbnailImagePosition: left
-thumbnailImage: https://example.com/path/to/image.jpg
+thumbnailImage: https://github.com/htv399/hamiltontaveras.github.io/blob/main/static/2024/06/post_with_jupyter/imagenRF.jpg?raw=true
 ---
-# Random Forest Estimator
-
 
 ## ¿Qué es el Modelo Random Forest?
 
@@ -76,7 +74,6 @@ plt.ylabel('Petal Width')
 plt.tight_layout()
 plt.show()
 ```
-
 
 ![png](https://htv399.github.io/hamiltontaveras.github.io/2024/06/post_with_jupyter/output_9_0.png)
 
