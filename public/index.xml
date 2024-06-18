@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Hamilton Taveras</title>
-    <link>http://localhost:1313/</link>
+    <link>https://example.org/</link>
     <description>Recent content on Hamilton Taveras</description>
     <generator>Hugo -- 0.127.0</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 17 Jun 2024 15:10:33 -0400</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://example.org/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Acerca de Mí</title>
-      <link>http://localhost:1313/about/</link>
+      <link>https://example.org/about/</link>
       <pubDate>Mon, 17 Jun 2024 15:10:33 -0400</pubDate>
-      <guid>http://localhost:1313/about/</guid>
+      <guid>https://example.org/about/</guid>
       <description>¡Hola! Soy Hamilton Taveras, economista, profesor y consultor con más de 12 años de experiencia. Actualmente resido en la República Dominicana, en el vibrante entorno del Caribe.
 Experiencia Profesional Durante mi carrera, he acumulado un amplio conocimiento en diversas áreas:
 Análisis de Riesgos: Especializado en la evaluación y gestión de riesgos financieros, he trabajado en proyectos que abarcan desde la identificación de riesgos hasta la implementación de estrategias efectivas de mitigación.</description>
     </item>
     <item>
       <title>Random Forest Estimator</title>
-      <link>http://localhost:1313/posts/random_forest_estimator/</link>
+      <link>https://example.org/posts/random_forest_estimator/</link>
       <pubDate>Sat, 15 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/random_forest_estimator/</guid>
+      <guid>https://example.org/posts/random_forest_estimator/</guid>
       <description>Blogging with Jupyter notebooks and Hugo.</description>
     </item>
   </channel>
