@@ -3,6 +3,9 @@ languageCode = 'en-us'
 title = 'Hamilton Taveras'
 theme = 'PaperMod'
 
+[params]
+  customCSS = ["css/post-single.css"]
+
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
