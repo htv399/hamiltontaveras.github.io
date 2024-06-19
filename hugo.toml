@@ -29,3 +29,9 @@ theme = 'PaperMod'
     name = "CV"
     url = "https://www.dropbox.com/scl/fi/467fps43b970p9o5l7qf8/Hamilton_Taveras_-_Economist_Spanish_April2024.pdf?rlkey=dikx3i9plpt7bv2av2wpjp0do&st=y9o0owmy&dl=0"
     weight = 2
+
+  [[menu.main]]
+    identifier = "dashboard"
+    name = "Dashboard"
+    url = "/dashboard/"
+    weight = 4  
