@@ -13,8 +13,10 @@ export default defineConfig({
   fullyParallel: true,
   // Constrained local sandboxes can crash multiple concurrent Chromium
   // workers; CI runners with more resources may raise this.
-  workers: process.env.CI ? undefined : 2,
-  reporter: [["list"]],
+  workers: 2,
+  reporter: process.env.CI
+    ? [["github"], ["list"], ["html", { open: "never" }]]
+    : [["list"]],
   use: {
     baseURL: previewOrigin,
     trace: "retain-on-failure"
