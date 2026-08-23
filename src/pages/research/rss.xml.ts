@@ -15,7 +15,7 @@ export async function GET() {
       title: entry.data.title,
       description: entry.data.summary,
       pubDate: entry.data.published_at,
-      link: `/research/${entry.data.slug}/`
+      link: `${import.meta.env.BASE_URL}research/${entry.data.slug}/`
     }))
   });
 }

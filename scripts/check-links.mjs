@@ -11,6 +11,8 @@ import { walkFiles } from "./lib/frontmatter.mjs";
 
 const DIST_DIR = path.resolve(process.cwd(), "dist");
 const routesOnly = process.argv.includes("--routes-only");
+const configuredBase = process.env.BASE_PATH || "/";
+const basePath = configuredBase === "/" ? "" : `/${configuredBase.replace(/^\/+|\/+$/g, "")}`;
 
 if (!existsSync(DIST_DIR)) {
   console.error("[links:check] FAIL — dist/ does not exist. Run `npm run build` first.");
@@ -42,12 +44,17 @@ for (const file of htmlFiles) {
 
   for (const raw of [...hrefMatches, ...srcMatches]) {
     if (!raw.startsWith("/") || raw.startsWith("//")) continue; // external or protocol-relative
-    if (raw.startsWith("/pagefind/")) continue; // generated after this script would need to re-run post-index
     internalLinkCount += 1;
     const clean = raw.split("#")[0].split("?")[0];
     if (!clean) continue;
-    const asFile = path.join(DIST_DIR, clean);
-    const asRoute = knownRoutes.has(clean);
+    if (basePath && clean !== basePath && !clean.startsWith(`${basePath}/`)) {
+      errors.push(`${rel}: internal link ignores BASE_PATH: "${raw}"`);
+      continue;
+    }
+    const sitePath = basePath ? (clean.slice(basePath.length) || "/") : clean;
+    if (sitePath.startsWith("/pagefind/")) continue; // generated after the Astro build
+    const asFile = path.join(DIST_DIR, sitePath.replace(/^\/+/, ""));
+    const asRoute = knownRoutes.has(sitePath);
     if (!asRoute && !existsSync(asFile)) {
       errors.push(`${rel}: broken internal link "${raw}"`);
     }

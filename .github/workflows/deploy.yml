@@ -18,13 +18,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SITE_ENV: production
-      # APP-003 (approval_required): replace with the approved canonical
-      # domain before the first production deploy. BASE_PATH must match
-      # whether this repository is a user/org page ("/") or a project page
-      # ("/repo-name").
-      SITE_URL: ${{ vars.SITE_URL }}
-      BASE_PATH: ${{ vars.BASE_PATH || '/' }}
+      # Temporary visual preview. Keep fixtures clearly identified until
+      # approved production content and a canonical domain are available.
+      SITE_ENV: preview
+      SITE_URL: https://htv399.github.io/hamiltontaveras.github.io
+      BASE_PATH: /hamiltontaveras.github.io
       DEFAULT_LANGUAGE: ${{ vars.DEFAULT_LANGUAGE || 'en' }}
       CONTACT_MODE: ${{ vars.CONTACT_MODE || 'pending' }}
       ANALYTICS_MODE: "off"
@@ -39,11 +37,10 @@ jobs:
       - name: Install dependencies (no lockfile mutation)
         run: npm ci
 
-      - name: Block deploy on unresolved production placeholders
+      - name: Validate preview content and contracts
         run: |
           npm run contracts:validate
           npm run content:validate
-          npm run placeholders:check
 
       - name: Build
         run: npm run build
@@ -55,6 +52,9 @@ jobs:
         run: |
           npm run links:check
           npm run manifest:check
+          npm run placeholders:check
+          npm run seo:check
+          npm run perf:budget
 
       - uses: actions/configure-pages@v5
 

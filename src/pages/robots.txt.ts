@@ -5,6 +5,6 @@ import { canonicalBase } from "../config/site";
 
 export const GET: APIRoute = () => {
   const base = canonicalBase.value.replace(/\/$/, "");
-  const body = `User-agent: *\nAllow: /\n\nSitemap: ${base}/sitemap-index.xml\n`;
+  const body = `User-agent: *\nAllow: ${import.meta.env.BASE_URL}\n\nSitemap: ${base}/sitemap-index.xml\n`;
   return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 };

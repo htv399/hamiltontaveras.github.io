@@ -14,6 +14,7 @@ interface PagefindResult {
   data: () => Promise<PagefindResultData>;
 }
 interface PagefindApi {
+  options?: (options: { baseUrl?: string; basePath?: string }) => Promise<void>;
   search: (query: string, options?: Record<string, unknown>) => Promise<{ results: PagefindResult[] }>;
 }
 
@@ -55,8 +56,12 @@ export default function Search({ language, placeholder, idleLabel, loadingLabel,
         // after `astro build`, so it cannot exist as a resolvable module at
         // bundle time. The path is built from parts at runtime so Rollup
         // never sees a literal specifier to resolve during the build.
-        const pagefindPath = ["", "pagefind", "pagefind.js"].join("/");
+        const pagefindPath = `${import.meta.env.BASE_URL}pagefind/pagefind.js`;
         const mod = (await import(/* @vite-ignore */ pagefindPath)) as PagefindApi;
+        await mod.options?.({
+          baseUrl: import.meta.env.BASE_URL,
+          basePath: `${import.meta.env.BASE_URL}pagefind/`
+        });
         if (!cancelled) pagefindRef.current = mod;
         return mod;
       } catch {
