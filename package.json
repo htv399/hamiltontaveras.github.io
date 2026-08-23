@@ -33,7 +33,7 @@
     "ci": "npm run contracts:validate && npm run check && npm run content:validate && npm run academic:validate && npm run test:unit && npm run build && npm run search:index && npm run links:check && npm run manifest:check && npm run placeholders:check"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/mdx": "^7.0.7",
     "@astrojs/react": "^4.4.2",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
