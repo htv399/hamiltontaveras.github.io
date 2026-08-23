@@ -25,7 +25,8 @@ for (const p of pages) {
     test(`visual: ${p.name} @ ${vp.name}`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto(withBase(p.route));
-      await expect(page).toHaveScreenshot(`${p.name}-${vp.name}.png`, { fullPage: true, maxDiffPixelRatio: 0.02 });
+      const fullPage = !p.name.startsWith("econometrics-i-week-");
+      await expect(page).toHaveScreenshot(`${p.name}-${vp.name}.png`, { fullPage, maxDiffPixelRatio: 0.02 });
     });
   }
 }

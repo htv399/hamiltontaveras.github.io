@@ -31,8 +31,8 @@ learning_objectives:
 next_week_id: WEEK-ECONOMETRICS-I-02
 source_path: "01-causalidad-tipos-datos/contenido.md"
 highlight_sections:
-  - solo-observamos-uno-de-los-dos-resultados
-  - lo-que-sabemos-y-lo-que-todavia-no-sabemos
+  - el-efecto-causal-individual
+  - lo-que-sabemos-y-lo-que-todavía-no-sabemos
 ---
 
 ## Introducción a la econometría, causalidad y tipos de datos
@@ -77,11 +77,9 @@ Las personas con educación universitaria suelen ganar más que quienes no fuero
 
 Las tres son relaciones que podemos buscar en los datos. Pero las preguntas que interesan al economista son distintas.
 
-¿Ir a la universidad aumenta el salario?
-
-¿Reducir el tamaño de una clase mejora el aprendizaje?
-
-¿Aumentar el precio de los cigarrillos reduce su consumo?
+- ¿Ir a la universidad aumenta el salario?
+- ¿Reducir el tamaño de una clase mejora el aprendizaje?
+- ¿Aumentar el precio de los cigarrillos reduce su consumo?
 
 Pasar de la primera clase de afirmaciones a la segunda es pasar de describir lo que observamos a preguntarnos qué ocurriría si algo cambiara.
 
@@ -524,11 +522,9 @@ Consideremos nuevamente una pregunta causal:
 
 ¿La educación aumenta el salario?
 
-Podríamos disponer de un corte transversal con educación y salario de muchas personas en un año determinado.
-
-También podríamos tener información de salario promedio y educación para un país durante muchos años.
-
-O podríamos seguir a las mismas personas durante varios años y construir un panel.
+- Podríamos disponer de un corte transversal con educación y salario de muchas personas en un año determinado.
+- También podríamos tener información de salario promedio y educación para un país durante muchos años.
+- O podríamos seguir a las mismas personas durante varios años y construir un panel.
 
 Los tres conjuntos contienen información sobre educación y salarios, pero no contienen la misma información.
 

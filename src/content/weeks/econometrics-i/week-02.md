@@ -32,7 +32,7 @@ previous_week_id: WEEK-ECONOMETRICS-I-01
 source_path: "02-probabilidad-cef/contenido.md"
 highlight_sections:
   - 10-esperanza-condicional
-  - 23-limites-que-deben-quedar-claros
+  - 23-límites-que-deben-quedar-claros
 ---
 
 ## Semana 02 — Probabilidad aplicada y función de esperanza condicional
@@ -1316,13 +1316,10 @@ $$
 
 El paso de una expresión a otra utiliza definiciones y reglas de probabilidad.
 
-No hemos supuesto que $X$ cause $Y$.
-
-No hemos supuesto que la relación sea lineal.
-
-No hemos supuesto asignación aleatoria.
-
-No hemos introducido ningún estimador.
+- No hemos supuesto que $X$ cause $Y$.
+- No hemos supuesto que la relación sea lineal.
+- No hemos supuesto asignación aleatoria.
+- No hemos introducido ningún estimador.
 
 La ley de expectativas iteradas es una propiedad probabilística.
 
@@ -1484,13 +1481,10 @@ La regresión que aparece después no debe comenzar como una fórmula aislada. D
 
 ### 23. Límites que deben quedar claros
 
-Una esperanza no describe toda la distribución de una variable. Dos poblaciones pueden tener la misma media y distinta dispersión.
-
-Una covarianza resume una dimensión del movimiento conjunto, pero no conserva toda la forma de la relación entre dos variables.
-
-Una esperanza condicional es un promedio de una subpoblación. No describe necesariamente a cada individuo que pertenece a ella.
-
-La CEF puede adoptar formas distintas. Esta semana no existe ninguna razón para imponer que sea una recta.
+- Una esperanza no describe toda la distribución de una variable. Dos poblaciones pueden tener la misma media y distinta dispersión.
+- Una covarianza resume una dimensión del movimiento conjunto, pero no conserva toda la forma de la relación entre dos variables.
+- Una esperanza condicional es un promedio de una subpoblación. No describe necesariamente a cada individuo que pertenece a ella.
+- La CEF puede adoptar formas distintas. Esta semana no existe ninguna razón para imponer que sea una recta.
 
 Sobre todo,
 
@@ -1537,5 +1531,4 @@ Con esta base probabilística ya estamos en condiciones de formular la siguiente
 **¿cómo podemos resumir mediante una relación sencilla el cambio de $E[Y\mid X=x]$ cuando cambia $x$?**
 
 Esa pregunta abre la regresión simple.
-
 
