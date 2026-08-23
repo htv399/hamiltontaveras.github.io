@@ -8,8 +8,10 @@ interface Props {
   language: "en" | "es";
 }
 const { items, language } = Astro.props as Props;
-const [lead, ...rest] = items;
 const kind = (item: RowItem) => item.tags[0] ?? "project";
+const kindOrder = new Map([["project", 0], ["data-product", 1], ["valuation", 2]]);
+const orderedItems = [...items].sort((a, b) => (kindOrder.get(kind(a)) ?? 99) - (kindOrder.get(kind(b)) ?? 99));
+const [lead, ...rest] = orderedItems;
 const kindLabel = (item: RowItem) => kind(item).replaceAll("-", " ");
 ---
 <div class="work-split">
