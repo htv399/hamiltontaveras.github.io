@@ -1,0 +1,15 @@
+---
+// CMP-CODE. Copy control is a progressive enhancement (works without JS,
+// since the code is always visible/selectable text); horizontal scroll on
+// mobile is handled by .code-block in data.css.
+interface Props {
+  code: string;
+  language: string;
+  sourceHref?: string;
+}
+const { code, language, sourceHref } = Astro.props;
+---
+<div class="code-block-wrapper">
+  <pre class="code-block"><code class:list={[`language-${language}`]}>{code}</code></pre>
+  {sourceHref && <a href={sourceHref} class="text-small">View source</a>}
+</div>

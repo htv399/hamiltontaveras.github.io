@@ -1,0 +1,36 @@
+---
+// PG-TEACHING. Teaching intro + featured/active courses + archive, styled
+// as a publication rather than an LMS.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CourseShelf from "../../components/teaching/CourseShelf.astro";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../lib/contentGate";
+import { siteConfig } from "../../config/site";
+
+const language = "en" as const;
+const all = (await getCollection("courses")).filter((e) => isEligible(e.data, siteConfig.env));
+const courses = all.map((c) => ({
+  title: c.data.title,
+  href: `/teaching/${c.data.slug}/`,
+  period: c.data.period,
+  archived: c.data.archived ?? false,
+  summary: c.data.summary
+}));
+---
+<BaseLayout title={`Teaching — ${siteConfig.name}`} description="Courses and materials connecting formal reasoning, empirical practice and clear interpretation." path="/teaching/" language={language}>
+  <section class="shell section-standard">
+    <p class="text-body-l reading-column">
+      Courses and materials designed to connect formal reasoning, empirical practice and clear interpretation. Teaching
+      behaves as a publication: it does not expose grades, announcements or student administration.
+    </p>
+    {courses.length === 0 ? (
+      <p class="text-body" style="margin-top: var(--space-6);">
+        No course has been published in this version of the portal.
+      </p>
+    ) : (
+      <div style="margin-top: var(--space-8);">
+        <CourseShelf courses={courses} language={language} />
+      </div>
+    )}
+  </section>
+</BaseLayout>

@@ -1,0 +1,31 @@
+---
+// CMP-NOTES-ROW. Chronology stays visible; no cadence/frequency claim is
+// made anywhere in this component's copy.
+import type { RowItem } from "./EditorialRow.astro";
+
+interface Props {
+  items: RowItem[]; // 1 to 4
+  language: "en" | "es";
+}
+const { items, language } = Astro.props;
+---
+<ul class="notes-row">
+  {items.map((item) => (
+    <li>
+      <a href={item.href}>
+        <p class="text-small">
+          {item.publishedAt &&
+            new Intl.DateTimeFormat(language, { year: "numeric", month: "short", day: "numeric" }).format(item.publishedAt)}
+        </p>
+        <h4 class="text-body-l">{item.title}</h4>
+        <p class="text-small">{item.summary}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .notes-row { display: flex; flex-direction: column; gap: var(--space-4); }
+  .notes-row li { border-top: var(--border-hairline); padding-top: var(--space-3); }
+  .notes-row a > * + * { margin-top: var(--space-1); }
+</style>

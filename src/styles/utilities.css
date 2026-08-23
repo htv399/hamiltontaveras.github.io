@@ -1,0 +1,18 @@
+/* REP-STYLE-006. Minimal, documented utilities only. Every class here
+   exists because at least two components need it; do not add a utility for
+   a single use site. */
+.stack > * + * { margin-top: var(--gutter-stack, var(--space-4)); }
+.cluster { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.u-flex-1 { flex: 1; }
+.u-nowrap { white-space: nowrap; }
+.u-tag {
+  font-size: var(--size-micro);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-micro);
+  /* ink_800, not slate_500: at 12px, slate_500 falls short of the 4.5:1
+     WCAG AA minimum against mist/paper/white (QA-VIS-002). ink_800 keeps
+     the label restrained without failing contrast. */
+  color: var(--color-ink-800);
+}
+.surface-navy .u-tag { color: var(--color-mist-100); }
+.u-metric { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }

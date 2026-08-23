@@ -1,0 +1,32 @@
+---
+// CMP-FOOTER. Copyright, licenses, accessibility, RSS and contact are
+// always present; repository/LinkedIn/ORCID/Scholar appear only when
+// configured (none are configured yet, so they are omitted, not stubbed).
+import { footerRequiredLinks } from "../../config/navigation";
+import { siteConfig } from "../../config/site";
+
+interface Props {
+  language: "en" | "es";
+}
+const { language } = Astro.props;
+const year = new Date().getFullYear();
+---
+<footer class="site-footer surface-navy">
+  <div class="shell site-footer__inner">
+    <p class="site-footer__copy text-small">© {year} {siteConfig.name}</p>
+    <ul class="site-footer__links">
+      {footerRequiredLinks.map((link) => (
+        <li><a href={link.route[language]}>{link.label[language]}</a></li>
+      ))}
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding-block: var(--space-6); margin-top: var(--space-9); }
+  .site-footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-4); align-items: center; }
+  .site-footer__links { display: flex; flex-wrap: wrap; gap: var(--space-4); font-size: var(--size-small); }
+  @media (max-width: 480px) {
+    .site-footer__inner { flex-direction: column; align-items: flex-start; }
+  }
+</style>

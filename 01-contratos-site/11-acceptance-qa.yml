@@ -1,0 +1,379 @@
+contract:
+  id: QA-001
+  version: 1.0.0
+  status: required_v1
+  rule: "A required_v1 test passes only with recorded evidence. A skipped test fails unless its mapped feature is conditionally absent by contract."
+
+environments:
+  preview:
+    content: seed_allowed
+    production_placeholders: blocked
+  production:
+    content: verified_only
+    decisions_required: ["APP-001", "APP-002", "APP-003", "APP-004", "APP-005", "APP-006"]
+  viewports:
+    - { name: wide, width: 1440, height: 1000 }
+    - { name: desktop, width: 1200, height: 900 }
+    - { name: tablet, width: 768, height: 1024 }
+    - { name: mobile, width: 480, height: 900 }
+    - { name: compact, width: 360, height: 800 }
+  browsers: ["chromium", "firefox", "webkit"]
+
+suites:
+  product:
+    - id: QA-PRD-001
+      status: required_v1
+      maps_to: ["PRD-005", "PG-HOME"]
+      method: moderated_observation
+      assertion: "At least 3 of 4 representative reviewers identify name, economist identity, central thesis and lead evidence within ten seconds."
+      evidence: ["session_notes", "reviewer_answers"]
+    - id: QA-PRD-002
+      status: required_v1
+      maps_to: ["PRD-010", "CMP-HERO-EDITORIAL"]
+      method: e2e
+      assertion: "The primary hero link reaches the lead detail in one activation."
+    - id: QA-PRD-003
+      status: required_v1
+      maps_to: ["PRD-001", "PRD-017"]
+      method: visual_review
+      assertion: "The first two viewports prioritize evidence and editorial modules before a career chronology."
+    - id: QA-PRD-004
+      status: required_v1
+      maps_to: ["PRD-004"]
+      method: content_scan
+      assertion: "Technology names do not appear in Home headings, hero descriptor or listing titles unless the item itself requires them."
+    - id: QA-PRD-005
+      status: required_v1
+      maps_to: ["PRD-015", "CM-VAL-001"]
+      method: automated_scan
+      assertion: "Production contains no demo, placeholder, invented claim, empty href or coming-soon message."
+
+  visual:
+    - id: QA-VIS-001
+      status: required_v1
+      maps_to: ["VIS-001", "VIS-PR-001"]
+      method: css_audit
+      assertion: "Component styles use declared tokens. Raw colors are limited to token definitions and approved data exceptions."
+    - id: QA-VIS-002
+      status: required_v1
+      maps_to: ["VIS-COLOR-001", "TECH-A11Y-001"]
+      method: automated_and_manual
+      assertion: "All text and interactive states meet WCAG AA, including focus and hover."
+    - id: QA-VIS-003
+      status: required_v1
+      maps_to: ["VIS-001"]
+      method: screenshot_diff
+      pages: ["PG-HOME", "PG-RESEARCH", "PG-PROJECT", "PG-WEEK"]
+      assertion: "No clipping, overlap, horizontal page overflow or unreadable text at any required viewport."
+    - id: QA-VIS-004
+      status: required_v1
+      maps_to: ["PRD-016", "PRD-017", "VIS-PR-002", "VIS-PR-003"]
+      method: visual_review
+      assertion: "No page is dominated by uniform cards or repeated boxes with a colored left rule."
+    - id: QA-VIS-005
+      status: required_v1
+      maps_to: ["VIS-DATA-001", "CMP-FIGURE", "CMP-DATA-TABLE"]
+      method: fixture_review
+      assertion: "Every figure has title, unit, vintage, source, note and accessible summary. Tables align numeric columns and remain usable on mobile."
+    - id: QA-VIS-006
+      status: required_v1
+      maps_to: ["VIS-PR-005"]
+      method: pixel_and_css_audit
+      assertion: "Gold occupies no more than five percent of an ordinary page capture and is not used as body text or large background."
+    - id: QA-VIS-007
+      status: required_v1
+      maps_to: ["PRD-018"]
+      method: feature_scan
+      assertion: "No dark mode control, media query or alternate chart palette ships in v1."
+
+  architecture:
+    - id: QA-IA-001
+      status: required_v1
+      maps_to: ["IA-001", "PG-001"]
+      method: route_manifest
+      assertion: "Every enabled static page and every eligible detail route returns 200. 404 returns the correct status in local server and Pages-compatible fallback."
+    - id: QA-IA-002
+      status: required_v1
+      maps_to: ["IA-NAV-007"]
+      method: dom_assertion
+      assertion: "Primary navigation contains exactly Home, Work, Research, Notes, Teaching and About. CV and Search appear as utilities."
+    - id: QA-IA-003
+      status: required_v1
+      maps_to: ["IA-SLUG-001"]
+      method: schema_test
+      assertion: "Slugs match the pattern, are unique and changed published slugs have redirects."
+    - id: QA-IA-004
+      status: required_v1
+      maps_to: ["IA-REL-003", "PG-ES-001"]
+      method: html_audit
+      assertion: "hreflang exists only for reciprocal equivalents and every language switch reaches an existing page."
+    - id: QA-IA-005
+      status: required_v1
+      maps_to: ["IA-REL-001", "CMP-RELATED-WORK"]
+      method: unit_test
+      assertion: "Related work scoring is deterministic, excludes the current item and never exposes private content."
+
+  content_models:
+    - id: QA-CM-001
+      status: required_v1
+      maps_to: ["CM-001"]
+      method: schema_test
+      assertion: "Valid fixtures for all eleven models pass. One invalid fixture per required field fails with a useful message."
+    - id: QA-CM-002
+      status: required_v1
+      maps_to: ["CM-VAL-001", "CM-VAL-002", "CM-VAL-003"]
+      method: build_test
+      assertion: "Production fails on placeholders, excludes private items and strips restricted resources from summary-only items."
+    - id: QA-CM-003
+      status: required_v1
+      maps_to: ["CM-VAL-006"]
+      method: schema_test
+      assertion: "Orphaned, duplicated or same-language translation keys fail."
+    - id: QA-CM-004
+      status: required_v1
+      maps_to: ["CM-VAL-005", "PRD-026"]
+      method: file_and_link_test
+      assertion: "Every public resource resolves and has license and access."
+    - id: QA-CM-005
+      status: required_v1
+      maps_to: ["CM-PROJECT", "PG-PROJECT"]
+      method: rendering_test
+      assertion: "Every combination of optional project blocks renders without empty headings or unexplained gaps."
+
+  pages:
+    - id: QA-PG-HOME-001
+      status: required_v1
+      maps_to: ["PG-HOME"]
+      method: fixture_matrix
+      cases:
+        - "minimum seed"
+        - "one item per section"
+        - "full 2+1 and indicators"
+      assertion: "Section order remains valid and every insufficient module is omitted or uses its declared fallback."
+    - id: QA-PG-LANDING-001
+      status: required_v1
+      maps_to: ["PG-WORK", "PG-RESEARCH", "PG-NOTES", "PG-TEACHING"]
+      method: fixture_matrix
+      assertion: "Each landing works with zero, one and many eligible items without empty filters or artificial cards."
+    - id: QA-DETAIL-001
+      status: required_v1
+      maps_to: ["PG-ANALYSIS", "PG-PROJECT", "PG-RESEARCH-DETAIL", "PG-NOTE-DETAIL", "PG-VALUATION", "PG-DATA-PRODUCT"]
+      method: e2e
+      assertion: "A fixture for each detail model shows context, author, date, status, finding or result, evidence and permitted resources."
+    - id: QA-PG-UTILITY-001
+      status: required_v1
+      maps_to: ["PG-ABOUT", "PG-CV", "PG-CONTACT", "PG-RESOURCES", "PG-SEARCH", "PG-404"]
+      method: e2e
+      assertion: "Every utility page meets its minimum, empty and mobile contracts."
+
+  components:
+    - id: QA-CMP-001
+      status: required_v1
+      maps_to: ["CMP-001"]
+      method: unit_and_render
+      assertion: "Required props are typed, optional empty data returns null and access filtering occurs before render."
+    - id: QA-CMP-002
+      status: required_v1
+      maps_to: ["CMP-MOBILE-NAV", "CMP-FILTERS", "CMP-SEARCH", "CMP-CHART"]
+      method: keyboard_e2e
+      assertion: "Every React island works by keyboard, manages focus and has an HTML or noscript fallback."
+    - id: QA-CMP-003
+      status: required_v1
+      maps_to: ["CMP-FEATURED-2-1", "CMP-EDITORIAL-ROW"]
+      method: visual_review
+      assertion: "Primary and secondary hierarchy remains evident. Mobile does not become a dense multi-column grid."
+    - id: QA-CMP-004
+      status: required_v1
+      maps_to: ["CMP-FIGURE", "CMP-CHART", "CMP-DATA-TABLE", "CMP-EQUATION"]
+      method: accessibility_tree
+      assertion: "Data components expose titles, captions, summaries and alternatives in the accessibility tree."
+
+  teaching:
+    - id: QA-TCH-001
+      status: required_v1
+      maps_to: ["TCH-001", "PG-COURSE", "PG-WEEK", "PG-MATERIAL"]
+      method: route_and_sequence_test
+      assertion: "Teaching, Course, Week and Material routes build. Previous and next links match week_number."
+    - id: QA-TCH-002
+      status: required_v1
+      maps_to: ["TCH-001"]
+      method: fixture_test
+      formats: ["pdf", "html", "qmd", "r", "rmd", "csv", "xlsx", "zip", "notebook", "external"]
+      assertion: "Each format displays the correct type, action, MIME, size and checksum requirements."
+    - id: QA-TCH-003
+      status: required_v1
+      maps_to: ["TCH-001", "PRD-024"]
+      method: access_matrix
+      assertion: "Public, summary-only and private materials follow their exact exposure rules."
+    - id: QA-TCH-004
+      status: required_v1
+      maps_to: ["TCH-PIPE-002"]
+      method: clean_ci_build
+      assertion: "Academic build succeeds with existing environment and logs no install.packages, pak, renv install or dependency installation."
+    - id: QA-TCH-005
+      status: required_v1
+      maps_to: ["CMP-MATERIAL-GROUP"]
+      method: mobile_and_a11y_test
+      assertion: "Groups omit empty types, downloads have descriptive labels and targets are at least 44 pixels."
+
+  functionality:
+    - id: QA-FUNC-001
+      status: required_v1
+      maps_to: ["CMP-FILTERS"]
+      method: e2e
+      assertion: "Filters update results and URL, survive reload and clear without a full page failure."
+    - id: QA-FUNC-002
+      status: required_v1
+      maps_to: ["CMP-SEARCH", "TECH-SEARCH-001"]
+      method: e2e
+      assertion: "Search handles idle, loading, results, no results and error. It announces count and scopes by language."
+    - id: QA-FUNC-003
+      status: required_v1
+      maps_to: ["CMP-MOBILE-NAV"]
+      method: e2e
+      assertion: "Menu opens, closes by escape, traps focus and returns focus."
+    - id: QA-LINK-001
+      status: required_v1
+      maps_to: ["TECH-CI-001"]
+      method: crawler
+      assertion: "No broken internal link, missing asset, empty href, redirect chain or unauthorized download."
+
+  responsive:
+    - id: QA-RESP-001
+      status: required_v1
+      maps_to: ["VIS-001", "PG-001"]
+      method: cross_viewport_e2e
+      assertion: "All required pages pass all required viewports with no body overflow."
+    - id: QA-RESP-002
+      status: required_v1
+      maps_to: ["CMP-HERO-EDITORIAL", "CMP-INDICATOR-STRIP", "CMP-DATA-TABLE"]
+      method: screenshot_and_interaction
+      assertion: "Hero order, indicator scrolling and table strategy match the component contracts."
+    - id: QA-RESP-003
+      status: required_v1
+      maps_to: ["VIS-DATA-001"]
+      method: legibility_review
+      assertion: "Charts remain at least 280 pixels high on mobile and labels remain readable without page zoom."
+
+  accessibility:
+    - id: QA-A11Y-001
+      status: required_v1
+      maps_to: ["TECH-A11Y-001"]
+      method: axe_and_manual
+      assertion: "Zero serious or critical automated violations on every page template."
+    - id: QA-A11Y-002
+      status: required_v1
+      maps_to: ["TECH-A11Y-001"]
+      method: keyboard_only
+      assertion: "All navigation, filters, search, downloads and disclosures are operable with visible focus."
+    - id: QA-A11Y-003
+      status: required_v1
+      maps_to: ["CMP-FIGURE", "CMP-DATA-TABLE"]
+      method: screen_reader_spot_check
+      assertion: "One figure, one financial table, one equation and one search flow are understandable with a screen reader."
+    - id: QA-A11Y-004
+      status: required_v1
+      maps_to: ["VIS-001"]
+      method: reduced_motion
+      assertion: "Reduced motion disables nonessential transitions and chart interpolation."
+
+  metadata_and_seo:
+    - id: QA-SEO-001
+      status: required_v1
+      maps_to: ["TECH-SEO-001"]
+      method: html_audit
+      assertion: "Every public page has unique title, description, canonical, Open Graph and valid absolute social image."
+    - id: QA-SEO-002
+      status: required_v1
+      maps_to: ["TECH-SEO-001"]
+      method: xml_validation
+      assertion: "Sitemap and enabled feeds are valid, absolute and contain only eligible URLs."
+    - id: QA-SEO-003
+      status: required_v1
+      maps_to: ["TECH-SEO-001"]
+      method: structured_data_validation
+      assertion: "Person, Article, ScholarlyArticle, Dataset, Course and BreadcrumbList fixtures validate when applicable."
+    - id: QA-SEO-004
+      status: required_v1
+      maps_to: ["IA-REL-003"]
+      method: reciprocal_link_test
+      assertion: "Canonical and hreflang do not conflict."
+
+  performance_and_security:
+    - id: QA-PERF-001
+      status: required_v1
+      maps_to: ["TECH-PERF-001"]
+      method: lighthouse_ci
+      assertion: "All stated Lighthouse minimums pass for Home, Research, Project and Week."
+    - id: QA-PERF-002
+      status: required_v1
+      maps_to: ["TECH-PERF-001"]
+      method: bundle_budget
+      assertion: "Initial and route JavaScript, font and hero image budgets pass."
+    - id: QA-SEC-001
+      status: required_v1
+      maps_to: ["TECH-SEC-001"]
+      method: scan
+      assertion: "No secret, critical or high production vulnerability, unsafe external link or public restricted file."
+    - id: QA-SEC-002
+      status: required_v1
+      maps_to: ["TECH-SEC-001"]
+      method: config_audit
+      assertion: "Analytics is off until approved and CSP guidance is documented."
+
+  build_and_deploy:
+    - id: QA-TECH-001
+      status: required_v1
+      maps_to: ["TECH-CI-001"]
+      method: clean_build
+      assertion: "npm ci, astro check and static build succeed without lockfile modification."
+    - id: QA-TECH-002
+      status: required_v1
+      maps_to: ["TECH-SEARCH-001"]
+      method: index_audit
+      assertion: "Pagefind indexes eligible English and Spanish content and excludes private records."
+    - id: QA-TECH-003
+      status: required_v1
+      maps_to: ["TECH-SEO-001"]
+      method: artifact_audit
+      assertion: "Artifact contains sitemap, enabled feeds, canonical metadata, JSON-LD and Open Graph assets."
+    - id: QA-TECH-004
+      status: required_v1
+      maps_to: ["TECH-PERF-001"]
+      method: bundle_audit
+      assertion: "Astro-only pages ship no page-specific client JavaScript."
+    - id: QA-TECH-005
+      status: required_v1
+      maps_to: ["TECH-DEPLOY-001"]
+      method: pages_preview
+      assertion: "GitHub Pages artifact works with configured base path, deep links and 404."
+    - id: QA-TECH-006
+      status: required_v1
+      maps_to: ["TECH-SEC-001"]
+      method: workflow_audit
+      assertion: "Workflow permissions are minimal, deployment is serialized and PRs never deploy production."
+
+  repository_and_traceability:
+    - id: QA-REP-001
+      status: required_v1
+      maps_to: ["REP-001"]
+      method: manifest_script
+      assertion: "All enabled manifest entries exist and every unexpected source file has an approved classification."
+    - id: QA-TRACE-001
+      status: required_v1
+      maps_to: ["PRD-001", "VIS-001", "IA-001", "CM-001", "PG-001", "CMP-001", "TCH-001", "TECH-001", "REP-001", "SEED-001"]
+      method: contract_lint
+      assertion: "Every mapped ID exists, every page uses a declared model and every component reference resolves."
+    - id: QA-EDITORIAL-001
+      status: required_v1
+      maps_to: ["PRD-009", "PRD-015"]
+      method: prose_lint_and_review
+      assertion: "Public copy contains no long dash, double hyphen substitute, repetitive colon-led prose, consulting clichés or unsupported promotional claims."
+
+release_gate:
+  pass_when:
+    - "All required_v1 tests pass."
+    - "No production placeholder exists."
+    - "Critical approval decisions are resolved."
+    - "No manifest difference remains unexplained."
+  report_fields: ["test_id", "status", "command_or_method", "evidence_path", "notes", "reviewer", "timestamp"]

@@ -1,0 +1,19 @@
+---
+// REP-LAYOUT-004. Flexible layout for Project, DataProduct and Valuation
+// detail pages: conditional_blocks render only when populated (PG-PROJECT).
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  language: "en" | "es";
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+const { title, description, path, language, jsonLd } = Astro.props;
+---
+<BaseLayout title={title} description={description} path={path} language={language} jsonLd={jsonLd}>
+  <article class="shell section-standard">
+    <slot />
+  </article>
+</BaseLayout>

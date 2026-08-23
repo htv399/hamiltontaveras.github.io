@@ -1,0 +1,41 @@
+---
+// CMP-RESEARCH-FEATURE. Shows format, authors, date, finding and a
+// secondary PDF action; the title link stays primary.
+import { t } from "../../i18n/ui";
+
+interface Author { display_name: string }
+interface Props {
+  item: {
+    title: string;
+    href: string;
+    format: string;
+    authors: Author[];
+    publishedAt?: Date;
+    keyFinding: string;
+    pdfHref?: string;
+  };
+  language: "en" | "es";
+}
+const { item, language } = Astro.props;
+const strings = t(language);
+const dateLabel = item.publishedAt
+  ? new Intl.DateTimeFormat(language, { year: "numeric", month: "long", day: "numeric" }).format(item.publishedAt)
+  : null;
+---
+<article class="research-feature">
+  <p class="u-tag">{item.format}</p>
+  <h2 class="text-h2 font-editorial"><a href={item.href}>{item.title}</a></h2>
+  <p class="text-body-l">{item.keyFinding}</p>
+  <div class="cluster text-small">
+    <span>{item.authors.map((a) => a.display_name).join(", ")}</span>
+    {dateLabel && <span>{dateLabel}</span>}
+  </div>
+  {item.pdfHref && (
+    <a href={item.pdfHref} class="research-feature__pdf text-small">{strings.download} PDF</a>
+  )}
+</article>
+
+<style>
+  .research-feature > * + * { margin-top: var(--space-3); }
+  .research-feature__pdf { font-weight: 600; }
+</style>

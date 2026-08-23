@@ -1,0 +1,47 @@
+---
+// CMP-BREADCRUMBS. IA breadcrumbs rules: labels from content metadata, no
+// active link on the current page, BreadcrumbList JSON-LD emitted.
+import JsonLd from "../seo/JsonLd.astro";
+import { canonicalBase } from "../../config/site";
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: BreadcrumbItem[];
+}
+const { items } = Astro.props;
+const base = canonicalBase.value.replace(/\/$/, "");
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: items.map((item, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    name: item.label,
+    ...(item.href ? { item: `${base}${item.href}` } : {})
+  }))
+};
+---
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol class="breadcrumbs__list">
+    {items.map((item, i) => (
+      <li>
+        {item.href && i < items.length - 1 ? (
+          <a href={item.href}>{item.label}</a>
+        ) : (
+          <span aria-current="page">{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+<JsonLd data={jsonLd} />
+
+<style>
+  .breadcrumbs__list { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: var(--size-small); color: var(--color-slate-500); }
+  .breadcrumbs__list li:not(:last-child)::after { content: "/"; margin-left: var(--space-2); }
+  .breadcrumbs__list [aria-current="page"] { color: var(--color-ink-800); }
+</style>

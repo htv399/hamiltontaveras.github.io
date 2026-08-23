@@ -1,0 +1,13 @@
+# Intentionally invalid CM-ANALYSIS fixture: omits the required `question`
+# field. Used to document the expected validation failure (QA-CM-001).
+# Not loaded by src/content.config.ts — it lives outside src/content/.
+id: ANALYSIS-INVALID-001
+title: "Invalid fixture missing question"
+slug: invalid-analysis
+summary: "This fixture exists only to document a schema failure case; it must never be moved into src/content/."
+language: en
+status: draft
+access: public
+domains: [economics]
+key_finding: "N/A"
+evidence: []

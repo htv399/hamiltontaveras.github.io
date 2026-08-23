@@ -1,0 +1,57 @@
+---
+// PG-WORK (Spanish equivalent, PG-ES-001).
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ContentFilters from "../../../components/filters/ContentFilters.tsx";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../../lib/contentGate";
+import { siteConfig } from "../../../config/site";
+import { domainLabels } from "../../../config/taxonomies";
+import { t } from "../../../i18n/ui";
+
+const language = "es" as const;
+const strings = t(language);
+const allWork = (await getCollection("work")).filter((e) => isEligible(e.data, siteConfig.env));
+
+const domainOptions = [...new Set(allWork.flatMap((w) => w.data.domains))].map((d) => ({
+  value: d,
+  label: domainLabels[d as keyof typeof domainLabels]?.[language] ?? d
+}));
+const kindOptions = [...new Set(allWork.map((w) => w.data.kind))].map((k) => ({ value: k, label: k }));
+
+const records = allWork.map((w) => ({
+  id: w.data.id,
+  title: w.data.title,
+  href: `/work/${w.data.slug}/`,
+  summary: w.data.summary,
+  publishedAt: w.data.published_at?.toISOString(),
+  tags: { domain: w.data.domains, kind: [w.data.kind] }
+}));
+---
+<BaseLayout title={`Trabajo — ${siteConfig.name}`} description="Trabajo seleccionado en sistemas de datos, economía, finanzas corporativas, valoración y finanzas cuantitativas." path="/es/work/" language={language}>
+  <section class="shell section-standard">
+    <p class="text-body-l reading-column">
+      Los proyectos se documentan como registros de decisión: la pregunta, la evidencia, el método y el resultado. El
+      trabajo confidencial aparece solo con un nivel de abstracción aprobado.
+    </p>
+
+    {allWork.length === 0 ? (
+      <p class="text-body" style="margin-top: var(--space-6);">
+        Ningún caso público se ha publicado en esta versión del portal. Consulta <a href="/es/research/">Investigación</a>
+        o <a href="/es/teaching/">Docencia</a>.
+      </p>
+    ) : (
+      <div style="margin-top: var(--space-8);">
+        <ContentFilters
+          client:idle
+          items={records}
+          dimensions={[
+            { key: "domain", label: "Dominio", options: domainOptions },
+            { key: "kind", label: "Tipo", options: kindOptions }
+          ]}
+          clearLabel={strings.filterClear}
+          emptyHeading={strings.noResultsHeading}
+        />
+      </div>
+    )}
+  </section>
+</BaseLayout>

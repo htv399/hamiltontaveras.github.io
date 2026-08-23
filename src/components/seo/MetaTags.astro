@@ -1,0 +1,34 @@
+---
+// REP-CMP-010 / TECH-SEO-001. Central place for the required meta surface:
+// unique title/description, canonical, Open Graph and robots.
+import { canonicalBase } from "../../config/site";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  language: "en" | "es";
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const { title, description, path, language, ogImage, noindex = false } = Astro.props;
+const base = canonicalBase.value.replace(/\/$/, "");
+const canonical = `${base}${path}`;
+const socialImage = ogImage ?? `${base}/og/default.png`;
+---
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={socialImage} />
+<meta property="og:locale" content={language === "es" ? "es_ES" : "en_US"} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={socialImage} />

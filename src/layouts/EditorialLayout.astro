@@ -1,0 +1,18 @@
+---
+// REP-LAYOUT-002. Reading-width shell for Analysis and Note detail pages.
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  language: "en" | "es";
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+const { title, description, path, language, jsonLd } = Astro.props;
+---
+<BaseLayout title={title} description={description} path={path} language={language} jsonLd={jsonLd}>
+  <article class="editorial-shell section-standard reading-column" style="margin-inline:auto;">
+    <slot />
+  </article>
+</BaseLayout>

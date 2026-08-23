@@ -1,0 +1,63 @@
+---
+// PG-RESEARCH. Research lead + recent perspectives + format filters +
+// listing; empty_state omits lead/filters and explains scope in one
+// paragraph, per 05-page-contracts.yml.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ResearchFeature from "../../components/research/ResearchFeature.astro";
+import ContentFilters from "../../components/filters/ContentFilters.tsx";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../lib/contentGate";
+import { siteConfig } from "../../config/site";
+import { t } from "../../i18n/ui";
+
+const language = "en" as const;
+const strings = t(language);
+const all = (await getCollection("research")).filter((e) => isEligible(e.data, siteConfig.env));
+const lead = all.find((r) => r.data.featured) ?? all[0];
+const rest = all.filter((r) => r.id !== lead?.id);
+
+const formatOptions = [...new Set(all.map((r) => r.data.format))].map((f) => ({ value: f, label: f }));
+const records = rest.map((r) => ({
+  id: r.data.id,
+  title: r.data.title,
+  href: `/research/${r.data.slug}/`,
+  summary: r.data.summary,
+  publishedAt: r.data.published_at?.toISOString(),
+  tags: { format: [r.data.format] }
+}));
+---
+<BaseLayout title={`Research — ${siteConfig.name}`} description="Applied research, working papers, replications and documented datasets." path="/research/" language={language}>
+  <section class="shell section-standard">
+    {all.length === 0 ? (
+      <p class="text-body-l reading-column">
+        No research item has been released in this version of the portal. A research item is published only when the
+        question, evidence, method, limitations and citation information can be inspected independently.
+      </p>
+    ) : (
+      <>
+        {lead && (
+          <ResearchFeature
+            item={{
+              title: lead.data.title,
+              href: `/research/${lead.data.slug}/`,
+              format: lead.data.format,
+              authors: lead.data.authors,
+              publishedAt: lead.data.published_at,
+              keyFinding: lead.data.key_finding
+            }}
+            language={language}
+          />
+        )}
+        <div style="margin-top: var(--space-9);">
+          <ContentFilters
+            client:idle
+            items={records}
+            dimensions={[{ key: "format", label: "Format", options: formatOptions }]}
+            clearLabel={strings.filterClear}
+            emptyHeading={strings.noResultsHeading}
+          />
+        </div>
+      </>
+    )}
+  </section>
+</BaseLayout>

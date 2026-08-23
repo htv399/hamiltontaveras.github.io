@@ -1,0 +1,26 @@
+---
+// Footer utility page (Spanish equivalent).
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { siteConfig, contactMode } from "../../../config/site";
+import { t } from "../../../i18n/ui";
+
+const language = "es" as const;
+const strings = t(language);
+---
+<BaseLayout title={`Accesibilidad — ${siteConfig.name}`} description="Compromiso y meta de conformidad de accesibilidad de este portal." path="/es/accessibility/" language={language}>
+  <section class="shell section-standard reading-column" style="margin-inline:auto;">
+    <h1 class="text-h1 font-editorial">Accesibilidad</h1>
+    <p class="text-body-l">
+      Este portal tiene como meta el nivel AA de WCAG 2.2: operabilidad por teclado, foco visible, contraste de color
+      suficiente, encabezados y tablas semánticas, alternativas textuales para figuras y ecuaciones, y soporte para
+      movimiento reducido.
+    </p>
+    <p class="text-body">
+      Esta es una meta de conformidad, no un certificado de auditoría externa. Si alguna página, control o descarga no
+      te resulta accesible, es información útil para nosotros.
+    </p>
+    <p class="text-body" data-placeholder="true">
+      {contactMode.resolved ? "Reporta un problema de accesibilidad a través de la página de contacto." : strings.contactPending}
+    </p>
+  </section>
+</BaseLayout>

@@ -1,0 +1,166 @@
+contract:
+  id: TCH-001
+  version: 1.0.0
+  status: required_v1
+  objective: "Publicar cursos, semanas y materiales con rutas estables, metadata verificable y separación entre Astro y el pipeline académico."
+
+hierarchy:
+  teaching:
+    route: "/teaching/"
+    model: "Course[]"
+  course:
+    route: "/teaching/{course_slug}/"
+    model: Course
+  week:
+    route: "/teaching/{course_slug}/{week_slug}/"
+    model: Week
+  material:
+    route: "/teaching/{course_slug}/{week_slug}/materials/{material_slug}/"
+    model: Material
+
+course_rules:
+  - id: TCH-COURSE-001
+    status: required_v1
+    rule: "A public course has description, objectives, period, syllabus and at least one published week."
+  - id: TCH-COURSE-002
+    status: required_v1
+    rule: "Course status distinguishes active and archived without changing its URL."
+  - id: TCH-COURSE-003
+    status: content_pending
+    rule: "Econometrics I may be the seed course, but no institution, schedule or material is invented."
+  - id: TCH-COURSE-004
+    status: required_v1
+    rule: "Teaching behaves as a publication. It does not expose grades, announcements or student administration."
+
+week_rules:
+  - id: TCH-WEEK-001
+    status: required_v1
+    rule: "Every week includes title, question, overview, resource, version, license and publication status."
+  - id: TCH-WEEK-002
+    status: required_v1
+    rule: "Weeks order by week_number. Previous and next links derive from the published sequence."
+  - id: TCH-WEEK-003
+    status: required_v1
+    rule: "A week URL remains permanent across content updates."
+  - id: TCH-WEEK-004
+    status: required_v1
+    rule: "A resource group renders only when it has at least one eligible material."
+
+material_support:
+  pdf:
+    extensions: [".pdf"]
+    mime: ["application/pdf"]
+    behavior: ["view", "download"]
+  html:
+    extensions: [".html"]
+    mime: ["text/html"]
+    behavior: ["open_same_origin"]
+  qmd:
+    extensions: [".qmd"]
+    mime: ["text/plain"]
+    behavior: ["download", "view_source_when_public"]
+  r:
+    extensions: [".R", ".r"]
+    mime: ["text/plain", "text/x-r-source"]
+    behavior: ["download", "view_source_when_public"]
+  rmd:
+    extensions: [".Rmd", ".rmd"]
+    mime: ["text/plain", "text/x-r-markdown"]
+    behavior: ["download", "view_source_when_public"]
+  csv:
+    extensions: [".csv"]
+    mime: ["text/csv"]
+    behavior: ["download", "optional_preview"]
+  xlsx:
+    extensions: [".xlsx"]
+    mime: ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"]
+    behavior: ["download"]
+  zip:
+    extensions: [".zip"]
+    mime: ["application/zip"]
+    behavior: ["download"]
+  notebook:
+    extensions: [".ipynb"]
+    mime: ["application/x-ipynb+json"]
+    behavior: ["download", "optional_static_preview"]
+  external:
+    extensions: []
+    behavior: ["open_new_context_with_warning"]
+
+material_metadata:
+  required: ["id", "title", "slug", "material_type", "status", "access", "version", "license", "href"]
+  required_for_local: ["file_size_bytes", "mime_type", "checksum_sha256"]
+  optional: ["description", "source_href", "updated_at"]
+  display: ["type", "format", "version", "license", "file_size"]
+
+resource_groups:
+  order:
+    - { key: slides, labels: { en: Slides, es: Diapositivas } }
+    - { key: notes, labels: { en: Notes, es: Notas } }
+    - { key: manual_exercises, labels: { en: Exercises, es: Ejercicios } }
+    - { key: lab, labels: { en: Lab, es: Laboratorio } }
+    - { key: data, labels: { en: Data, es: Datos } }
+    - { key: code, labels: { en: Code, es: Código } }
+    - { key: quiz, labels: { en: Quiz, es: Prueba } }
+    - { key: bibliography, labels: { en: References, es: Bibliografía } }
+  render_rule: "Omit empty groups and preserve this order."
+
+pipeline:
+  sources_root: "academic/"
+  output_root: "public/materials/"
+  metadata_bridge: "academic/materials-manifest.yml"
+  steps:
+    - id: TCH-PIPE-001
+      action: "Validate source metadata and expected outputs."
+    - id: TCH-PIPE-002
+      action: "Compile Quarto and R Markdown using the repository environment."
+    - id: TCH-PIPE-003
+      action: "Copy approved artifacts to stable public paths."
+    - id: TCH-PIPE-004
+      action: "Calculate size and SHA-256."
+    - id: TCH-PIPE-005
+      action: "Validate access, license, MIME, link and route."
+  prohibitions:
+    - "Do not install R packages during build."
+    - "Do not compile restricted solutions into public."
+    - "Do not make a PDF the only location of essential page context."
+    - "Do not edit generated outputs manually."
+
+access:
+  public: "Listed, indexed and downloadable."
+  summary-only: "Metadata and description may appear. File and source links are hidden."
+  private: "Excluded from route, index, feed, sitemap and public artifact."
+
+licenses:
+  status: approval_required
+  decision_id: APP-006
+  families: ["text", "code", "data", "graphics", "teaching"]
+  release_gate: "Every public material needs an approved license or explicit all-rights-reserved policy."
+
+versions:
+  source_of_truth: "Material.version"
+  display: true
+  update_rule: "Replacing bytes at a permanent URL requires version and updated_at change."
+  checksum: "Required for local downloadable files."
+  archive_rule: "Old versions may live under /materials/archive only when public and linked from changelog."
+
+publication_states:
+  draft: "Preview only."
+  review: "Preview only."
+  scheduled: "Build excludes until published_at."
+  published: "Public."
+  archived: "Public with archived label when access permits."
+
+security:
+  - "Reject path traversal and files outside approved roots."
+  - "Reject executable binaries."
+  - "Scan ZIP contents for forbidden paths and secrets before publication."
+  - "External links use rel noopener when opening a new context."
+
+verification:
+  - { id: QA-TCH-001, checks: ["course_week_material_routes", "previous_next"] }
+  - { id: QA-TCH-002, checks: ["all_supported_formats", "mime", "size", "checksum"] }
+  - { id: QA-TCH-003, checks: ["license", "access", "private_exclusion"] }
+  - { id: QA-TCH-004, checks: ["no_package_install", "reproducible_build"] }
+  - { id: QA-TCH-005, checks: ["mobile_material_groups", "accessible_download_labels"] }
+

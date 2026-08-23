@@ -1,0 +1,271 @@
+contract:
+  id: CM-001
+  version: 1.0.0
+  status: required_v1
+  implementation: "Astro content collections with strict TypeScript and schema validation."
+
+enums:
+  requirement_state: ["required_v1", "future", "content_pending", "approval_required"]
+  language: ["en", "es"]
+  editorial_status: ["draft", "review", "scheduled", "published", "working", "ongoing", "archived"]
+  access: ["public", "summary-only", "private"]
+  domain: ["data-systems", "economics", "corporate-finance", "valuation", "quant-finance", "risk", "ai"]
+  method: ["econometrics", "time-series", "causal-inference", "ml", "simulation", "optimization", "financial-modeling", "data-engineering", "data-governance"]
+  object: ["firm", "asset", "sector", "market", "public-policy", "institution"]
+  output: ["paper", "model", "data", "code", "visualization", "dashboard", "slides", "notebook", "report", "tool"]
+  material_type: ["pdf", "html", "qmd", "r", "rmd", "csv", "xlsx", "zip", "notebook", "external"]
+
+common_fields:
+  required:
+    id: { type: string, pattern: "^[A-Z0-9][A-Z0-9-]+$", immutable: true }
+    title: { type: string, min: 3, max: 120 }
+    slug: { type: string, pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$", immutable_after_publish: true }
+    summary: { type: string, min: 80, max: 220 }
+    language: { type: enum, values_ref: language }
+    status: { type: enum, values_ref: editorial_status }
+    access: { type: enum, values_ref: access }
+    authors: { type: array, item_ref: Profile, min: 1 }
+    published_at: { type: date, required_when: "status in [published, working, ongoing, archived]" }
+    updated_at: { type: date, gte: published_at }
+    domains: { type: array, item_enum_ref: domain, min: 1, max: 2 }
+    featured: { type: boolean, default: false }
+    placeholder: { type: boolean, default: false }
+  optional:
+    subtitle: { type: string, max: 180 }
+    dek: { type: string, max: 260 }
+    methods: { type: array, item_enum_ref: method, max: 3 }
+    objects: { type: array, item_enum_ref: object, max: 3 }
+    outputs: { type: array, item_enum_ref: output }
+    data_vintage: { type: date_or_string }
+    version: { type: semver_or_label }
+    translation_key: { type: string }
+    alternate_summary: { type: localized_string }
+    hero_media: { type: media_ref }
+    thumbnail: { type: media_ref }
+    sources: { type: array, item_ref: Resource }
+    resources: { type: array, item_ref: Resource }
+    related_ids: { type: array, item_type: string }
+    citation: { type: citation_object }
+    license: { type: license_ref }
+    disclosure: { type: string }
+    change_log: { type: array, item_type: change_record }
+    review_due: { type: date }
+    featured_order: { type: integer, min: 1 }
+
+global_validation:
+  - id: CM-VAL-001
+    rule: "placeholder true is forbidden in production."
+  - id: CM-VAL-002
+    rule: "private content generates no public route, search entry, feed item or sitemap record."
+  - id: CM-VAL-003
+    rule: "summary-only content may expose metadata, summary and approved visual, but no restricted resources."
+  - id: CM-VAL-004
+    rule: "featured true requires hero_media or a component-supported evidence visual."
+  - id: CM-VAL-005
+    rule: "Any source or download must resolve and include access and license."
+  - id: CM-VAL-006
+    rule: "translation_key shared by two pieces requires different languages and semantic equivalence."
+  - id: CM-VAL-007
+    rule: "A published valuation or market analysis requires disclosure."
+  - id: CM-VAL-008
+    rule: "No content title or summary may contain placeholder labels in production."
+
+models:
+  Analysis:
+    id: CM-ANALYSIS
+    collection: analysis
+    extends: common_fields
+    required:
+      question: { type: string, min: 20 }
+      key_finding: { type: string, min: 40, max: 360 }
+      evidence: { type: array, item_type: figure_or_exhibit, min: 1 }
+    optional:
+      context: { type: mdx }
+      methodology: { type: mdx }
+      implications: { type: mdx }
+      limitations: { type: mdx }
+
+  Research:
+    id: CM-RESEARCH
+    collection: research
+    extends: common_fields
+    required:
+      format: { type: enum, values: ["paper", "working-paper", "applied-research", "replication", "research-dataset"] }
+      abstract: { type: string, min: 120 }
+      question: { type: string }
+      contribution: { type: string }
+      key_finding: { type: string }
+      version: { type: semver_or_label }
+    optional:
+      literature: { type: mdx }
+      data: { type: mdx }
+      method: { type: mdx }
+      results: { type: mdx }
+      limitations: { type: mdx }
+      reproduction: { type: resource_group }
+      paper_pdf: { type: Resource }
+
+  DataProduct:
+    id: CM-DATA-PRODUCT
+    collection: work
+    discriminator: "kind=data-product"
+    extends: common_fields
+    required:
+      question: { type: string }
+      context: { type: mdx }
+      coverage: { type: coverage_object }
+      provenance: { type: array, item_type: source_record, min: 1 }
+      update_policy: { type: string }
+      result: { type: mdx }
+    optional:
+      architecture: { type: mdx }
+      data_dictionary: { type: Resource }
+      changelog_url: { type: url_or_route }
+      service_level: { type: string }
+
+  Valuation:
+    id: CM-VALUATION
+    collection: work
+    discriminator: "kind=valuation"
+    extends: common_fields
+    required:
+      valuation_date: { type: date }
+      question: { type: string }
+      context: { type: mdx }
+      data_and_adjustments: { type: mdx }
+      value_drivers: { type: mdx }
+      model: { type: mdx }
+      scenarios: { type: array, item_type: scenario, min: 2 }
+      interpretation: { type: mdx }
+      limitations: { type: mdx }
+      disclosure: { type: string }
+    optional:
+      currency: { type: iso_currency }
+      estimate_range: { type: numeric_range }
+      model_resource: { type: Resource }
+
+  Note:
+    id: CM-NOTE
+    collection: notes
+    extends: common_fields
+    required:
+      note_type: { type: enum, values: ["data-note", "economic-note", "valuation-note", "market-note", "methods-note"] }
+      body: { type: mdx }
+    optional:
+      key_point: { type: string }
+      series: { type: string, allowed_when: "series_count >= 3" }
+      historical_update_note: { type: string }
+
+  Course:
+    id: CM-COURSE
+    collection: courses
+    extends: common_fields
+    required:
+      code: { type: string }
+      description: { type: string }
+      objectives: { type: array, item_type: string, min: 1 }
+      period: { type: string }
+      syllabus: { type: Resource }
+    optional:
+      institution: { type: string }
+      prerequisites: { type: array, item_type: string }
+      schedule: { type: array, item_type: schedule_record }
+      archived: { type: boolean, default: false }
+
+  Week:
+    id: CM-WEEK
+    collection: weeks
+    extends: common_fields
+    required:
+      course_id: { type: id_ref, target: Course }
+      week_number: { type: integer, min: 1 }
+      question: { type: string }
+      overview: { type: string }
+      resources: { type: array, item_ref: Material, min: 1 }
+      version: { type: semver_or_label }
+      license: { type: license_ref }
+    optional:
+      concepts: { type: array, item_type: string }
+      learning_objectives: { type: array, item_type: string }
+      previous_week_id: { type: id_ref, target: Week }
+      next_week_id: { type: id_ref, target: Week }
+
+  Material:
+    id: CM-MATERIAL
+    collection: materials
+    required:
+      id: { type: string }
+      title: { type: string }
+      slug: { type: string }
+      language: { type: enum, values_ref: language }
+      material_type: { type: enum, values_ref: material_type }
+      access: { type: enum, values_ref: access }
+      status: { type: enum, values_ref: editorial_status }
+      version: { type: semver_or_label }
+      license: { type: license_ref }
+      href: { type: url_or_public_path }
+      file_size_bytes: { type: integer, required_when: "material_type != external" }
+    optional:
+      mime_type: { type: string }
+      checksum_sha256: { type: string }
+      source_href: { type: url_or_public_path }
+      description: { type: string }
+      updated_at: { type: date }
+
+  Project:
+    id: CM-PROJECT
+    collection: work
+    discriminator: "kind=project"
+    extends: common_fields
+    required:
+      question: { type: string }
+      context: { type: mdx }
+      results: { type: mdx }
+      evidence: { type: array, item_type: figure_or_exhibit, min: 1 }
+    optional:
+      data: { type: mdx }
+      architecture: { type: mdx }
+      methodology: { type: mdx }
+      model: { type: mdx }
+      analysis: { type: mdx }
+      valuation: { type: mdx }
+    rendering_rule: "Render only populated optional blocks."
+
+  Profile:
+    id: CM-PROFILE
+    collection: profiles
+    required:
+      id: { type: string }
+      display_name: { type: string }
+      role_label: { type: string }
+    optional:
+      bio_short: { type: string, max: 300 }
+      photo: { type: media_ref, status: approval_required, decision_id: APP-007 }
+      orcid: { type: url }
+      website: { type: url }
+      social: { type: array, item_type: link }
+    prohibition: "Do not infer credentials, positions or affiliations."
+
+  Resource:
+    id: CM-RESOURCE
+    reusable_object: true
+    required:
+      id: { type: string }
+      label: { type: string }
+      kind: { type: enum, values: ["pdf", "data", "code", "notebook", "model", "repository", "citation", "source", "external", "image", "video"] }
+      href: { type: url_or_public_path }
+      access: { type: enum, values_ref: access }
+      license: { type: license_ref }
+    optional:
+      format: { type: string }
+      file_size_bytes: { type: integer }
+      checksum_sha256: { type: string }
+      version: { type: semver_or_label }
+      description: { type: string }
+
+verification:
+  - { id: QA-CM-001, checks: ["schema_valid", "enum_valid", "required_fields"] }
+  - { id: QA-CM-002, checks: ["production_placeholder_gate", "private_exclusion"] }
+  - { id: QA-CM-003, checks: ["translation_integrity", "slug_uniqueness"] }
+  - { id: QA-CM-004, checks: ["resource_exists", "license_present", "access_respected"] }
+  - { id: QA-CM-005, checks: ["conditional_blocks", "no_empty_headings"] }

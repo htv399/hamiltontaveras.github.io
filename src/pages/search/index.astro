@@ -1,0 +1,33 @@
+---
+// PG-SEARCH. Pagefind-backed static search; CMP-SEARCH covers idle,
+// loading, results, empty and error states.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Search from "../../components/search/Search.tsx";
+import { siteConfig } from "../../config/site";
+import { t } from "../../i18n/ui";
+
+const language = "en" as const;
+const strings = t(language);
+---
+<BaseLayout title={`Search — ${siteConfig.name}`} description="Search titles, summaries, domains, methods and content." path="/search/" language={language}>
+  <section class="shell section-standard">
+    <h1 class="text-h1 font-editorial">{strings.search}</h1>
+    <div style="margin-top: var(--space-6);">
+      <Search
+        client:idle
+        language={language}
+        placeholder={strings.searchPlaceholder}
+        idleLabel={strings.searchIdle}
+        loadingLabel={strings.searchLoading}
+        emptyLabel={strings.searchEmpty}
+        errorLabel={strings.searchError}
+        resultLabelOne={strings.searchResultLabelOne}
+        resultLabelMany={strings.searchResultLabelMany}
+      />
+    </div>
+    <noscript>
+      <p class="text-small">Search requires JavaScript. Browse the <a href="/work/">Work</a>,
+        <a href="/research/">Research</a> or <a href="/notes/">Notes</a> sections instead.</p>
+    </noscript>
+  </section>
+</BaseLayout>

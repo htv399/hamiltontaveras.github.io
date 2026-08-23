@@ -1,0 +1,42 @@
+---
+// PG-RESOURCES (Spanish equivalent).
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ResourceLinks from "../../../components/resources/ResourceLinks.astro";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../../lib/contentGate";
+import { siteConfig } from "../../../config/site";
+
+const language = "es" as const;
+const materials = (await getCollection("materials")).filter((e) => isEligible(e.data, siteConfig.env));
+const resources = materials.map((m) => ({
+  id: m.data.id,
+  label: m.data.title,
+  kind: m.data.material_type,
+  href: m.data.href,
+  access: m.data.access,
+  license: m.data.license,
+  format: m.data.material_type,
+  file_size_bytes: m.data.file_size_bytes,
+  version: m.data.version
+}));
+---
+<BaseLayout title={`Recursos — ${siteConfig.name}`} description="Recursos públicos: datos, código, materiales docentes y documentos descargables." path="/es/resources/" language={language}>
+  <section class="shell section-standard">
+    <p class="text-body-l reading-column">
+      Los recursos públicos referenciados desde Trabajo, Investigación y Docencia se reúnen aquí con su formato,
+      versión, licencia y condiciones de acceso. Una licencia ausente nunca se interpreta como permiso para reutilizar
+      un archivo.
+    </p>
+
+    {resources.length > 0 ? (
+      <div style="margin-top: var(--space-8);">
+        <ResourceLinks resources={resources} variant="grouped" siteEnv={siteConfig.env} />
+      </div>
+    ) : null}
+
+    <p class="text-small" style="margin-top: var(--space-6);">
+      Consulta la <a href="/es/licenses/">política de licencias y reutilización</a> antes de reutilizar cualquier
+      elemento publicado aquí.
+    </p>
+  </section>
+</BaseLayout>

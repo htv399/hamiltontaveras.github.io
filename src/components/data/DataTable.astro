@@ -1,0 +1,46 @@
+---
+// CMP-DATA-TABLE. Semantic table markup, numeric columns right aligned,
+// mobile strategy declared per instance via `mobileStrategy`.
+export interface Column {
+  key: string;
+  label: string;
+  numeric?: boolean;
+}
+export interface Row {
+  cells: Record<string, string | number>;
+  __input?: boolean;
+  __output?: boolean;
+  __principal?: boolean;
+}
+interface Props {
+  caption: string;
+  columns: Column[];
+  rows: Row[];
+  variant?: "financial" | "econometric" | "standard" | "sensitivity";
+  mobileStrategy?: "responsive_summary" | "horizontal_scroll" | "sticky_first_column";
+}
+const { caption, columns, rows, variant = "standard", mobileStrategy = "horizontal_scroll" } = Astro.props;
+---
+<div class="data-table-scroll" data-mobile-strategy={mobileStrategy} data-variant={variant}>
+  <table class="data-table">
+    <caption>{caption}</caption>
+    <thead>
+      <tr>
+        {columns.map((col) => (
+          <th scope="col" data-numeric={col.numeric ? "true" : undefined}>{col.label}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr data-input={row.__input ? "true" : undefined} data-output={row.__output ? "true" : undefined} data-principal={row.__principal ? "true" : undefined}>
+          {columns.map((col, i) => (
+            i === 0
+              ? <th scope="row" data-numeric={col.numeric ? "true" : undefined}>{row.cells[col.key]}</th>
+              : <td data-numeric={col.numeric ? "true" : undefined}>{row.cells[col.key]}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

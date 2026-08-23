@@ -1,0 +1,51 @@
+---
+// CMP-NAV. Renders IA primary_navigation exactly; no taxonomy entries.
+import type { NavItem } from "../../config/navigation";
+import type { Language } from "../../config/site";
+
+interface Props {
+  items: NavItem[];
+  language: Language;
+  currentPath: string;
+}
+const { items, language, currentPath } = Astro.props;
+---
+<nav class="primary-nav" aria-label={language === "es" ? "Navegación principal" : "Primary"}>
+  <ul class="primary-nav__list">
+    {items.map((item) => {
+      const href = item.route[language];
+      const active = currentPath === href;
+      return (
+        <li>
+          <a href={href} aria-current={active ? "page" : undefined} class="primary-nav__link" data-active={active}>
+            {item.label[language]}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
+
+<style>
+  .primary-nav__list {
+    display: flex;
+    gap: var(--space-5);
+  }
+  .primary-nav__link {
+    font-size: var(--size-small);
+    font-weight: 600;
+    /* --header-fg is set by the ancestor .site-header (custom properties
+       inherit across Astro's per-component scoping even though selectors
+       don't); falls back to currentColor outside the header. */
+    color: var(--header-fg, currentColor);
+    padding-block: var(--space-2);
+    border-bottom: 2px solid transparent;
+  }
+  .primary-nav__link[data-active="true"] {
+    border-bottom-color: currentColor;
+  }
+  .primary-nav__link[data-active="true"]::after {
+    content: " •";
+    font-size: var(--size-micro);
+  }
+</style>

@@ -1,0 +1,215 @@
+contract:
+  id: PG-001
+  version: 1.0.0
+  status: required_v1
+  shared_rules:
+    - "Every detail page is understandable from a direct link."
+    - "Optional sections render only with valid content."
+    - "A hidden module leaves no heading, gap, rule or empty container."
+    - "Listings show type, title, summary or question, date and at most three tags."
+    - "Mobile order preserves identity, finding and evidence before secondary controls."
+
+pages:
+  Home:
+    id: PG-HOME
+    routes: ["/", "/es/"]
+    objective: "Orientar al visitante y conducirlo a evidencia en un clic."
+    data: ["site_config", "Analysis[]", "Project[]", "Research[]", "Note[]", "Course[]"]
+    sections:
+      - { order: 1, component: CMP-HERO-EDITORIAL, required: true, data: ["name", "descriptor", "thesis", "lead_analysis"] }
+      - { order: 2, component: CMP-FEATURED-2-1, required_when: "eligible_featured_count >= 3", fallback: CMP-EDITORIAL-ROW }
+      - { order: 3, component: CMP-INDICATOR-STRIP, required_when: "verified_indicator_count >= 4", fallback: omit }
+      - { order: 4, component: CMP-QUESTIONS, required_when: "authored_question_count >= 2", fallback: omit }
+      - { order: 5, component: CMP-WORK-SPLIT, required_when: "published_work_count >= 2", fallback: CMP-EDITORIAL-ROW }
+      - { order: 6, component: CMP-RESEARCH-FEATURE, required_when: "published_research_count >= 1", fallback: omit }
+      - { order: 7, component: CMP-NOTES-ROW, required_when: "published_note_count >= 1", fallback: omit }
+      - { order: 8, component: CMP-COURSE-SHELF, required_when: "published_course_count >= 1", fallback: omit }
+      - { order: 9, component: CMP-BACKGROUND-CONTACT, required: true }
+    minimum: ["identity", "thesis", "one_real_or_demo_lead", "about_link", "contact_or_pending_contact"]
+    empty_state: "Never show an empty section. With seed content, render only Hero, one editorial row and Background."
+    mobile: "Text first. Lead visual follows thesis. Indicator strip scrolls. Featured layout becomes one lead plus stacked rows."
+    acceptance: ["QA-PG-HOME-001", "QA-VIS-004", "QA-PRD-001"]
+
+  Work:
+    id: PG-WORK
+    routes: ["/work/", "/es/work/"]
+    objective: "Demostrar trabajo mediante preguntas, evidencia y resultados."
+    sections:
+      - "Editorial intro"
+      - "Optional featured work"
+      - "Filters for domain, kind and method"
+      - "Mixed editorial listing"
+    minimum: ["intro", "listing_or_honest_empty_state"]
+    empty_state: "Show a short editorial explanation and links to Research or Teaching. Do not show empty filters."
+    mobile: "Filters use CMP-FILTER-DRAWER. Listing remains rows, not a two-column card grid."
+
+  Research:
+    id: PG-RESEARCH
+    routes: ["/research/", "/es/research/"]
+    objective: "Combinar biblioteca filtrable y publicación editorial."
+    sections: ["Research lead", "Recent perspectives", "Format filters", "Research listing"]
+    minimum: ["intro", "listing_or_honest_empty_state"]
+    empty_state: "Omit lead and filters. Explain the scope in one paragraph and link to Notes or Work."
+    mobile: "Lead becomes text, finding, image and resources. Filters collapse."
+
+  Notes:
+    id: PG-NOTES
+    routes: ["/notes/", "/es/notes/"]
+    objective: "Organizar notas breves sin simular una frecuencia."
+    sections: ["Editorial intro", "Persistent selection when available", "Chronological listing", "Filters"]
+    minimum: ["intro", "listing_or_honest_empty_state"]
+    empty_state: "No monthly archive, no coming-soon statement and no empty tag cloud."
+    mobile: "Single editorial column with compact metadata."
+
+  Teaching:
+    id: PG-TEACHING
+    routes: ["/teaching/", "/es/teaching/"]
+    objective: "Presentar cursos y archivo académico como publicación, no como LMS."
+    sections: ["Teaching intro", "Featured course", "Active courses", "Archive"]
+    minimum: ["intro", "one_seed_course_or_honest_empty_state"]
+    empty_state: "Show the teaching approach and omit shelves."
+    mobile: "Courses render as editorial rows with status and period."
+
+  Course:
+    id: PG-COURSE
+    route_pattern: "/teaching/{course_slug}/"
+    model: CM-COURSE
+    objective: "Dar contexto, objetivos, calendario y acceso a semanas."
+    sections: ["Breadcrumbs", "Course header", "Description", "Objectives", "Syllabus resource", "Week navigation", "Archive status"]
+    minimum: ["title", "period", "description", "objectives", "syllabus", "one_week"]
+    empty_state: "If no published week exists, keep the course in draft and exclude it from production."
+    mobile: "Week navigation is a vertical indexed list."
+
+  Week:
+    id: PG-WEEK
+    route_pattern: "/teaching/{course_slug}/{week_slug}/"
+    model: CM-WEEK
+    objective: "Organizar una pregunta semanal y sus materiales."
+    sections: ["Breadcrumbs", "Week header", "Question", "Overview", "Objectives", "Concepts", "Material groups", "License and version", "Previous and next"]
+    minimum: ["title", "question", "overview", "one_material", "version", "license"]
+    empty_state: "Material groups with zero eligible items are omitted."
+    mobile: "Resources remain grouped by function. Previous and next controls are full width."
+
+  Material:
+    id: PG-MATERIAL
+    route_pattern: "/teaching/{course_slug}/{week_slug}/materials/{material_slug}/"
+    model: CM-MATERIAL
+    objective: "Explicar un recurso antes de abrirlo o descargarlo."
+    sections: ["Breadcrumbs", "Material metadata", "Description", "Primary action", "Source action when allowed", "License and checksum"]
+    minimum: ["title", "type", "version", "license", "working_href"]
+    empty_state: "A missing file fails the build. It never produces a public page."
+    mobile: "Primary action is visible. Secondary actions use a disclosure menu."
+
+  About:
+    id: PG-ABOUT
+    routes: ["/about/", "/es/about/"]
+    objective: "Explicar la identidad, enfoque y trayectoria selectiva sin convertir la página en un CV."
+    sections: ["Identity", "Professional thesis", "Information Models Judgment Value", "Selected trajectory", "Teaching and research context", "Contact"]
+    minimum: ["approved_bio_or_content_pending_marker_in_preview", "cv_link", "contact_path"]
+    empty_state: "Production is blocked until approved biography exists."
+    mobile: "No dominant portrait. If APP-007 is approved, image follows the opening text."
+
+  CV:
+    id: PG-CV
+    routes: ["/cv/", "/es/cv/"]
+    objective: "Proveer detalle verificable y PDF descargable."
+    sections: ["Short introduction", "Verified structured CV", "PDF download"]
+    minimum: ["verified_entries", "pdf_or_explicitly_disabled_download"]
+    empty_state: "Production is blocked if neither structured CV nor approved PDF exists."
+    mobile: "Chronology becomes stacked. Dates remain visible."
+
+  Contact:
+    id: PG-CONTACT
+    routes: ["/contact/", "/es/contact/"]
+    objective: "Facilitar conversaciones profesionales mediante un canal aprobado."
+    sections: ["Contact purpose", "Approved channel", "Privacy note"]
+    minimum: ["APP-005_resolved"]
+    empty_state: "Preview may show contact_pending. Production must fail."
+    mobile: "Single column and 44px minimum targets."
+
+  Resources:
+    id: PG-RESOURCES
+    routes: ["/resources/", "/es/resources/"]
+    objective: "Reunir recursos públicos sin poner GitHub en la navegación principal."
+    sections: ["Intro", "Resource filters", "Grouped resources", "Licenses"]
+    minimum: ["intro"]
+    empty_state: "Show only intro and license policy link. Hide filters."
+    mobile: "Grouped list with type, format, size and access."
+
+  Search:
+    id: PG-SEARCH
+    routes: ["/search/", "/es/search/"]
+    objective: "Buscar contenido estático por título, resumen, dominio, método y cuerpo."
+    sections: ["Search input", "Language scope", "Optional content type filters", "Results"]
+    minimum: ["working_index", "keyboard_accessible_input"]
+    empty_state: "Differentiate no query, no results and index failure."
+    mobile: "Search input remains first. Filters use chips or drawer."
+
+  AnalysisDetail:
+    id: PG-ANALYSIS
+    route_pattern: "/analysis/{slug}/"
+    model: CM-ANALYSIS
+    sections: ["Metadata", "Question", "Key finding", "Evidence", "Context", "Methodology", "Implications", "Limitations", "Sources", "Related work"]
+    minimum: ["question", "key_finding", "evidence", "author", "dates"]
+    empty_state: "Optional narrative sections omitted."
+    mobile: "Finding and evidence stay above methodology."
+
+  ProjectDetail:
+    id: PG-PROJECT
+    route_pattern: "/work/{slug}/"
+    model: CM-PROJECT
+    sections: ["Metadata", "Question", "Context", "Evidence", "Conditional blocks", "Results", "Resources", "Related work"]
+    conditional_blocks: ["Data", "Architecture", "Methodology", "Model", "Analysis", "Valuation"]
+    minimum: ["question", "context", "evidence", "results"]
+    empty_state: "Never render a conditional heading without body."
+    mobile: "Architecture diagrams provide zoom or alternate text."
+
+  ResearchDetail:
+    id: PG-RESEARCH-DETAIL
+    route_pattern: "/research/{slug}/"
+    model: CM-RESEARCH
+    sections: ["Metadata band", "Title and abstract", "Question", "Contribution", "Key finding", "Essential figures", "Method", "Results", "Limitations", "Citation", "Reproduction", "Disclosure", "Related work"]
+    minimum: ["abstract", "question", "contribution", "key_finding", "authors", "version", "citation"]
+    empty_state: "Unavailable reproduction resources are omitted and never labeled coming soon."
+    mobile: "PDF is secondary to abstract and finding."
+
+  NoteDetail:
+    id: PG-NOTE-DETAIL
+    route_pattern: "/notes/{slug}/"
+    model: CM-NOTE
+    sections: ["Metadata", "Title and dek", "Optional key point", "Body", "Figures", "Sources", "Update history", "Related work"]
+    minimum: ["body", "author", "published_at"]
+    empty_state: "No empty source or history block."
+    mobile: "Reading width fills available space with 20px gutters."
+
+  ValuationDetail:
+    id: PG-VALUATION
+    route_pattern: "/work/{slug}/"
+    model: CM-VALUATION
+    sections: ["Valuation question", "Date and disclosure", "Context", "Data and adjustments", "Drivers", "Model", "Scenarios", "Sensitivity", "Interpretation", "Limits", "Resources"]
+    minimum: ["all_required_CM-VALUATION_fields"]
+    empty_state: "Draft only until disclosure and sources are complete."
+    mobile: "Sensitivity table uses accessible summary plus horizontal scroll."
+
+  DataProductDetail:
+    id: PG-DATA-PRODUCT
+    route_pattern: "/work/{slug}/"
+    model: CM-DATA-PRODUCT
+    sections: ["Question", "Coverage", "Provenance", "Architecture", "Preview", "Update policy", "Result", "Data dictionary", "Changelog", "Resources"]
+    minimum: ["question", "coverage", "provenance", "update_policy", "result"]
+    empty_state: "Downloads omitted when rights do not allow redistribution."
+    mobile: "Preview provides a narrative reading before filters."
+
+  NotFound:
+    id: PG-404
+    route: "/404.html"
+    objective: "Recover navigation without simulating missing content."
+    sections: ["Clear error", "Search", "Primary navigation", "Home link"]
+    minimum: ["status_404", "search_or_navigation"]
+    mobile: "No oversized decorative illustration that pushes recovery links below the fold."
+
+spanish_rules:
+  id: PG-ES-001
+  status: required_v1
+  rule: "Spanish equivalents reuse the same component contract and localized UI strings. They do not require duplicated editorial pieces."
+

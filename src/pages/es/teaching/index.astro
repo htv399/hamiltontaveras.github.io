@@ -1,0 +1,36 @@
+---
+// PG-TEACHING (Spanish equivalent).
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import CourseShelf from "../../../components/teaching/CourseShelf.astro";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../../lib/contentGate";
+import { siteConfig } from "../../../config/site";
+
+const language = "es" as const;
+const all = (await getCollection("courses")).filter((e) => isEligible(e.data, siteConfig.env));
+const courses = all.map((c) => ({
+  title: c.data.title,
+  href: `/teaching/${c.data.slug}/`,
+  period: c.data.period,
+  archived: c.data.archived ?? false,
+  summary: c.data.summary
+}));
+---
+<BaseLayout title={`Docencia — ${siteConfig.name}`} description="Cursos y materiales que conectan el razonamiento formal, la práctica empírica y una interpretación clara." path="/es/teaching/" language={language}>
+  <section class="shell section-standard">
+    <p class="text-body-l reading-column">
+      Cursos y materiales diseñados para conectar el razonamiento formal, la práctica empírica y una interpretación
+      clara. La docencia funciona como una publicación: no expone calificaciones, anuncios ni administración de
+      estudiantes.
+    </p>
+    {courses.length === 0 ? (
+      <p class="text-body" style="margin-top: var(--space-6);">
+        Ningún curso se ha publicado en esta versión del portal.
+      </p>
+    ) : (
+      <div style="margin-top: var(--space-8);">
+        <CourseShelf courses={courses} language={language} />
+      </div>
+    )}
+  </section>
+</BaseLayout>

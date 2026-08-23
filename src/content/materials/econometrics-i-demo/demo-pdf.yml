@@ -1,0 +1,16 @@
+id: MATERIAL-DEMO-PDF
+title: "PDF demonstration"
+slug: demo-pdf
+language: en
+material_type: pdf
+access: public
+status: draft
+version: "0.0.0-demo"
+license: "INTERNAL-DEMO-ONLY"
+href: "/fixtures/demo.pdf"
+file_size_bytes: 2
+mime_type: "application/pdf"
+checksum_sha256: "d14506655223461adf0b7bb605d29ca9f0733aa58b98303ec3c6f676b5963409"
+demo: true
+placeholder: true
+group: slides

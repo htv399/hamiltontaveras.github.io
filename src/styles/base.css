@@ -1,0 +1,71 @@
+/* REP-STYLE-003. Base surfaces, focus and layout shell (VIS-001, TECH-A11Y-001). */
+html { background: var(--color-white); }
+body { background: var(--color-white); }
+
+.surface-navy { background: var(--color-navy-900); color: var(--color-white); }
+.surface-navy a { color: var(--color-white); }
+.surface-paper { background: var(--color-paper); }
+.surface-white { background: var(--color-white); }
+.surface-mist { background: var(--color-mist-100); }
+
+.shell {
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter-desktop);
+}
+@media (max-width: 1199px) { .shell { padding-inline: var(--gutter-tablet); } }
+@media (max-width: 768px) { .shell { padding-inline: var(--gutter-mobile); } }
+
+.editorial-shell {
+  max-width: var(--editorial-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter-desktop);
+}
+@media (max-width: 1199px) { .editorial-shell { padding-inline: var(--gutter-tablet); } }
+@media (max-width: 768px) { .editorial-shell { padding-inline: var(--gutter-mobile); } }
+
+.section-dense { padding-block: var(--section-dense); }
+.section-standard { padding-block: var(--section-standard); }
+.section-feature { padding-block: var(--section-feature); }
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: var(--space-3);
+  top: -100%;
+  background: var(--color-navy-900);
+  color: var(--color-white);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-small);
+  z-index: 1000;
+  transition: top var(--duration-fast) var(--easing-standard);
+}
+.skip-link:focus { top: var(--space-3); }
+
+/* Focus visibility, WCAG AA (VIS-COLOR-001) */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+:focus:not(:focus-visible) { outline: none; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+hr.rule { border: 0; border-top: var(--border-hairline); }
+hr.rule-strong { border: 0; border-top: var(--border-strong); }
+hr.rule-key { border: 0; border-top: var(--border-key-result); }
+
+/* touch targets */
+button, a.button, .control {
+  min-height: 44px;
+  min-width: 44px;
+}

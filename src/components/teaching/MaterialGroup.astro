@@ -1,0 +1,37 @@
+---
+// CMP-MATERIAL-GROUP. Omits zero-length groups; shows type, version,
+// license, format and size.
+import DownloadLink from "../resources/DownloadLink.astro";
+
+interface MaterialItem {
+  title: string;
+  href: string;
+  materialType: string;
+  version: string;
+  license: string;
+  fileSizeBytes?: number;
+}
+interface Props {
+  title: string;
+  materials: MaterialItem[]; // min 1, otherwise do not render this component
+}
+const { title, materials } = Astro.props;
+---
+{materials.length > 0 && (
+  <section class="material-group">
+    <h3 class="text-h3">{title}</h3>
+    <ul class="material-group__list">
+      {materials.map((m) => (
+        <li>
+          <DownloadLink href={m.href} label={m.title} format={m.materialType} fileSizeBytes={m.fileSizeBytes} />
+          <span class="text-micro"> · v{m.version} · {m.license}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+
+<style>
+  .material-group { margin-top: var(--space-6); }
+  .material-group__list { margin-top: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2); }
+</style>

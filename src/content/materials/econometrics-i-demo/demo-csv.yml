@@ -1,0 +1,16 @@
+id: MATERIAL-DEMO-CSV
+title: "CSV demonstration"
+slug: demo-csv
+language: en
+material_type: csv
+access: public
+status: draft
+version: "0.0.0-demo"
+license: "INTERNAL-DEMO-ONLY"
+href: "/fixtures/demo.csv"
+file_size_bytes: 37
+mime_type: "text/csv"
+checksum_sha256: "13681898fb7230461ec894e2d238449947d77ba804ac2c6c16c58de292e020a3"
+demo: true
+placeholder: true
+group: data

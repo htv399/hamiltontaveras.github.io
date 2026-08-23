@@ -1,0 +1,56 @@
+---
+// CMP-LEAD-ANALYSIS. Finding precedes method; image carries width/height;
+// no decorative chart substitutes for the real evidence figure.
+import { t } from "../../i18n/ui";
+
+interface EvidenceItem {
+  title: string;
+  accessible_summary: string;
+}
+interface LeadItem {
+  title: string;
+  slug: string;
+  key_finding: string;
+  published_at?: Date;
+  domains: string[];
+  evidence: EvidenceItem[];
+}
+interface Props {
+  item: LeadItem;
+  language: "en" | "es";
+  priority?: boolean;
+}
+const { item, language, priority = false } = Astro.props;
+const strings = t(language);
+const href = `/analysis/${item.slug}/`;
+const evidence = item.evidence[0];
+const dateLabel = item.published_at
+  ? new Intl.DateTimeFormat(language, { year: "numeric", month: "long", day: "numeric" }).format(item.published_at)
+  : null;
+---
+<article class="lead-analysis">
+  <div class="lead-analysis__evidence" role="img" aria-label={evidence?.accessible_summary ?? evidence?.title} data-priority={priority}>
+    <span class="u-tag">{strings.demoNotice}</span>
+  </div>
+  <div class="lead-analysis__text">
+    <p class="u-tag">{item.domains.join(" · ")}</p>
+    <h2 class="text-h2"><a href={href}>{item.title}</a></h2>
+    <p class="text-body-l">{item.key_finding}</p>
+    {dateLabel && <p class="text-small">{dateLabel}</p>}
+    <a href={href} class="lead-analysis__cta">{strings.readMore} →</a>
+  </div>
+</article>
+
+<style>
+  .lead-analysis { display: grid; gap: var(--space-6); }
+  @media (min-width: 769px) {
+    .lead-analysis { grid-template-columns: 7fr 5fr; align-items: start; }
+  }
+  .lead-analysis__evidence {
+    aspect-ratio: 4 / 3;
+    background: var(--color-mist-100);
+    display: flex; align-items: flex-end; padding: var(--space-3);
+  }
+  .lead-analysis__text > * + * { margin-top: var(--space-3); }
+  .lead-analysis__cta { font-weight: 600; }
+</style>

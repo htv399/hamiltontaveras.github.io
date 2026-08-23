@@ -1,0 +1,61 @@
+---
+// PG-RESEARCH (Spanish equivalent).
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import ResearchFeature from "../../../components/research/ResearchFeature.astro";
+import ContentFilters from "../../../components/filters/ContentFilters.tsx";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../../lib/contentGate";
+import { siteConfig } from "../../../config/site";
+import { t } from "../../../i18n/ui";
+
+const language = "es" as const;
+const strings = t(language);
+const all = (await getCollection("research")).filter((e) => isEligible(e.data, siteConfig.env));
+const lead = all.find((r) => r.data.featured) ?? all[0];
+const rest = all.filter((r) => r.id !== lead?.id);
+
+const formatOptions = [...new Set(all.map((r) => r.data.format))].map((f) => ({ value: f, label: f }));
+const records = rest.map((r) => ({
+  id: r.data.id,
+  title: r.data.title,
+  href: `/research/${r.data.slug}/`,
+  summary: r.data.summary,
+  publishedAt: r.data.published_at?.toISOString(),
+  tags: { format: [r.data.format] }
+}));
+---
+<BaseLayout title={`Investigación — ${siteConfig.name}`} description="Investigación aplicada, working papers, réplicas y conjuntos de datos documentados." path="/es/research/" language={language}>
+  <section class="shell section-standard">
+    {all.length === 0 ? (
+      <p class="text-body-l reading-column">
+        Ningún elemento de investigación se ha publicado en esta versión del portal. Un elemento se publica solo cuando
+        la pregunta, la evidencia, el método, las limitaciones y la cita pueden revisarse de forma independiente.
+      </p>
+    ) : (
+      <>
+        {lead && (
+          <ResearchFeature
+            item={{
+              title: lead.data.title,
+              href: `/research/${lead.data.slug}/`,
+              format: lead.data.format,
+              authors: lead.data.authors,
+              publishedAt: lead.data.published_at,
+              keyFinding: lead.data.key_finding
+            }}
+            language={language}
+          />
+        )}
+        <div style="margin-top: var(--space-9);">
+          <ContentFilters
+            client:idle
+            items={records}
+            dimensions={[{ key: "format", label: "Formato", options: formatOptions }]}
+            clearLabel={strings.filterClear}
+            emptyHeading={strings.noResultsHeading}
+          />
+        </div>
+      </>
+    )}
+  </section>
+</BaseLayout>

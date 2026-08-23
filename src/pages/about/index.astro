@@ -1,0 +1,37 @@
+---
+// PG-ABOUT. APP-008 (real inventory/biography) is unresolved, so this page
+// renders a clearly labeled content_pending state in preview and is
+// excluded from production by scripts/check-placeholders.mjs. It still
+// meets the page's structural minimum: identity placeholder, thesis,
+// Information/Models/Judgment/Value framing, CV link and contact path.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { siteConfig, realInventoryApproved } from "../../config/site";
+import { assertNotBlockedInProduction } from "../../lib/productionGate";
+
+assertNotBlockedInProduction(realInventoryApproved, "About", "APP-008");
+
+const language = "en" as const;
+---
+<BaseLayout title={`About — ${siteConfig.name}`} description={siteConfig.descriptor} path="/about/" language={language}>
+  <section class="shell section-standard reading-column" style="margin-inline:auto;">
+    <p class="u-tag" data-placeholder="true">Content pending — APP-008</p>
+    <h1 class="text-h1 font-editorial">{siteConfig.name}</h1>
+    <p class="text-body-l">{siteConfig.descriptor}</p>
+
+    <h2 class="text-h3" style="margin-top: var(--space-8);">Information, Models, Judgment, Value</h2>
+    <p class="text-body">
+      {siteConfig.thesis}
+    </p>
+
+    <p class="text-body" style="margin-top: var(--space-6);">
+      A verified biography, selected trajectory and teaching and research context will appear here once approved
+      (decision APP-008). This page does not publish invented experience, credentials or institutional affiliation in
+      the meantime.
+    </p>
+
+    <div class="cluster" style="margin-top: var(--space-8);">
+      <a href="/cv/">View CV</a>
+      <a href="/contact/">Contact</a>
+    </div>
+  </section>
+</BaseLayout>

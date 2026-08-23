@@ -1,0 +1,118 @@
+contract:
+  id: REP-001
+  version: 1.0.0
+  status: required_v1
+  objective: "Definir el inventario verificable del repositorio final."
+  action_values: ["create", "create_or_merge", "conserve", "migrate_then_conserve", "replace_if_noncompliant"]
+  path_kind_values: ["file", "directory", "pattern"]
+
+entries:
+  - { id: REP-ROOT-001, path: "package.json", kind: file, purpose: "Scripts y dependencias aprobadas.", origin: ["TECH-001"], action: create_or_merge, depends_on: [] }
+  - { id: REP-ROOT-002, path: "package-lock.json", kind: file, purpose: "Resolución reproducible.", origin: ["TECH-001"], action: create_or_merge, depends_on: ["package.json"] }
+  - { id: REP-ROOT-003, path: ".nvmrc", kind: file, purpose: "Versión de Node.", origin: ["TECH-001"], action: create, depends_on: [] }
+  - { id: REP-ROOT-004, path: "astro.config.mjs", kind: file, purpose: "Configuración estática, site y base.", origin: ["TECH-001", "TECH-DEPLOY-001"], action: create_or_merge, depends_on: ["package.json"] }
+  - { id: REP-ROOT-005, path: "tsconfig.json", kind: file, purpose: "TypeScript estricto.", origin: ["TECH-001"], action: create_or_merge, depends_on: [] }
+  - { id: REP-ROOT-006, path: ".gitignore", kind: file, purpose: "Excluir builds, caches y secretos.", origin: ["TECH-SEC-001"], action: create_or_merge, depends_on: [] }
+  - { id: REP-ROOT-007, path: ".env.example", kind: file, purpose: "Variables sin secretos.", origin: ["TECH-001"], action: create, depends_on: [] }
+  - { id: REP-ROOT-008, path: "README.md", kind: file, purpose: "Operación del repositorio.", origin: ["TECH-001", "TCH-001"], action: create_or_merge, depends_on: ["01-contratos-site/"] }
+  - { id: REP-ROOT-009, path: "LICENSE", kind: file, purpose: "Licencia del código cuando APP-006 se resuelva.", origin: ["PRD-026"], action: create_or_merge, depends_on: ["APP-006"] }
+  - { id: REP-CONTRACTS-001, path: "01-contratos-site/", kind: directory, purpose: "Contratos inmutables de implementación.", origin: ["PRD-001"], action: conserve, depends_on: [] }
+
+  - { id: REP-CONFIG-001, path: "src/config/site.ts", kind: file, purpose: "Nombre, descriptor, tesis, idioma, canonical y contacto.", origin: ["PRD-006", "IA-001", "TECH-001"], action: create, depends_on: [".env.example"] }
+  - { id: REP-CONFIG-002, path: "src/config/navigation.ts", kind: file, purpose: "Navegación tipada.", origin: ["IA-NAV-001", "IA-NAV-007"], action: create, depends_on: ["src/config/site.ts"] }
+  - { id: REP-CONFIG-003, path: "src/config/taxonomies.ts", kind: file, purpose: "Vocabularios controlados.", origin: ["CM-001"], action: create, depends_on: [] }
+  - { id: REP-CONFIG-004, path: "src/config/licenses.ts", kind: file, purpose: "Políticas aprobadas por familia.", origin: ["TCH-001"], action: create, depends_on: ["APP-006"] }
+  - { id: REP-CONFIG-005, path: "src/i18n/ui.ts", kind: file, purpose: "Strings de interfaz en inglés y español.", origin: ["IA-001"], action: create, depends_on: ["src/config/site.ts"] }
+  - { id: REP-CONFIG-006, path: "src/i18n/routes.ts", kind: file, purpose: "Equivalencias reales y hreflang.", origin: ["IA-REL-003"], action: create, depends_on: ["src/i18n/ui.ts"] }
+  - { id: REP-CONFIG-007, path: "src/content.config.ts", kind: file, purpose: "Colecciones y esquemas.", origin: ["CM-001"], action: create, depends_on: ["src/config/taxonomies.ts"] }
+  - { id: REP-CONFIG-008, path: "src/data/redirects.yml", kind: file, purpose: "Redirecciones sin cadenas.", origin: ["IA-SLUG-001"], action: create_or_merge, depends_on: [] }
+
+  - { id: REP-STYLE-001, path: "src/styles/tokens.css", kind: file, purpose: "Tokens Blue Finance.", origin: ["VIS-001"], action: create, depends_on: [] }
+  - { id: REP-STYLE-002, path: "src/styles/reset.css", kind: file, purpose: "Normalización controlada.", origin: ["VIS-001"], action: create, depends_on: ["src/styles/tokens.css"] }
+  - { id: REP-STYLE-003, path: "src/styles/base.css", kind: file, purpose: "Base, focus, enlaces y superficies.", origin: ["VIS-001", "TECH-A11Y-001"], action: create, depends_on: ["src/styles/tokens.css"] }
+  - { id: REP-STYLE-004, path: "src/styles/typography.css", kind: file, purpose: "Escala y lectura editorial.", origin: ["VIS-001"], action: create, depends_on: ["src/styles/tokens.css"] }
+  - { id: REP-STYLE-005, path: "src/styles/data.css", kind: file, purpose: "Figuras, tablas, ecuaciones y código.", origin: ["VIS-DATA-001"], action: create, depends_on: ["src/styles/tokens.css"] }
+  - { id: REP-STYLE-006, path: "src/styles/utilities.css", kind: file, purpose: "Utilidades mínimas documentadas.", origin: ["VIS-001"], action: create, depends_on: ["src/styles/tokens.css"] }
+  - { id: REP-FONT-001, path: "public/fonts/*", kind: pattern, purpose: "Fuentes optimizadas y licenciadas.", origin: ["VIS-001"], action: create_or_merge, depends_on: ["APP-006"] }
+
+  - { id: REP-LAYOUT-001, path: "src/layouts/BaseLayout.astro", kind: file, purpose: "Shell, SEO y landmarks.", origin: ["CMP-HEADER", "CMP-FOOTER", "TECH-SEO-001"], action: create, depends_on: ["src/config/site.ts"] }
+  - { id: REP-LAYOUT-002, path: "src/layouts/EditorialLayout.astro", kind: file, purpose: "Piezas de lectura.", origin: ["PG-ANALYSIS", "PG-NOTE-DETAIL"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
+  - { id: REP-LAYOUT-003, path: "src/layouts/ResearchLayout.astro", kind: file, purpose: "Research formal.", origin: ["PG-RESEARCH-DETAIL"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
+  - { id: REP-LAYOUT-004, path: "src/layouts/WorkLayout.astro", kind: file, purpose: "Proyectos flexibles.", origin: ["PG-PROJECT", "PG-VALUATION", "PG-DATA-PRODUCT"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
+  - { id: REP-LAYOUT-005, path: "src/layouts/TeachingLayout.astro", kind: file, purpose: "Curso, semana y material.", origin: ["PG-COURSE", "PG-WEEK", "PG-MATERIAL"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
+
+  - { id: REP-CMP-001, path: "src/components/shell/*", kind: pattern, purpose: "Header, navegación y footer.", origin: ["CMP-HEADER", "CMP-NAV", "CMP-MOBILE-NAV", "CMP-FOOTER"], action: create, depends_on: ["src/config/navigation.ts"] }
+  - { id: REP-CMP-002, path: "src/components/navigation/*", kind: pattern, purpose: "Breadcrumbs y navegación contextual.", origin: ["CMP-BREADCRUMBS"], action: create, depends_on: ["src/i18n/routes.ts"] }
+  - { id: REP-CMP-003, path: "src/components/editorial/*", kind: pattern, purpose: "Hero, filas y módulos editoriales.", origin: ["CMP-HERO-EDITORIAL", "CMP-LEAD-ANALYSIS", "CMP-FEATURED-2-1", "CMP-EDITORIAL-ROW"], action: create, depends_on: ["src/styles/tokens.css"] }
+  - { id: REP-CMP-004, path: "src/components/data/*", kind: pattern, purpose: "Indicadores, figuras, charts y tablas.", origin: ["CMP-INDICATOR-STRIP", "CMP-FIGURE", "CMP-CHART", "CMP-DATA-TABLE"], action: create, depends_on: ["src/styles/data.css"] }
+  - { id: REP-CMP-005, path: "src/components/content/*", kind: pattern, purpose: "Metadata, autores, disclosure y related work.", origin: ["CMP-METADATA-BAND", "CMP-AUTHORS", "CMP-DISCLOSURE", "CMP-RELATED-WORK"], action: create, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CMP-006, path: "src/components/resources/*", kind: pattern, purpose: "Recursos y descargas.", origin: ["CMP-RESOURCE-LINKS", "CMP-DOWNLOAD"], action: create, depends_on: ["src/config/licenses.ts"] }
+  - { id: REP-CMP-007, path: "src/components/filters/*", kind: pattern, purpose: "Filtros estáticos con estado.", origin: ["CMP-FILTERS", "CMP-FILTER-DRAWER"], action: create, depends_on: ["src/config/taxonomies.ts"] }
+  - { id: REP-CMP-008, path: "src/components/search/*", kind: pattern, purpose: "Búsqueda Pagefind.", origin: ["CMP-SEARCH", "TECH-SEARCH-001"], action: create, depends_on: ["pagefind_index"] }
+  - { id: REP-CMP-009, path: "src/components/teaching/*", kind: pattern, purpose: "Cursos, semanas y materiales.", origin: ["CMP-COURSE-SHELF", "CMP-WEEK-NAV", "CMP-MATERIAL-GROUP"], action: create, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CMP-010, path: "src/components/seo/*", kind: pattern, purpose: "Meta, JSON-LD y social.", origin: ["TECH-SEO-001"], action: create, depends_on: ["src/config/site.ts"] }
+
+  - { id: REP-PAGE-001, path: "src/pages/index.astro", kind: file, purpose: "Home raíz.", origin: ["PG-HOME"], action: create_or_merge, depends_on: ["src/components/editorial/*"] }
+  - { id: REP-PAGE-002, path: "src/pages/es/index.astro", kind: file, purpose: "Home español.", origin: ["PG-HOME", "PG-ES-001"], action: create_or_merge, depends_on: ["src/pages/index.astro"] }
+  - { id: REP-PAGE-003, path: "src/pages/{work,research,notes,teaching,about,cv,contact,resources,search}/index.astro", kind: pattern, purpose: "Landings inglesas.", origin: ["PG-WORK", "PG-RESEARCH", "PG-NOTES", "PG-TEACHING", "PG-ABOUT", "PG-CV", "PG-CONTACT", "PG-RESOURCES", "PG-SEARCH"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
+  - { id: REP-PAGE-004, path: "src/pages/es/{work,research,notes,teaching,about,cv,contact,resources,search}/index.astro", kind: pattern, purpose: "Landings españolas selectivas.", origin: ["PG-ES-001"], action: create, depends_on: ["src/i18n/routes.ts"] }
+  - { id: REP-PAGE-005, path: "src/pages/work/[...slug].astro", kind: file, purpose: "Detalles Work.", origin: ["PG-PROJECT", "PG-VALUATION", "PG-DATA-PRODUCT"], action: create, depends_on: ["src/layouts/WorkLayout.astro"] }
+  - { id: REP-PAGE-006, path: "src/pages/research/[...slug].astro", kind: file, purpose: "Research detail.", origin: ["PG-RESEARCH-DETAIL"], action: create, depends_on: ["src/layouts/ResearchLayout.astro"] }
+  - { id: REP-PAGE-007, path: "src/pages/notes/[...slug].astro", kind: file, purpose: "Note detail.", origin: ["PG-NOTE-DETAIL"], action: create, depends_on: ["src/layouts/EditorialLayout.astro"] }
+  - { id: REP-PAGE-008, path: "src/pages/analysis/[...slug].astro", kind: file, purpose: "Analysis detail.", origin: ["PG-ANALYSIS"], action: create, depends_on: ["src/layouts/EditorialLayout.astro"] }
+  - { id: REP-PAGE-009, path: "src/pages/teaching/[...path].astro", kind: file, purpose: "Course, Week y Material.", origin: ["PG-COURSE", "PG-WEEK", "PG-MATERIAL"], action: create, depends_on: ["src/layouts/TeachingLayout.astro"] }
+  - { id: REP-PAGE-010, path: "src/pages/404.astro", kind: file, purpose: "404 estático.", origin: ["PG-404"], action: create_or_merge, depends_on: ["src/layouts/BaseLayout.astro"] }
+  - { id: REP-PAGE-011, path: "src/pages/{research,notes}/rss.xml.ts", kind: pattern, purpose: "Feeds ingleses.", origin: ["TECH-SEO-001"], action: create, depends_on: ["src/content.config.ts"] }
+  - { id: REP-PAGE-012, path: "src/pages/es/{research,notes}/rss.xml.ts", kind: pattern, purpose: "Feeds españoles condicionales.", origin: ["TECH-SEO-001"], action: create, depends_on: ["src/content.config.ts"] }
+
+  - { id: REP-CONTENT-001, path: "src/content/analysis/*/index.mdx", kind: pattern, purpose: "Analysis.", origin: ["CM-ANALYSIS"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-002, path: "src/content/work/*/index.mdx", kind: pattern, purpose: "Project, DataProduct y Valuation.", origin: ["CM-PROJECT", "CM-DATA-PRODUCT", "CM-VALUATION"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-003, path: "src/content/research/*/index.mdx", kind: pattern, purpose: "Research.", origin: ["CM-RESEARCH"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-004, path: "src/content/notes/*/index.mdx", kind: pattern, purpose: "Notes.", origin: ["CM-NOTE"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-005, path: "src/content/courses/*.mdx", kind: pattern, purpose: "Courses.", origin: ["CM-COURSE"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-006, path: "src/content/weeks/*/*.mdx", kind: pattern, purpose: "Weeks.", origin: ["CM-WEEK"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-007, path: "src/content/materials/*/*.yml", kind: pattern, purpose: "Material metadata.", origin: ["CM-MATERIAL"], action: migrate_then_conserve, depends_on: ["academic/materials-manifest.yml"] }
+  - { id: REP-CONTENT-008, path: "src/content/profiles/*.yml", kind: pattern, purpose: "Author profiles.", origin: ["CM-PROFILE"], action: create_or_merge, depends_on: [] }
+
+  - { id: REP-ASSET-001, path: "src/assets/images/**/*", kind: pattern, purpose: "Imágenes fuente optimizables.", origin: ["TECH-001"], action: migrate_then_conserve, depends_on: [] }
+  - { id: REP-ASSET-002, path: "src/assets/figures/**/*", kind: pattern, purpose: "Figuras y diagramas.", origin: ["VIS-DATA-001"], action: migrate_then_conserve, depends_on: [] }
+  - { id: REP-PUBLIC-001, path: "public/favicon.svg", kind: file, purpose: "Favicon sobrio.", origin: ["TECH-SEO-001"], action: create_or_merge, depends_on: [] }
+  - { id: REP-PUBLIC-002, path: "public/robots.txt", kind: file, purpose: "Indexación.", origin: ["TECH-SEO-001"], action: create, depends_on: ["SITE_URL"] }
+  - { id: REP-PUBLIC-003, path: "public/downloads/**/*", kind: pattern, purpose: "Recursos editoriales permanentes.", origin: ["CM-RESOURCE"], action: migrate_then_conserve, depends_on: ["src/config/licenses.ts"] }
+  - { id: REP-PUBLIC-004, path: "public/materials/**/*", kind: pattern, purpose: "Salidas académicas generadas.", origin: ["TCH-001"], action: create_or_merge, depends_on: ["academic/materials-manifest.yml"] }
+
+  - { id: REP-ACADEMIC-001, path: "academic/", kind: directory, purpose: "Pipeline Quarto y R Markdown.", origin: ["TCH-001"], action: create_or_merge, depends_on: [] }
+  - { id: REP-ACADEMIC-002, path: "academic/materials-manifest.yml", kind: file, purpose: "Puente entre fuentes y outputs.", origin: ["TCH-001"], action: create, depends_on: [] }
+  - { id: REP-ACADEMIC-003, path: "academic/courses/**/*", kind: pattern, purpose: "Fuentes de cursos existentes.", origin: ["TCH-001"], action: migrate_then_conserve, depends_on: ["academic/materials-manifest.yml"] }
+
+  - { id: REP-SCRIPT-001, path: "scripts/validate-contracts.mjs", kind: file, purpose: "Validar YAML, IDs y referencias.", origin: ["QA-TRACE-001"], action: create, depends_on: ["01-contratos-site/"] }
+  - { id: REP-SCRIPT-002, path: "scripts/validate-content.mjs", kind: file, purpose: "Validar modelos y taxonomías.", origin: ["CM-001"], action: create, depends_on: ["src/content.config.ts"] }
+  - { id: REP-SCRIPT-003, path: "scripts/validate-materials.mjs", kind: file, purpose: "Validar materiales y licencias.", origin: ["TCH-001"], action: create, depends_on: ["academic/materials-manifest.yml"] }
+  - { id: REP-SCRIPT-004, path: "scripts/check-links.mjs", kind: file, purpose: "Comprobar enlaces y recursos.", origin: ["QA-LINK-001"], action: create, depends_on: ["dist/"] }
+  - { id: REP-SCRIPT-005, path: "scripts/check-placeholders.mjs", kind: file, purpose: "Bloquear placeholders de producción.", origin: ["CM-VAL-001"], action: create, depends_on: ["src/content/"] }
+  - { id: REP-SCRIPT-006, path: "scripts/check-repository-manifest.mjs", kind: file, purpose: "Comparar inventario.", origin: ["REP-001"], action: create, depends_on: ["09-repository-manifest.yml"] }
+  - { id: REP-SCRIPT-007, path: "scripts/generate-og.mjs", kind: file, purpose: "Imágenes sociales.", origin: ["TECH-SEO-001"], action: create, depends_on: ["src/config/site.ts"] }
+
+  - { id: REP-TEST-001, path: "tests/unit/**/*", kind: pattern, purpose: "Esquemas y componentes.", origin: ["QA-CMP-001", "QA-CM-001"], action: create, depends_on: ["src/"] }
+  - { id: REP-TEST-002, path: "tests/e2e/**/*", kind: pattern, purpose: "Rutas, interacción y responsive.", origin: ["QA-RESP-001", "QA-FUNC-001"], action: create, depends_on: ["dist/"] }
+  - { id: REP-TEST-003, path: "tests/visual/**/*", kind: pattern, purpose: "Baselines Home, Research y detalles.", origin: ["QA-VIS-001"], action: create, depends_on: ["tests/e2e/"] }
+  - { id: REP-TEST-004, path: "tests/fixtures/**/*", kind: pattern, purpose: "Seed demostrativo para todos los modelos.", origin: ["SEED-001"], action: create, depends_on: ["src/content.config.ts"] }
+
+  - { id: REP-GH-001, path: ".github/workflows/validate.yml", kind: file, purpose: "QA en PR y push.", origin: ["TECH-CI-001"], action: create_or_merge, depends_on: ["package-lock.json"] }
+  - { id: REP-GH-002, path: ".github/workflows/deploy.yml", kind: file, purpose: "Deploy GitHub Pages.", origin: ["TECH-DEPLOY-001"], action: create_or_merge, depends_on: [".github/workflows/validate.yml"] }
+  - { id: REP-GH-003, path: ".github/dependabot.yml", kind: file, purpose: "Actualizaciones de dependencias.", origin: ["TECH-SEC-001"], action: create, depends_on: ["package.json"] }
+
+allowed_generated:
+  - { path: "dist/**", producer: "astro build and pagefind", committed: false }
+  - { path: ".astro/**", producer: "astro", committed: false }
+  - { path: "node_modules/**", producer: "npm ci", committed: false }
+  - { path: "public/materials/**", producer: "academic pipeline", committed: "repository_policy" }
+
+verification:
+  id: QA-REP-001
+  required:
+    - "Every required file or pattern has at least one match when its feature is enabled."
+    - "Every unexpected source file is classified before release."
+    - "No generated cache is committed."
+    - "Manifest references only existing contract IDs."
+

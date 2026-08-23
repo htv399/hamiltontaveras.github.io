@@ -1,0 +1,37 @@
+---
+// PG-NOTES (Spanish equivalent).
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import NotesRow from "../../../components/editorial/NotesRow.astro";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../../lib/contentGate";
+import { siteConfig } from "../../../config/site";
+
+const language = "es" as const;
+const all = (await getCollection("notes")).filter((e) => isEligible(e.data, siteConfig.env));
+const sorted = [...all].sort((a, b) => (b.data.published_at?.getTime() ?? 0) - (a.data.published_at?.getTime() ?? 0));
+const rows = sorted.map((n) => ({
+  title: n.data.title,
+  href: `/notes/${n.data.slug}/`,
+  summary: n.data.summary,
+  publishedAt: n.data.published_at,
+  tags: n.data.domains
+}));
+---
+<BaseLayout title={`Notas — ${siteConfig.name}`} description="Notas breves sobre datos, economía, valoración, mercados y métodos." path="/es/notes/" language={language}>
+  <section class="shell section-standard">
+    <p class="text-body-l reading-column">
+      Las notas son más breves que un paper de investigación y más puntuales que un caso de proyecto: una afirmación
+      clara, su evidencia y las condiciones bajo las cuales esa afirmación puede cambiar.
+    </p>
+    {all.length === 0 ? (
+      <p class="text-body" style="margin-top: var(--space-6);">
+        El archivo público de notas está en preparación. Las notas en borrador no aparecen en la navegación ni en la
+        búsqueda.
+      </p>
+    ) : (
+      <div style="margin-top: var(--space-8); max-width: var(--reading-max);">
+        <NotesRow items={rows} language={language} />
+      </div>
+    )}
+  </section>
+</BaseLayout>

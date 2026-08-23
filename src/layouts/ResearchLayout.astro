@@ -1,0 +1,19 @@
+---
+// REP-LAYOUT-003. Formal, documentary treatment for Research detail pages
+// (BlackRock Investment Institute editorial energy, per 00-README.md).
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  language: "en" | "es";
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+const { title, description, path, language, jsonLd } = Astro.props;
+---
+<BaseLayout title={title} description={description} path={path} language={language} jsonLd={jsonLd}>
+  <article class="editorial-shell section-standard">
+    <slot />
+  </article>
+</BaseLayout>

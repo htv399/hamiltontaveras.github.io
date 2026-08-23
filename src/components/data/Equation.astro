@@ -1,0 +1,14 @@
+---
+// CMP-EQUATION. Scrollable on mobile; a plain-text explanation is required
+// so the relationship remains understandable without rendered math.
+interface Props {
+  latex: string;
+  label?: string;
+  explanation: string;
+}
+const { latex, label, explanation } = Astro.props;
+---
+<div class="equation" role="group" aria-label={label ?? "Equation"}>
+  <code class="font-mono">{latex}</code>
+  <p class="equation__explanation">{explanation}</p>
+</div>

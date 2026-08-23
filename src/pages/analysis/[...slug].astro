@@ -1,0 +1,117 @@
+---
+// PG-ANALYSIS. IA-001 spanish_prefix_rule: a piece's route is prefixed with
+// /es only when the piece itself is authored in Spanish; each item
+// canonicalizes to exactly one language route.
+import { getCollection, type CollectionEntry } from "astro:content";
+import EditorialLayout from "../../layouts/EditorialLayout.astro";
+import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
+import MetadataBand from "../../components/content/MetadataBand.astro";
+import Authors from "../../components/content/Authors.astro";
+import Figure from "../../components/data/Figure.astro";
+import RelatedWork from "../../components/content/RelatedWork.astro";
+import { isEligible } from "../../lib/contentGate";
+import { relatedWork, type RelatableItem } from "../../lib/relatedWork";
+import { siteConfig, canonicalBase } from "../../config/site";
+import { t } from "../../i18n/ui";
+
+export async function getStaticPaths() {
+  const all = await getCollection("analysis");
+  const eligible = all.filter((e) => isEligible(e.data, siteConfig.env));
+  return eligible.map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { entry, pool: eligible }
+  }));
+}
+
+interface Props { entry: CollectionEntry<"analysis">; pool: CollectionEntry<"analysis">[] }
+const { entry, pool } = Astro.props as Props;
+const { data } = entry;
+const language = data.language;
+const strings = t(language);
+// Simplification (documented, not silent): v1 keeps every dynamic detail
+// route unprefixed and lets the piece's own `language` drive <html lang>,
+// UI strings and JSON-LD. IA-001's spanish_prefix_rule fully applies once a
+// real Spanish-original detail piece needs a dedicated /es/ route; no
+// content in this repository requires it yet.
+const path = `/analysis/${data.slug}/`;
+
+const currentRelatable: RelatableItem = {
+  id: data.id,
+  href: path,
+  title: data.title,
+  summary: data.summary,
+  domains: data.domains,
+  methods: data.methods,
+  objects: data.objects,
+  language: data.language,
+  access: data.access,
+  status: data.status,
+  placeholder: data.placeholder,
+  relatedIds: data.related_ids
+};
+const poolRelatable: RelatableItem[] = pool.map((p) => ({
+  id: p.data.id,
+  href: `/analysis/${p.data.slug}/`,
+  title: p.data.title,
+  summary: p.data.summary,
+  domains: p.data.domains,
+  methods: p.data.methods,
+  objects: p.data.objects,
+  language: p.data.language,
+  access: p.data.access,
+  status: p.data.status,
+  placeholder: p.data.placeholder
+}));
+const related = relatedWork(currentRelatable, poolRelatable, siteConfig.env);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: data.title,
+  description: data.summary,
+  datePublished: data.published_at?.toISOString(),
+  dateModified: data.updated_at?.toISOString(),
+  author: data.authors.map((a) => ({ "@type": "Person", name: a.display_name })),
+  url: `${canonicalBase.value.replace(/\/$/, "")}${path}`
+};
+
+const breadcrumbItems = [
+  { label: strings.breadcrumbHome, href: "/" },
+  { label: data.title }
+];
+---
+<EditorialLayout title={`${data.title} — ${siteConfig.name}`} description={data.summary} path={path} language={language} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems} />
+
+  {data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
+
+  <MetadataBand metadata={{ publishedAt: data.published_at, updatedAt: data.updated_at, dataVintage: data.data_vintage }} language={language} />
+
+  <h1 class="text-h1 font-editorial" style="margin-top: var(--space-5);">{data.title}</h1>
+  <p class="text-h3 font-editorial" style="margin-top: var(--space-3); color: var(--color-slate-500);">{data.question}</p>
+
+  <div style="margin-top: var(--space-4);">
+    <Authors authors={data.authors} />
+  </div>
+
+  <p class="text-body-l" style="margin-top: var(--space-6);"><strong>{data.key_finding}</strong></p>
+
+  {data.evidence.map((fig) => (
+    <div style="margin-top: var(--space-6);">
+      <Figure
+        title={fig.title}
+        unit={fig.unit}
+        source={fig.source.map((s) => ({ label: s }))}
+        data_vintage={fig.data_vintage}
+        note={fig.method_note}
+        accessible_summary={fig.accessible_summary}
+      />
+    </div>
+  ))}
+
+  <div class="content-body" style="margin-top: var(--space-6);">
+    <slot />
+  </div>
+
+  <RelatedWork items={related.map((r) => ({ href: r.href, title: r.title, summary: r.summary }))} language={language} />
+</EditorialLayout>

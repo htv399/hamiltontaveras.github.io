@@ -1,0 +1,19 @@
+---
+// CMP-DISCLOSURE. Restrained type and a rule; explicitly not the generic
+// left-color-box pattern forbidden by VIS-PR-003.
+interface Props {
+  text: string;
+  kind: "financial" | "data-rights" | "synthetic" | "general";
+}
+const { text, kind } = Astro.props;
+const labels: Record<Props["kind"], string> = {
+  financial: "Disclosure",
+  "data-rights": "Data rights",
+  synthetic: "Synthetic data",
+  general: "Note"
+};
+---
+<div class="disclosure" data-kind={kind}>
+  <p class="u-tag">{labels[kind]}</p>
+  <p>{text}</p>
+</div>

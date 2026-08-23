@@ -1,0 +1,45 @@
+---
+// CMP-RESOURCE-LINKS. Filters by access before rendering; shows format,
+// version and size; repository is never treated as a primary CTA.
+import DownloadLink from "./DownloadLink.astro";
+import { licenseIsPublishable } from "../../config/licenses";
+
+interface ResourceItem {
+  id: string;
+  label: string;
+  kind: string;
+  href: string;
+  access: "public" | "summary-only" | "private";
+  license: string;
+  format?: string;
+  file_size_bytes?: number;
+  version?: string;
+}
+interface Props {
+  resources: ResourceItem[];
+  variant?: "inline" | "grouped" | "downloads";
+  siteEnv?: "preview" | "production";
+}
+const { resources, variant = "inline", siteEnv = "preview" } = Astro.props;
+
+const visible = resources.filter((r) => {
+  if (r.access === "private") return false;
+  if (siteEnv === "production" && !licenseIsPublishable(r.license)) return false;
+  return true;
+});
+---
+{visible.length > 0 && (
+  <ul class:list={["resource-links", `resource-links--${variant}`]}>
+    {visible.map((r) => (
+      <li>
+        <DownloadLink href={r.href} label={r.label} format={r.format} fileSizeBytes={r.file_size_bytes} />
+        {r.version && <span class="text-micro"> · v{r.version}</span>}
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .resource-links { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+  .resource-links--grouped { flex-direction: column; }
+</style>

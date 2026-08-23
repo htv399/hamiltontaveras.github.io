@@ -1,0 +1,32 @@
+---
+// CMP-INDICATOR-STRIP. Renders only verified indicators (4-6); mobile uses
+// horizontal scroll with accessible labels; never implies live data when
+// values are static.
+export interface Indicator {
+  label: string;
+  value: string;
+  unit: string;
+  change?: { direction: "up" | "down" | "flat"; label: string };
+  data_vintage: string;
+  source: string;
+}
+interface Props {
+  indicators: Indicator[]; // 4 to 6
+  language: "en" | "es";
+}
+const { indicators, language } = Astro.props;
+---
+<div class="indicator-strip" role="list" aria-label={language === "es" ? "Indicadores, datos estáticos" : "Indicators, static data"}>
+  {indicators.map((ind) => (
+    <div role="listitem" class="indicator">
+      <p class="u-tag">{ind.label}</p>
+      <p class="indicator__value">{ind.value}<span class="text-small"> {ind.unit}</span></p>
+      {ind.change && (
+        <p class:list={["text-small", `indicator__change--${ind.change.direction === "down" ? "negative" : ind.change.direction === "up" ? "positive" : ""}`]}>
+          {ind.change.label}
+        </p>
+      )}
+      <p class="text-micro">{ind.data_vintage} · {ind.source}</p>
+    </div>
+  ))}
+</div>

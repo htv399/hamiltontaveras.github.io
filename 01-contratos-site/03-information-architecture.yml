@@ -1,0 +1,136 @@
+contract:
+  id: IA-001
+  version: 1.0.0
+  status: required_v1
+
+primary_navigation:
+  - { id: IA-NAV-001, key: home, label_en: Home, label_es: Inicio, route_en: "/", route_es: "/es/" }
+  - { id: IA-NAV-002, key: work, label_en: Work, label_es: Trabajo, route_en: "/work/", route_es: "/es/work/" }
+  - { id: IA-NAV-003, key: research, label_en: Research, label_es: Investigación, route_en: "/research/", route_es: "/es/research/" }
+  - { id: IA-NAV-004, key: notes, label_en: Notes, label_es: Notas, route_en: "/notes/", route_es: "/es/notes/" }
+  - { id: IA-NAV-005, key: teaching, label_en: Teaching, label_es: Docencia, route_en: "/teaching/", route_es: "/es/teaching/" }
+  - { id: IA-NAV-006, key: about, label_en: About, label_es: Perfil, route_en: "/about/", route_es: "/es/about/" }
+
+utilities:
+  - { id: IA-UTIL-001, key: cv, label_en: CV, label_es: CV, route_en: "/cv/", route_es: "/es/cv/" }
+  - { id: IA-UTIL-002, key: search, label_en: Search, label_es: Buscar, route_en: "/search/", route_es: "/es/search/" }
+  - { id: IA-UTIL-003, key: language, behavior: "Show only when an equivalent route exists. Otherwise link to the language home with an explanatory accessible label." }
+
+footer_navigation:
+  required: ["contact", "resources", "licenses", "accessibility", "rss", "sitemap"]
+  optional_when_configured: ["repository", "linkedin", "orcid", "scholar"]
+
+forbidden_primary_entries:
+  id: IA-NAV-007
+  status: required_v1
+  values: ["data", "economics", "finance", "valuation", "quantitative-finance", "projects", "blog"]
+  reason: "These are taxonomies, formats or legacy labels."
+
+routes:
+  static:
+    home: { en: "/", es: "/es/" }
+    work: { en: "/work/", es: "/es/work/" }
+    research: { en: "/research/", es: "/es/research/" }
+    notes: { en: "/notes/", es: "/es/notes/" }
+    teaching: { en: "/teaching/", es: "/es/teaching/" }
+    about: { en: "/about/", es: "/es/about/" }
+    cv: { en: "/cv/", es: "/es/cv/" }
+    contact: { en: "/contact/", es: "/es/contact/" }
+    resources: { en: "/resources/", es: "/es/resources/" }
+    search: { en: "/search/", es: "/es/search/" }
+    licenses: { en: "/licenses/", es: "/es/licenses/" }
+    accessibility: { en: "/accessibility/", es: "/es/accessibility/" }
+    not_found: { shared: "/404.html" }
+  dynamic:
+    analysis: "/analysis/{slug}/"
+    project: "/work/{slug}/"
+    research: "/research/{slug}/"
+    note: "/notes/{slug}/"
+    course: "/teaching/{course_slug}/"
+    week: "/teaching/{course_slug}/{week_slug}/"
+    material: "/teaching/{course_slug}/{week_slug}/materials/{material_slug}/"
+    thematic: "/topics/{taxonomy_slug}/"
+    spanish_prefix_rule: "Prepend /es to a dynamic route only when the piece language is es or an equivalent translation exists."
+
+slug_rules:
+  id: IA-SLUG-001
+  status: required_v1
+  pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+  immutable_after_publish: true
+  reserved: ["admin", "api", "assets", "search", "404", "feed", "rss"]
+  change_requires_redirect: true
+  duplicate_across_collection: false
+  translation_rule: "Do not translate an existing published slug without a redirect."
+
+hierarchy:
+  - { parent: home, children: ["lead_analysis", "selected_work", "research", "notes", "teaching", "about"] }
+  - { parent: work, children: ["project", "analysis", "data_product", "valuation"] }
+  - { parent: research, children: ["research_detail"] }
+  - { parent: notes, children: ["note_detail"] }
+  - { parent: teaching, children: ["course"] }
+  - { parent: course, children: ["week"] }
+  - { parent: week, children: ["material"] }
+
+breadcrumbs:
+  hidden_on: ["home", "first_level_landings"]
+  required_on: ["project_detail", "research_detail", "note_detail_when_series", "course", "week", "material", "topic"]
+  rules:
+    - "Use visible labels from content metadata."
+    - "Include structured BreadcrumbList JSON-LD."
+    - "Do not include the current page as an active link."
+
+relationships:
+  related_work:
+    id: IA-REL-001
+    strategy: "deterministic_metadata_score"
+    score:
+      same_domain: 3
+      same_method: 2
+      same_object: 2
+      explicit_related_id: 5
+      same_language: 1
+    exclude: ["current_item", "private", "draft", "placeholder_in_production"]
+    max_items: 4
+    fallback: "omit_component"
+  course_sequence:
+    id: IA-REL-002
+    source: "week_number_then_published_at"
+    links: ["previous_week", "course_index", "next_week"]
+  translations:
+    id: IA-REL-003
+    source: "translation_key"
+    rule: "hreflang and language switch appear only between real equivalents."
+
+taxonomy_landings:
+  status: future
+  generation_threshold: 3
+  dimensions: ["domain", "method", "object"]
+  v1_behavior: "Filters work inside Work, Research and Notes. Do not generate thin topic pages."
+
+bilingual:
+  model: selective
+  default_language:
+    status: approval_required
+    decision_id: APP-001
+    allowed: ["en", "es"]
+  required_equivalent_pages: ["home", "work", "about", "contact"]
+  selective_pages: ["research", "notes", "project", "course", "week", "material", "resources"]
+  fallback: "Never auto-translate. Preserve the original language and provide a short alternate-language summary only when authored."
+  canonical: "Each piece canonicalizes to its own language route."
+  hreflang: ["en", "es", "x-default_only_when_default_language_is_approved"]
+
+redirects:
+  source_file: "src/data/redirects.yml"
+  validation:
+    - "No chains."
+    - "No loops."
+    - "Every destination exists."
+    - "Legacy Quarto routes are preserved when known."
+
+verification:
+  - { id: QA-IA-001, requirement: "Every declared static route builds." }
+  - { id: QA-IA-002, requirement: "No forbidden primary entry appears." }
+  - { id: QA-IA-003, requirement: "Every published slug is unique and valid." }
+  - { id: QA-IA-004, requirement: "No hreflang points to a missing or non-equivalent page." }
+  - { id: QA-IA-005, requirement: "Breadcrumbs and related work follow deterministic rules." }
+

@@ -1,0 +1,48 @@
+---
+// CMP-METADATA-BAND. Shows only relevant fields; horizontal on desktop,
+// stacked on mobile; dates carry a localized display plus machine datetime.
+import { t } from "../../i18n/ui";
+
+export interface MetadataView {
+  publishedAt?: Date;
+  updatedAt?: Date;
+  dataVintage?: string;
+  version?: string;
+  license?: string;
+  access?: string;
+}
+interface Props {
+  metadata: MetadataView;
+  language: "en" | "es";
+}
+const { metadata, language } = Astro.props;
+const strings = t(language);
+const fmt = (d?: Date) => (d ? new Intl.DateTimeFormat(language, { year: "numeric", month: "long", day: "numeric" }).format(d) : null);
+const items = [
+  metadata.publishedAt && { label: strings.published, value: fmt(metadata.publishedAt), datetime: metadata.publishedAt.toISOString() },
+  metadata.updatedAt && { label: strings.updated, value: fmt(metadata.updatedAt), datetime: metadata.updatedAt.toISOString() },
+  metadata.dataVintage && { label: strings.dataVintage, value: metadata.dataVintage },
+  metadata.version && { label: strings.version, value: metadata.version },
+  metadata.license && { label: strings.license, value: metadata.license }
+].filter(Boolean) as { label: string; value: string | null; datetime?: string }[];
+---
+{items.length > 0 && (
+  <dl class="metadata-band">
+    {items.map((item) => (
+      <div class="metadata-band__item">
+        <dt class="u-tag">{item.label}</dt>
+        <dd class="text-small">
+          {item.datetime ? <time datetime={item.datetime}>{item.value}</time> : item.value}
+        </dd>
+      </div>
+    ))}
+  </dl>
+)}
+
+<style>
+  .metadata-band { display: flex; flex-wrap: wrap; gap: var(--space-6); border-top: var(--border-hairline); border-bottom: var(--border-hairline); padding-block: var(--space-4); }
+  .metadata-band__item dt { margin-bottom: var(--space-1); }
+  @media (max-width: 480px) {
+    .metadata-band { flex-direction: column; gap: var(--space-2); }
+  }
+</style>

@@ -1,0 +1,201 @@
+---
+// PG-COURSE / PG-WEEK / PG-MATERIAL. One catch-all covers the three-level
+// teaching hierarchy (TCH-001) since all three share breadcrumbs, metadata
+// and license/version display.
+import { getCollection, type CollectionEntry } from "astro:content";
+import TeachingLayout from "../../layouts/TeachingLayout.astro";
+import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
+import WeekNavigation from "../../components/teaching/WeekNavigation.astro";
+import MaterialGroup from "../../components/teaching/MaterialGroup.astro";
+import DownloadLink from "../../components/resources/DownloadLink.astro";
+import MetadataBand from "../../components/content/MetadataBand.astro";
+import { isEligible } from "../../lib/contentGate";
+import { siteConfig, canonicalBase } from "../../config/site";
+import { t } from "../../i18n/ui";
+import { resourceGroupOrder } from "../../lib/teaching";
+
+type CourseEntry = CollectionEntry<"courses">;
+type WeekEntry = CollectionEntry<"weeks">;
+type MaterialEntry = CollectionEntry<"materials">;
+
+export async function getStaticPaths() {
+  const courses = (await getCollection("courses")).filter((c) => isEligible(c.data, siteConfig.env));
+  const weeksAll = (await getCollection("weeks")).filter((w) => isEligible(w.data, siteConfig.env));
+  const materialsAll = await getCollection("materials");
+
+  const paths: { params: { path: string }; props: Record<string, unknown> }[] = [];
+
+  for (const course of courses) {
+    const weeks = weeksAll.filter((w) => w.data.course_id === course.data.id);
+    // TCH-COURSE-001: a public course needs at least one published week.
+    if (weeks.length === 0) continue;
+
+    const syllabusMaterial = course.data.syllabus
+      ? materialsAll.find((m) => m.data.id === course.data.syllabus && isEligible(m.data, siteConfig.env))
+      : undefined;
+    paths.push({ params: { path: course.data.slug }, props: { kind: "course", course, weeks, syllabusMaterial } });
+
+    for (const week of weeks) {
+      const materials = week.data.resources
+        .map((id) => materialsAll.find((m) => m.data.id === id))
+        .filter((m): m is MaterialEntry => Boolean(m) && isEligible(m!.data, siteConfig.env));
+
+      paths.push({
+        params: { path: `${course.data.slug}/${week.data.slug}` },
+        props: { kind: "week", course, week, weeks, materials }
+      });
+
+      for (const material of materials) {
+        paths.push({
+          params: { path: `${course.data.slug}/${week.data.slug}/materials/${material.data.slug}` },
+          props: { kind: "material", course, week, material }
+        });
+      }
+    }
+  }
+  return paths;
+}
+
+const language = "en" as const;
+const strings = t(language);
+const kind = Astro.props.kind as "course" | "week" | "material";
+const course = Astro.props.course as CourseEntry;
+---
+{kind === "course" && (() => {
+  const weeks = (Astro.props.weeks as WeekEntry[]).sort((a, b) => a.data.week_number - b.data.week_number);
+  const path = `/teaching/${course.data.slug}/`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: course.data.title,
+    description: course.data.summary,
+    url: `${canonicalBase.value.replace(/\/$/, "")}${path}`
+  };
+  const breadcrumbItems = [
+    { label: strings.breadcrumbHome, href: "/" },
+    { label: "Teaching", href: "/teaching/" },
+    { label: course.data.title }
+  ];
+  return (
+    <TeachingLayout title={`${course.data.title} — ${siteConfig.name}`} description={course.data.summary} path={path} language={language} jsonLd={jsonLd}>
+      <Breadcrumbs items={breadcrumbItems} />
+      {course.data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
+      <p class="u-tag" style="margin-top: var(--space-5);">{course.data.code} · {course.data.period}{course.data.archived ? " · Archived" : ""}</p>
+      <h1 class="text-h1 font-editorial">{course.data.title}</h1>
+      <p class="text-body-l reading-column" style="margin-top: var(--space-4);">{course.data.description}</p>
+
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Objectives</h2>
+      <ul class="reading-column">
+        {course.data.objectives.map((o: string) => <li class="text-body">{o}</li>)}
+      </ul>
+
+      {Astro.props.syllabusMaterial && (
+        <div style="margin-top: var(--space-6);">
+          <h2 class="text-h3">Syllabus</h2>
+          <DownloadLink
+            href={(Astro.props.syllabusMaterial as MaterialEntry).data.href}
+            label={(Astro.props.syllabusMaterial as MaterialEntry).data.title}
+            format={(Astro.props.syllabusMaterial as MaterialEntry).data.material_type}
+            fileSizeBytes={(Astro.props.syllabusMaterial as MaterialEntry).data.file_size_bytes}
+          />
+        </div>
+      )}
+
+      <div style="margin-top: var(--space-8);">
+        <h2 class="text-h3">Weeks</h2>
+        <div style="margin-top: var(--space-4);">
+          <WeekNavigation
+            weeks={weeks.map((w) => ({ weekNumber: w.data.week_number, title: w.data.title, href: `/teaching/${course.data.slug}/${w.data.slug}/`, status: w.data.status }))}
+          />
+        </div>
+      </div>
+    </TeachingLayout>
+  );
+})()}
+
+{kind === "week" && (() => {
+  const week = Astro.props.week as WeekEntry;
+  const weeks = (Astro.props.weeks as WeekEntry[]).sort((a, b) => a.data.week_number - b.data.week_number);
+  const materials = Astro.props.materials as MaterialEntry[];
+  const path = `/teaching/${course.data.slug}/${week.data.slug}/`;
+  const currentIndex = weeks.findIndex((w) => w.data.id === week.data.id);
+  const previous = currentIndex > 0 ? weeks[currentIndex - 1] : null;
+  const next = currentIndex < weeks.length - 1 ? weeks[currentIndex + 1] : null;
+  const groups = resourceGroupOrder
+    .map((group) => ({
+      ...group,
+      materials: materials.filter((m) => m.data.group === group.key)
+    }))
+    .filter((g) => g.materials.length > 0);
+  const ungrouped = materials.filter((m) => !m.data.group);
+  const breadcrumbItems = [
+    { label: strings.breadcrumbHome, href: "/" },
+    { label: "Teaching", href: "/teaching/" },
+    { label: course.data.title, href: `/teaching/${course.data.slug}/` },
+    { label: week.data.title }
+  ];
+  return (
+    <TeachingLayout title={`${week.data.title} — ${course.data.title}`} description={week.data.summary} path={path} language={language}>
+      <Breadcrumbs items={breadcrumbItems} />
+      {week.data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
+      <p class="u-tag" style="margin-top: var(--space-5);">Week {week.data.week_number}</p>
+      <h1 class="text-h1 font-editorial">{week.data.title}</h1>
+      <p class="text-h3 font-editorial reading-column" style="margin-top: var(--space-4); color: var(--color-slate-500);">{week.data.question}</p>
+      <p class="text-body-l reading-column" style="margin-top: var(--space-4);">{week.data.overview}</p>
+
+      <div style="margin-top: var(--space-8);">
+        {groups.map((g) => (
+          <MaterialGroup
+            title={g.label.en}
+            materials={g.materials.map((m) => ({ title: m.data.title, href: m.data.href, materialType: m.data.material_type, version: m.data.version, license: m.data.license, fileSizeBytes: m.data.file_size_bytes }))}
+          />
+        ))}
+        {ungrouped.length > 0 && (
+          <MaterialGroup
+            title="Materials"
+            materials={ungrouped.map((m) => ({ title: m.data.title, href: m.data.href, materialType: m.data.material_type, version: m.data.version, license: m.data.license, fileSizeBytes: m.data.file_size_bytes }))}
+          />
+        )}
+      </div>
+
+      <MetadataBand metadata={{ version: week.data.version, license: week.data.license }} language={language} />
+
+      <nav class="cluster" style="margin-top: var(--space-8); justify-content: space-between;">
+        {previous ? <a href={`/teaching/${course.data.slug}/${previous.data.slug}/`}>← {strings.previousWeek}</a> : <span />}
+        <a href={`/teaching/${course.data.slug}/`}>{strings.courseIndex}</a>
+        {next ? <a href={`/teaching/${course.data.slug}/${next.data.slug}/`}>{strings.nextWeek} →</a> : <span />}
+      </nav>
+    </TeachingLayout>
+  );
+})()}
+
+{kind === "material" && (() => {
+  const week = Astro.props.week as WeekEntry;
+  const material = Astro.props.material as MaterialEntry;
+  const path = `/teaching/${course.data.slug}/${week.data.slug}/materials/${material.data.slug}/`;
+  const breadcrumbItems = [
+    { label: strings.breadcrumbHome, href: "/" },
+    { label: "Teaching", href: "/teaching/" },
+    { label: course.data.title, href: `/teaching/${course.data.slug}/` },
+    { label: week.data.title, href: `/teaching/${course.data.slug}/${week.data.slug}/` },
+    { label: material.data.title }
+  ];
+  return (
+    <TeachingLayout title={`${material.data.title} — ${week.data.title}`} description={material.data.description ?? material.data.title} path={path} language={language}>
+      <Breadcrumbs items={breadcrumbItems} />
+      {material.data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
+      <p class="u-tag" style="margin-top: var(--space-5);">{material.data.material_type}</p>
+      <h1 class="text-h1 font-editorial">{material.data.title}</h1>
+      {material.data.description && <p class="text-body-l reading-column" style="margin-top: var(--space-4);">{material.data.description}</p>}
+
+      <MetadataBand metadata={{ version: material.data.version, license: material.data.license }} language={language} />
+
+      <div style="margin-top: var(--space-6);">
+        <DownloadLink href={material.data.href} label={strings.download} format={material.data.material_type} fileSizeBytes={material.data.file_size_bytes} />
+      </div>
+      {material.data.source_href && (
+        <p class="text-small" style="margin-top: var(--space-3);"><a href={material.data.source_href} rel="noopener">View source</a></p>
+      )}
+    </TeachingLayout>
+  );
+})()}

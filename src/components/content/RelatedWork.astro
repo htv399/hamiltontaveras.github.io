@@ -1,0 +1,37 @@
+---
+// CMP-RELATED-WORK. Uses IA-REL-001 scoring upstream (src/lib/relatedWork.ts)
+// and omits itself entirely when there are zero qualifying items.
+import { t } from "../../i18n/ui";
+
+interface Item { href: string; title: string; summary: string }
+interface Props {
+  items: Item[]; // 1 to 4, empty means "do not render"
+  language: "en" | "es";
+}
+const { items, language } = Astro.props;
+const strings = t(language);
+---
+{items.length > 0 && (
+  <nav class="related-work" aria-label={strings.relatedWork}>
+    <h2 class="text-h3">{strings.relatedWork}</h2>
+    <ul class="related-work__list">
+      {items.map((item) => (
+        <li>
+          <a href={item.href}>
+            <span class="text-body-l">{item.title}</span>
+            <span class="text-small">{item.summary}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .related-work { margin-top: var(--space-8); border-top: var(--border-strong); padding-top: var(--space-5); }
+  .related-work__list { display: grid; gap: var(--space-4); margin-top: var(--space-4); }
+  @media (min-width: 769px) {
+    .related-work__list { grid-template-columns: repeat(2, 1fr); }
+  }
+  .related-work__list a { display: flex; flex-direction: column; gap: var(--space-1); }
+</style>

@@ -1,0 +1,31 @@
+---
+// CMP-FIGURE. No figure ships without title, unit, source, vintage, note
+// and an accessible summary (QA-VIS-005). Full bleed reserved for featured
+// evidence only.
+interface Source { label: string; href?: string }
+interface Props {
+  title: string;
+  unit: string;
+  source: Source[];
+  data_vintage: string;
+  note: string;
+  accessible_summary: string;
+  variant?: "inline" | "wide" | "full_bleed";
+}
+const { title, unit, source, data_vintage, note, accessible_summary, variant = "inline" } = Astro.props;
+---
+<figure class:list={["figure", variant === "full_bleed" && "figure--full-bleed"]}>
+  <div class="figure__media" role="img" aria-label={accessible_summary}>
+    <slot />
+  </div>
+  <figcaption>
+    <p class="figure__caption"><strong>{title}</strong> ({unit})</p>
+    <p class="figure__source">
+      {source.map((s, i) => (
+        <>{i > 0 && "; "}{s.href ? <a href={s.href}>{s.label}</a> : s.label}</>
+      ))} · {data_vintage}
+    </p>
+    <p class="figure__source">{note}</p>
+    <p class="visually-hidden">{accessible_summary}</p>
+  </figcaption>
+</figure>

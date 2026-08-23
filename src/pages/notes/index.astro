@@ -1,0 +1,37 @@
+---
+// PG-NOTES. Editorial intro + chronological listing; no monthly archive,
+// no coming-soon statement, no empty tag cloud.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NotesRow from "../../components/editorial/NotesRow.astro";
+import { getCollection } from "astro:content";
+import { isEligible } from "../../lib/contentGate";
+import { siteConfig } from "../../config/site";
+
+const language = "en" as const;
+const all = (await getCollection("notes")).filter((e) => isEligible(e.data, siteConfig.env));
+const sorted = [...all].sort((a, b) => (b.data.published_at?.getTime() ?? 0) - (a.data.published_at?.getTime() ?? 0));
+const rows = sorted.map((n) => ({
+  title: n.data.title,
+  href: `/notes/${n.data.slug}/`,
+  summary: n.data.summary,
+  publishedAt: n.data.published_at,
+  tags: n.data.domains
+}));
+---
+<BaseLayout title={`Notes — ${siteConfig.name}`} description="Concise notes on data, economics, valuation, markets and methods." path="/notes/" language={language}>
+  <section class="shell section-standard">
+    <p class="text-body-l reading-column">
+      Notes are shorter than research papers and more focused than project cases: a clear claim, its supporting
+      evidence, and the conditions under which that claim may change.
+    </p>
+    {all.length === 0 ? (
+      <p class="text-body" style="margin-top: var(--space-6);">
+        The public notes archive is being prepared. Draft notes do not appear in navigation or search results.
+      </p>
+    ) : (
+      <div style="margin-top: var(--space-8); max-width: var(--reading-max);">
+        <NotesRow items={rows} language={language} />
+      </div>
+    )}
+  </section>
+</BaseLayout>

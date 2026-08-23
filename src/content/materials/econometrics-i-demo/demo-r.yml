@@ -1,0 +1,16 @@
+id: MATERIAL-DEMO-R
+title: "R script demonstration"
+slug: demo-r
+language: en
+material_type: r
+access: public
+status: draft
+version: "0.0.0-demo"
+license: "INTERNAL-DEMO-ONLY"
+href: "/fixtures/demo.R"
+file_size_bytes: 47
+mime_type: "text/x-r-source"
+checksum_sha256: "60c7cb5b94af2bb01820ae1eb57dedd3aecf34d54429ebd016803f8f067ced5b"
+demo: true
+placeholder: true
+group: code

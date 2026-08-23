@@ -1,0 +1,69 @@
+---
+// CMP-HERO-EDITORIAL. Desktop composition 7+5 or 8+4. Shows finding, date
+// and one evidence visual with the lead link reachable in one activation
+// (QA-PRD-002). Mobile renders identity and thesis before the visual.
+import { t } from "../../i18n/ui";
+
+interface EvidenceItem { title: string; accessible_summary: string }
+interface LeadItem {
+  title: string;
+  slug: string;
+  key_finding: string;
+  published_at?: Date;
+  domains: string[];
+  evidence: EvidenceItem[];
+}
+interface Props {
+  name: string;
+  descriptor: string;
+  thesis: string;
+  lead: LeadItem;
+  language: "en" | "es";
+  variant?: "navy" | "paper";
+}
+const { name, descriptor, thesis, lead, language, variant = "navy" } = Astro.props;
+const strings = t(language);
+// Dynamic detail routes stay unprefixed in v1; see the comment in
+// src/pages/analysis/[...slug].astro.
+const href = `/analysis/${lead.slug}/`;
+const evidence = lead.evidence[0];
+const dateLabel = lead.published_at
+  ? new Intl.DateTimeFormat(language, { year: "numeric", month: "long", day: "numeric" }).format(lead.published_at)
+  : null;
+---
+<section class:list={["editorial-hero", variant === "navy" ? "surface-navy" : "surface-paper"]}>
+  <div class="shell editorial-hero__inner section-feature">
+    <div class="editorial-hero__identity">
+      <h1 class="text-display-l font-editorial">{name}</h1>
+      <p class="text-body-l">{descriptor}</p>
+      <p class="editorial-hero__thesis text-body">{thesis}</p>
+    </div>
+    <a href={href} class="editorial-hero__lead" aria-label={`${strings.readMore}: ${lead.title}`}>
+      <div class="editorial-hero__evidence" role="img" aria-label={evidence?.accessible_summary ?? evidence?.title}>
+        <span class="u-tag">{strings.demoNotice}</span>
+      </div>
+      <p class="u-tag">{lead.domains.join(" · ")}</p>
+      <h2 class="text-h3">{lead.title}</h2>
+      <p class="text-body">{lead.key_finding}</p>
+      {dateLabel && <p class="text-small">{dateLabel}</p>}
+    </a>
+  </div>
+</section>
+
+<style>
+  .editorial-hero__inner { display: grid; gap: var(--space-7); }
+  @media (min-width: 769px) {
+    .editorial-hero__inner { grid-template-columns: 7fr 5fr; align-items: start; }
+  }
+  .editorial-hero__identity > * + * { margin-top: var(--space-4); }
+  .editorial-hero__thesis { opacity: 0.85; max-width: 46ch; }
+  .editorial-hero__lead { display: block; }
+  .editorial-hero__lead > * + * { margin-top: var(--space-2); }
+  .editorial-hero__evidence {
+    aspect-ratio: 4 / 3;
+    background: rgba(255, 255, 255, 0.08);
+    border: var(--border-hairline);
+    display: flex; align-items: flex-end; padding: var(--space-3);
+  }
+  .surface-paper .editorial-hero__evidence { background: var(--color-mist-100); border: none; }
+</style>

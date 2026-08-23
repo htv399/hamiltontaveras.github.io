@@ -1,0 +1,35 @@
+---
+// CMP-WEEK-NAV. Ordered by week_number; publication state shown; previous
+// and next are derived deterministically by the caller.
+interface WeekItem {
+  weekNumber: number;
+  title: string;
+  href: string;
+  status: string;
+}
+interface Props {
+  weeks: WeekItem[];
+  currentHref?: string;
+}
+const { weeks, currentHref } = Astro.props;
+const ordered = [...weeks].sort((a, b) => a.weekNumber - b.weekNumber);
+---
+<nav class="week-nav" aria-label="Weeks">
+  <ol class="week-nav__list">
+    {ordered.map((week) => (
+      <li>
+        <a href={week.href} aria-current={week.href === currentHref ? "page" : undefined}>
+          <span class="u-tag">Week {week.weekNumber}</span>
+          <span class="text-small">{week.title}</span>
+          {week.status !== "published" && <span class="text-micro"> ({week.status})</span>}
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .week-nav__list { display: flex; flex-direction: column; gap: var(--space-2); }
+  .week-nav__list a { display: flex; flex-direction: column; padding: var(--space-2) 0; }
+  .week-nav__list a[aria-current="page"] { font-weight: 600; }
+</style>

@@ -1,0 +1,17 @@
+---
+// CMP-QUESTIONS. Authored questions only; no icon box per question.
+interface Props {
+  questions: string[]; // 2 to 5
+}
+const { questions } = Astro.props;
+---
+<ul class="questions-module">
+  {questions.map((q) => (
+    <li class="text-h3 font-editorial">{q}</li>
+  ))}
+</ul>
+
+<style>
+  .questions-module { display: flex; flex-direction: column; gap: var(--space-5); }
+  .questions-module li { border-top: var(--border-hairline); padding-top: var(--space-4); }
+</style>

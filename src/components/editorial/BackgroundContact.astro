@@ -1,0 +1,35 @@
+---
+// CMP-BACKGROUND-CONTACT. A compact closing chapter, never a full CV.
+import { t } from "../../i18n/ui";
+
+export interface ContactConfig {
+  mode: "pending" | "email" | "form" | "email_and_form";
+  href?: string;
+}
+interface Props {
+  bioShort: string;
+  cvHref: string;
+  contact: ContactConfig;
+  language: "en" | "es";
+}
+const { bioShort, cvHref, contact, language } = Astro.props;
+const strings = t(language);
+---
+<section class="background-contact surface-mist section-standard">
+  <div class="shell background-contact__inner">
+    <p class="text-body-l">{bioShort}</p>
+    <div class="cluster">
+      <a href={cvHref} class="background-contact__cv">{strings.viewCv}</a>
+      {contact.mode === "pending" || !contact.href ? (
+        <p class="text-small">{strings.contactPending}</p>
+      ) : (
+        <a href={contact.href}>{strings.contact}</a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .background-contact__inner { max-width: var(--editorial-max); display: flex; flex-direction: column; gap: var(--space-4); }
+  .background-contact__cv { font-weight: 600; }
+</style>

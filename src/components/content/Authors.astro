@@ -1,0 +1,26 @@
+---
+// CMP-AUTHORS. Never infers affiliations; photo is optional.
+interface AuthorItem {
+  display_name: string;
+  role_label?: string;
+  photo?: string;
+}
+interface Props {
+  authors: AuthorItem[]; // min 1
+}
+const { authors } = Astro.props;
+---
+<ul class="authors">
+  {authors.map((a) => (
+    <li class="authors__item">
+      <span class="authors__name">{a.display_name}</span>
+      {a.role_label && <span class="authors__role text-small">{a.role_label}</span>}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .authors { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+  .authors__item { display: flex; flex-direction: column; }
+  .authors__name { font-weight: 600; }
+</style>

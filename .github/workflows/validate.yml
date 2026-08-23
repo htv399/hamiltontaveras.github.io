@@ -1,0 +1,78 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      SITE_ENV: preview
+      SITE_URL: https://example-preview.invalid
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Install dependencies (no lockfile mutation)
+        run: npm ci
+
+      - name: Validate contracts
+        run: npm run contracts:validate
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Validate content
+        run: npm run content:validate
+
+      - name: Validate academic materials
+        run: npm run academic:validate
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build
+
+      - name: Search index
+        run: npm run search:index
+
+      - name: Check links and routes
+        run: npm run links:check
+
+      - name: Check repository manifest
+        run: npm run manifest:check
+
+      - name: Check placeholders
+        run: npm run placeholders:check
+
+      - name: npm audit (production dependencies)
+        run: npm audit --omit=dev
+        continue-on-error: true
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E, accessibility and responsive tests
+        run: npx playwright test tests/e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

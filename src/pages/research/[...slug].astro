@@ -1,0 +1,106 @@
+---
+// PG-RESEARCH-DETAIL.
+import { getCollection, type CollectionEntry } from "astro:content";
+import ResearchLayout from "../../layouts/ResearchLayout.astro";
+import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
+import MetadataBand from "../../components/content/MetadataBand.astro";
+import Authors from "../../components/content/Authors.astro";
+import ResourceLinks from "../../components/resources/ResourceLinks.astro";
+import Disclosure from "../../components/content/Disclosure.astro";
+import RelatedWork from "../../components/content/RelatedWork.astro";
+import { isEligible } from "../../lib/contentGate";
+import { relatedWork, type RelatableItem } from "../../lib/relatedWork";
+import { siteConfig, canonicalBase } from "../../config/site";
+import { t } from "../../i18n/ui";
+
+export async function getStaticPaths() {
+  const all = await getCollection("research");
+  const eligible = all.filter((e) => isEligible(e.data, siteConfig.env));
+  return eligible.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry, pool: eligible } }));
+}
+
+interface Props { entry: CollectionEntry<"research">; pool: CollectionEntry<"research">[] }
+const { entry, pool } = Astro.props as Props;
+const { data } = entry;
+const language = data.language;
+const strings = t(language);
+const path = `/research/${data.slug}/`;
+
+const current: RelatableItem = {
+  id: data.id, href: path, title: data.title, summary: data.summary, domains: data.domains,
+  methods: data.methods, objects: data.objects, language: data.language, access: data.access,
+  status: data.status, placeholder: data.placeholder, relatedIds: data.related_ids
+};
+const poolItems: RelatableItem[] = pool.map((p) => ({
+  id: p.data.id, href: `/research/${p.data.slug}/`, title: p.data.title, summary: p.data.summary,
+  domains: p.data.domains, methods: p.data.methods, objects: p.data.objects, language: p.data.language,
+  access: p.data.access, status: p.data.status, placeholder: p.data.placeholder
+}));
+const related = relatedWork(current, poolItems, siteConfig.env);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  headline: data.title,
+  abstract: data.abstract,
+  datePublished: data.published_at?.toISOString(),
+  dateModified: data.updated_at?.toISOString(),
+  author: data.authors.map((a) => ({ "@type": "Person", name: a.display_name })),
+  url: `${canonicalBase.value.replace(/\/$/, "")}${path}`
+};
+const breadcrumbItems = [{ label: strings.breadcrumbHome, href: "/" }, { label: "Research", href: "/research/" }, { label: data.title }];
+
+const reproductionResources = (data.reproduction ?? []).filter((r) => Boolean(r));
+---
+<ResearchLayout title={`${data.title} — ${siteConfig.name}`} description={data.summary} path={path} language={language} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems} />
+  {data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
+
+  <MetadataBand metadata={{ publishedAt: data.published_at, updatedAt: data.updated_at, version: data.version, license: data.license }} language={language} />
+
+  <p class="u-tag" style="margin-top: var(--space-5);">{data.format}</p>
+  <h1 class="text-h1 font-editorial">{data.title}</h1>
+  <div style="margin-top: var(--space-3);"><Authors authors={data.authors} /></div>
+
+  <div class="reading-column" style="margin-top: var(--space-6);">
+    <h2 class="text-h3">Abstract</h2>
+    <p class="text-body-l">{data.abstract}</p>
+
+    <h2 class="text-h3" style="margin-top: var(--space-6);">Question</h2>
+    <p class="text-body">{data.question}</p>
+
+    <h2 class="text-h3" style="margin-top: var(--space-6);">Contribution</h2>
+    <p class="text-body">{data.contribution}</p>
+
+    <h2 class="text-h3" style="margin-top: var(--space-6);">Key finding</h2>
+    <p class="text-body-l"><strong>{data.key_finding}</strong></p>
+
+    <div class="content-body" style="margin-top: var(--space-6);"><slot /></div>
+  </div>
+
+  {data.paper_pdf && (
+    <div style="margin-top: var(--space-6);">
+      <ResourceLinks resources={[data.paper_pdf]} variant="downloads" siteEnv={siteConfig.env} />
+    </div>
+  )}
+  {reproductionResources.length > 0 && (
+    <div style="margin-top: var(--space-6);">
+      <h2 class="text-h3">Reproduction</h2>
+      <ResourceLinks resources={reproductionResources} variant="grouped" siteEnv={siteConfig.env} />
+    </div>
+  )}
+
+  {data.disclosure && (
+    <div style="margin-top: var(--space-6);">
+      <Disclosure text={data.disclosure} kind="financial" />
+    </div>
+  )}
+
+  {data.citation && (
+    <div style="margin-top: var(--space-6);" class="font-mono text-small">
+      <p>{data.citation.text}</p>
+    </div>
+  )}
+
+  <RelatedWork items={related.map((r) => ({ href: r.href, title: r.title, summary: r.summary }))} language={language} />
+</ResearchLayout>

@@ -1,0 +1,97 @@
+/* REP-STYLE-001. Blue Finance tokens, verbatim from 02-visual-system.yml.
+   No component may hardcode a raw color, spacing or radius value: every
+   value here is the single source of truth (QA-VIS-001). */
+:root {
+  /* Color */
+  --color-navy-900: #0b1f33;
+  --color-ink-800: #16283a;
+  --color-blue-600: #1f5a92;
+  --color-azure-400: #4f8fc0;
+  --color-slate-500: #607284;
+  --color-mist-100: #e8eef3;
+  --color-paper: #fafbfc;
+  --color-white: #ffffff;
+  --color-gold-500: #c58a2a;
+  --color-negative: #a6403b;
+  --color-positive: #2f6f5e;
+  --color-focus: #f2b544;
+
+  /* Typography */
+  --font-ui: "IBM Plex Sans", system-ui, sans-serif;
+  --font-editorial: "Source Serif 4", Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --size-display-xl: clamp(2.75rem, 5.2vw, 5.25rem);
+  --size-display-l: clamp(2.25rem, 4vw, 4rem);
+  --size-h1: clamp(2rem, 3.2vw, 3.25rem);
+  --size-h2: clamp(1.55rem, 2.2vw, 2.25rem);
+  --size-h3: clamp(1.25rem, 1.5vw, 1.5rem);
+  --size-body-l: 1.1875rem;
+  --size-body: 1rem;
+  --size-small: 0.875rem;
+  --size-micro: 0.75rem;
+
+  --line-display-xl: 0.98;
+  --line-display-l: 1.02;
+  --line-h1: 1.08;
+  --line-h2: 1.15;
+  --line-h3: 1.25;
+  --line-body-l: 1.65;
+  --line-body: 1.6;
+  --line-small: 1.45;
+  --line-micro: 1.35;
+  --tracking-micro: 0.04em;
+
+  /* Spacing, base 8px */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 120px;
+  --space-11: 144px;
+
+  --section-dense: clamp(64px, 8vw, 96px);
+  --section-standard: clamp(80px, 10vw, 120px);
+  --section-feature: clamp(96px, 12vw, 144px);
+
+  /* Layout */
+  --shell-max: 1440px;
+  --editorial-max: 1360px;
+  --reading-min: 720px;
+  --reading-max: 780px;
+  --gutter-desktop: 40px;
+  --gutter-tablet: 28px;
+  --gutter-mobile: 20px;
+  --header-height-desktop: 76px;
+  --header-height-mobile: 62px;
+
+  /* Borders and radii */
+  --border-hairline: 1px solid rgba(11, 31, 51, 0.16);
+  --border-strong: 1px solid rgba(11, 31, 51, 0.34);
+  --border-key-result: 2px solid var(--color-gold-500);
+  --radius-none: 0;
+  --radius-small: 4px;
+  --radius-medium: 8px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-none: none;
+  --shadow-layer-1: 0 8px 24px rgba(11, 31, 51, 0.08);
+  --shadow-layer-2: 0 16px 40px rgba(11, 31, 51, 0.12);
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-standard: 220ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Breakpoints (documented; used directly as media queries, not custom
+   properties, since CSS cannot interpolate a var() inside @media). */
+/* wide: min 1200px | tablet: 769-1199px | mobile: max 768px |
+   compact: max 480px | minimum tested: 360px */

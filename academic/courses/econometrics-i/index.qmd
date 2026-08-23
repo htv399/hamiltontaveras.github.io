@@ -1,0 +1,52 @@
+---
+title: "Econometrics I"
+description: "Course structure for Econometrics I."
+date: 2026-08-22
+updated: 2026-08-22
+content_type: course
+item_format: course
+status: working
+lang: en
+access: public
+slug: econometrics-i
+summary: "An applied introduction to empirical reasoning, regression analysis, diagnostics, reproducible workflows, and the careful communication of statistical results."
+deliverables: [slides]
+toc: true
+---
+
+<!--
+Migrated verbatim from the pre-Astro repository
+(hamiltontaveras.github.io_git_ready/teaching/econometrics-i/index.qmd),
+where TCH-COURSE-003 (content_pending) already applied: no institution,
+schedule or material is invented here either. This file is source material
+for the academic/ Quarto pipeline (TCH-001); it does not publish to the
+Astro site on its own. The course cannot go public via src/content/courses
+until it has a real period, syllabus and at least one published week.
+-->
+
+## Course overview
+
+Econometrics I introduces the logic and practice of empirical economic analysis. The course emphasizes identification, estimation, diagnostics, interpretation, and reproducible work.
+
+## Learning objectives
+
+By the end of the course, students should be able to formulate an empirical question, select an appropriate model, assess its assumptions, interpret estimates, and communicate uncertainty.
+
+## Modules
+
+1. Data, questions, and empirical design
+2. Probability and statistical foundations
+3. Simple and multiple regression
+4. Statistical inference
+5. Functional form and model specification
+6. Heteroskedasticity and robust inference
+7. Endogeneity and identification
+8. Reproducible empirical projects
+
+## Materials
+
+Public lecture notes, exercises, code, and datasets will be added after their licenses and accessibility have been verified.
+
+## Assessment
+
+The definitive assessment policy belongs in the active course syllabus. This public page does not replace institutional instructions.

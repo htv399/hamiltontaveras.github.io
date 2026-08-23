@@ -1,0 +1,36 @@
+---
+// CMP-COURSE-SHELF. Active courses before archived; shows period and
+// status; explicitly not a carousel.
+interface CourseItem {
+  title: string;
+  href: string;
+  period: string;
+  archived: boolean;
+  summary: string;
+}
+interface Props {
+  courses: CourseItem[];
+  language: "en" | "es";
+}
+const { courses } = Astro.props;
+const active = courses.filter((c) => !c.archived);
+const archived = courses.filter((c) => c.archived);
+const ordered = [...active, ...archived];
+---
+<ul class="course-shelf">
+  {ordered.map((course) => (
+    <li class="course-shelf__item">
+      <a href={course.href}>
+        <p class="u-tag">{course.period}{course.archived ? " · Archived" : ""}</p>
+        <h3 class="text-h3">{course.title}</h3>
+        <p class="text-body">{course.summary}</p>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .course-shelf { display: flex; flex-direction: column; gap: var(--space-5); }
+  .course-shelf__item { border-top: var(--border-hairline); padding-top: var(--space-4); }
+  .course-shelf__item a > * + * { margin-top: var(--space-2); }
+</style>

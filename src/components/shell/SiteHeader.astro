@@ -1,0 +1,93 @@
+---
+// CMP-HEADER. Desktop shows primary nav + utilities; mobile shows name,
+// search and a two-level menu (MobileNav). variant controls contrast for
+// hero pages that start on a navy background.
+import PrimaryNav from "./PrimaryNav.astro";
+import MobileNav from "./MobileNav.tsx";
+import { primaryNavigation, utilityNavigation } from "../../config/navigation";
+import { siteConfig } from "../../config/site";
+import { t } from "../../i18n/ui";
+import { staticRoutePairs } from "../../i18n/routes";
+
+interface Props {
+  currentPath: string;
+  language: "en" | "es";
+  variant?: "transparent_on_navy_hero" | "solid_paper" | "compact";
+}
+const { currentPath, language, variant = "solid_paper" } = Astro.props;
+const strings = t(language);
+const homeHref = language === "es" ? "/es/" : "/";
+
+// IA-REL-003: language switch only appears when a real equivalent exists.
+const alternateLanguage = language === "es" ? "en" : "es";
+const routeKey = Object.entries(staticRoutePairs).find(
+  ([, pair]) => pair[language] === currentPath
+)?.[0];
+const alternateHref = routeKey ? staticRoutePairs[routeKey][alternateLanguage] : null;
+---
+<header class:list={["site-header", `site-header--${variant}`]}>
+  <div class="shell site-header__inner">
+    <a href={homeHref} class="site-header__name site-header__link">{siteConfig.name}</a>
+
+    <div class="site-header__desktop">
+      <PrimaryNav items={primaryNavigation} language={language} currentPath={currentPath} />
+      <ul class="site-header__utilities">
+        {utilityNavigation.map((item) => (
+          <li><a class="site-header__link" href={item.route[language]}>{item.label[language]}</a></li>
+        ))}
+        {alternateHref && (
+          <li><a class="site-header__link" href={alternateHref} rel="alternate" hreflang={alternateLanguage}>{strings.languageSwitch}</a></li>
+        )}
+      </ul>
+    </div>
+
+    <div class="site-header__mobile">
+      <a class="site-header__link" href={language === "es" ? "/es/search/" : "/search/"} aria-label={strings.search}>{strings.search}</a>
+      <MobileNav
+        client:idle
+        items={primaryNavigation}
+        language={language}
+        currentPath={currentPath}
+        menuLabel={strings.menu}
+        closeLabel={strings.close}
+      />
+      <noscript>
+        <ul class="site-header__noscript-nav">
+          {primaryNavigation.map((item) => (
+            <li><a class="site-header__link" href={item.route[language]}>{item.label[language]}</a></li>
+          ))}
+        </ul>
+      </noscript>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 100; height: var(--header-height-desktop);
+    display: flex; align-items: center;
+    --header-fg: var(--color-navy-900);
+  }
+  .site-header--solid_paper { background: var(--color-white); border-bottom: var(--border-hairline); }
+  .site-header--transparent_on_navy_hero {
+    background: transparent; position: absolute; width: 100%;
+    --header-fg: var(--color-white);
+  }
+  .site-header--compact { height: var(--header-height-mobile); }
+  .site-header__inner { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .site-header__name { font-family: var(--font-editorial); font-weight: 600; font-size: var(--size-h3); }
+  /* Explicit, not inherited: the global `a { color }` rule in
+     typography.css is a specified value and always beats inheritance, so
+     every header link needs --header-fg applied directly (QA-VIS-002). */
+  .site-header__link { color: var(--header-fg); }
+  .site-header__desktop { display: flex; align-items: center; gap: var(--space-6); }
+  .site-header__utilities { display: flex; gap: var(--space-4); font-size: var(--size-small); }
+  .site-header__mobile { display: none; align-items: center; gap: var(--space-4); }
+  .site-header__noscript-nav { display: flex; flex-direction: column; gap: var(--space-2); }
+
+  @media (max-width: 768px) {
+    .site-header { height: var(--header-height-mobile); }
+    .site-header__desktop { display: none; }
+    .site-header__mobile { display: flex; }
+  }
+</style>

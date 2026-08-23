@@ -1,0 +1,234 @@
+contract:
+  id: SEED-001
+  version: 1.0.0
+  status: required_v1
+  purpose: "Permitir visualización, pruebas y QA sin inventar hechos."
+  production_policy: "All entries in this file are demo fixtures and must be excluded from production."
+
+global:
+  placeholder: true
+  demo: true
+  authors:
+    - id: PROFILE-DEMO
+      display_name: "[Nombre pendiente]"
+      role_label: "[Descriptor pendiente]"
+  source_label: "Datos demostrativos sintéticos. No representan hechos ni resultados reales."
+  license: "INTERNAL-DEMO-ONLY"
+
+fixtures:
+  - id: ANALYSIS-DEMO-001
+    fixture_model: Analysis
+    title: "Demostración de análisis editorial"
+    slug: "demo-analysis"
+    summary: "Pieza sintética para comprobar la jerarquía de una pregunta, un hallazgo, una figura y sus fuentes."
+    language: en
+    status: draft
+    access: public
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["economics"]
+    featured: true
+    placeholder: true
+    question: "¿Cómo presenta el portal una relación económica sin afirmar más de lo que permite la evidencia?"
+    key_finding: "Este texto comprueba la jerarquía visual. No comunica un hallazgo real."
+    evidence:
+      - id: FIG-DEMO-001
+        title: "Serie demostrativa sin interpretación sustantiva"
+        unit: "Índice sintético"
+        data_vintage: "2026-08-23"
+        source: ["Datos sintéticos generados para QA"]
+        method_note: "Valores 100, 103, 101 y 106."
+        accessible_summary: "La serie sintética aumenta, disminuye y vuelve a aumentar."
+
+  - id: PROJECT-DEMO-001
+    fixture_model: Project
+    title: "Demostración de proyecto"
+    slug: "demo-project"
+    summary: "Caso sintético que prueba Context, Question, Evidence y Results sin atribuir experiencia o resultados a Hamilton Taveras."
+    language: en
+    status: draft
+    access: public
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["data-systems"]
+    featured: false
+    placeholder: true
+    question: "¿Puede una página de proyecto explicar un sistema con una evidencia visible?"
+    context: "Contenido de prueba."
+    evidence: ["FIG-DEMO-001"]
+    results: "Resultado de presentación, no resultado profesional."
+
+  - id: RESEARCH-DEMO-001
+    fixture_model: Research
+    title: "Demostración de research"
+    slug: "demo-research"
+    summary: "Documento sintético para validar abstract, autores, versión, cita, método y recursos de reproducción."
+    language: en
+    status: draft
+    access: public
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["economics"]
+    featured: false
+    placeholder: true
+    format: "working-paper"
+    abstract: "Este abstract existe únicamente para comprobar la plantilla editorial y no describe una investigación realizada."
+    question: "¿La plantilla prioriza pregunta, contribución y hallazgo?"
+    contribution: "Validación de layout."
+    key_finding: "No existe hallazgo sustantivo."
+    version: "0.0.0-demo"
+    citation: { text: "Demo fixture. No citar.", year: 2026 }
+
+  - id: NOTE-DEMO-001
+    fixture_model: Note
+    title: "Nota demostrativa"
+    slug: "demo-note"
+    summary: "Nota breve sintética para revisar tipografía editorial, metadata, fuentes y related work."
+    language: es
+    status: draft
+    access: public
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["economics"]
+    featured: false
+    placeholder: true
+    note_type: "methods-note"
+    body: "Texto de prueba sin afirmaciones sobre experiencia o resultados."
+
+  - id: DATA-PRODUCT-DEMO-001
+    fixture_model: DataProduct
+    title: "Producto de datos demostrativo"
+    slug: "demo-data-product"
+    summary: "Fixture sintético para probar cobertura, procedencia, política de actualización, arquitectura y derechos de descarga."
+    language: en
+    status: draft
+    access: summary-only
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["data-systems"]
+    featured: false
+    placeholder: true
+    question: "¿Cómo documenta el portal un producto de datos?"
+    context: "Contenido de prueba."
+    coverage: { geography: "Synthetic", period: "Four observations", frequency: "Undefined" }
+    provenance: [{ source: "Synthetic QA data", transformation: "None" }]
+    update_policy: "No updates. Demo only."
+    result: "Validación de plantilla."
+
+  - id: VALUATION-DEMO-001
+    fixture_model: Valuation
+    title: "Valoración demostrativa"
+    slug: "demo-valuation"
+    summary: "Fixture sintético para probar drivers, escenarios, sensibilidad, disclosure y límites sin valorar una empresa real."
+    language: en
+    status: draft
+    access: summary-only
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["valuation"]
+    featured: false
+    placeholder: true
+    valuation_date: "2026-08-23"
+    question: "¿La plantilla comunica supuestos y rangos sin falsa precisión?"
+    context: "Entidad completamente ficticia."
+    data_and_adjustments: "Números sintéticos."
+    value_drivers: "Variables sin relación con una empresa real."
+    model: "Modelo de demostración."
+    scenarios: [{ name: "Demo A", value: 90 }, { name: "Demo B", value: 110 }]
+    interpretation: "No utilizar."
+    limitations: "No es una valoración."
+    disclosure: "Material sintético. No constituye recomendación de inversión."
+
+  - id: COURSE-DEMO-001
+    fixture_model: Course
+    title: "Econometrics I, demonstration"
+    slug: "econometrics-i-demo"
+    summary: "Curso demostrativo para validar la navegación hacia una semana y sus materiales sin atribuir un programa institucional."
+    language: en
+    status: draft
+    access: public
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["economics"]
+    featured: true
+    placeholder: true
+    code: "DEMO-ECON-001"
+    description: "Fixture de interfaz."
+    objectives: ["Comprobar la plantilla de curso."]
+    period: "Demo"
+    syllabus: "MATERIAL-DEMO-PDF"
+
+  - id: WEEK-DEMO-001
+    fixture_model: Week
+    title: "Week 01, demonstration"
+    slug: "week-01-demo"
+    summary: "Semana sintética para validar pregunta, resumen, recursos, versión, licencia y navegación."
+    language: en
+    status: draft
+    access: public
+    published_at: "2026-08-23"
+    updated_at: "2026-08-23"
+    domains: ["economics"]
+    featured: false
+    placeholder: true
+    course_id: "COURSE-DEMO-001"
+    week_number: 1
+    question: "¿La semana organiza recursos de manera comprensible?"
+    overview: "Contenido de prueba."
+    resources: ["MATERIAL-DEMO-PDF", "MATERIAL-DEMO-R", "MATERIAL-DEMO-CSV"]
+    version: "0.0.0-demo"
+    license: "INTERNAL-DEMO-ONLY"
+
+  - id: MATERIAL-DEMO-PDF
+    fixture_model: Material
+    title: "PDF demonstration"
+    slug: "demo-pdf"
+    language: en
+    material_type: pdf
+    access: public
+    status: draft
+    version: "0.0.0-demo"
+    license: "INTERNAL-DEMO-ONLY"
+    href: "/fixtures/demo.pdf"
+    file_size_bytes: 1
+
+  - id: MATERIAL-DEMO-R
+    fixture_model: Material
+    title: "R script demonstration"
+    slug: "demo-r"
+    language: en
+    material_type: r
+    access: public
+    status: draft
+    version: "0.0.0-demo"
+    license: "INTERNAL-DEMO-ONLY"
+    href: "/fixtures/demo.R"
+    file_size_bytes: 1
+
+  - id: MATERIAL-DEMO-CSV
+    fixture_model: Material
+    title: "CSV demonstration"
+    slug: "demo-csv"
+    language: en
+    material_type: csv
+    access: public
+    status: draft
+    version: "0.0.0-demo"
+    license: "INTERNAL-DEMO-ONLY"
+    href: "/fixtures/demo.csv"
+    file_size_bytes: 1
+
+home_seed_behavior:
+  preview:
+    hero: "ANALYSIS-DEMO-001"
+    featured: ["PROJECT-DEMO-001", "RESEARCH-DEMO-001", "NOTE-DEMO-001"]
+    indicators: "Use four synthetic records, all labeled Demo."
+    teaching: "COURSE-DEMO-001"
+  production:
+    rule: "Fail before build because placeholder true exists."
+
+verification:
+  - { id: QA-SEED-001, check: "Every content model has a valid fixture." }
+  - { id: QA-SEED-002, check: "Every fixture visibly declares synthetic or demo status." }
+  - { id: QA-SEED-003, check: "Production build fails while any fixture is public." }
+  - { id: QA-SEED-004, check: "No fixture contains a real institution, position, result, testimonial or external link." }

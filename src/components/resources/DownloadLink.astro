@@ -1,0 +1,35 @@
+---
+// CMP-DOWNLOAD. `download` attribute only for same-origin files; accessible
+// label states file type and size.
+import { canonicalBase } from "../../config/site";
+
+interface Props {
+  href: string;
+  label: string;
+  format?: string;
+  fileSizeBytes?: number;
+}
+const { href, label, format, fileSizeBytes } = Astro.props;
+
+function isSameOrigin(url: string) {
+  if (url.startsWith("/")) return true;
+  try {
+    return new URL(url).origin === new URL(canonicalBase.value).origin;
+  } catch {
+    return false;
+  }
+}
+function formatBytes(bytes?: number) {
+  if (!bytes) return null;
+  if (bytes < 1024) return `${bytes} B`;
+  const kb = bytes / 1024;
+  if (kb < 1024) return `${kb.toFixed(0)} KB`;
+  return `${(kb / 1024).toFixed(1)} MB`;
+}
+const sizeLabel = formatBytes(fileSizeBytes);
+const parts = [format?.toUpperCase(), sizeLabel].filter(Boolean).join(", ");
+const accessibleLabel = parts ? `${label} (${parts})` : label;
+---
+<a href={href} download={isSameOrigin(href) || undefined} aria-label={accessibleLabel} class="download-link">
+  {label}{parts && <span class="text-micro"> ({parts})</span>}
+</a>

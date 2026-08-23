@@ -1,0 +1,204 @@
+contract:
+  id: TECH-001
+  version: 1.0.0
+  status: required_v1
+  architecture: "Static Astro publication with selective React islands and a separate Quarto and R Markdown pipeline."
+
+runtime:
+  node:
+    version_file: ".nvmrc"
+    package_manager: npm
+    install: "npm ci"
+    permanent_server: false
+  typescript:
+    strict: true
+    no_implicit_any: true
+  astro:
+    output: static
+    site: "from SITE_URL configuration"
+    base: "from deployment configuration"
+    trailing_slash: always
+  react:
+    use: islands_only
+    directives_allowed: ["client:idle", "client:visible", "client:media", "client:load_only_for_above_fold_menu"]
+  academic:
+    engines: ["quarto", "rmarkdown"]
+    isolated_from_public_framework: true
+
+dependencies:
+  required_capabilities:
+    - "Astro"
+    - "MDX integration"
+    - "React integration"
+    - "Sitemap integration"
+    - "Pagefind or approved static equivalent"
+    - "Schema validation"
+  rule: "No dependency is added without mapping it to a required capability and documenting why existing code cannot meet it."
+  lockfile_required: true
+  ci_mutation_forbidden: true
+
+content_collections:
+  source: "src/content.config.ts"
+  models: ["CM-ANALYSIS", "CM-RESEARCH", "CM-DATA-PRODUCT", "CM-VALUATION", "CM-NOTE", "CM-COURSE", "CM-WEEK", "CM-MATERIAL", "CM-PROJECT", "CM-PROFILE"]
+  generation:
+    - "Use getStaticPaths for public and summary-only eligible records."
+    - "Exclude private, future scheduled and production placeholders."
+    - "Fail on duplicate output route."
+
+assets:
+  source_images: "src/assets/"
+  public_downloads: "public/downloads/"
+  academic_outputs: "public/materials/"
+  rules:
+    - "Optimize raster images at build."
+    - "Declare width and height."
+    - "Prefer SVG for exact diagrams and logos."
+    - "Do not hotlink critical visuals."
+    - "Hash build assets. Keep permanent downloadable paths stable."
+    - "Maximum ordinary raster source is 2 MB unless exempted with reason."
+
+seo:
+  id: TECH-SEO-001
+  required:
+    - "Unique title and description."
+    - "Canonical absolute URL."
+    - "Open Graph and social image."
+    - "robots directive."
+    - "Sitemap."
+    - "RSS for Research and Notes."
+    - "JSON-LD."
+    - "Favicon and web manifest metadata without PWA behavior."
+    - "404."
+    - "Redirect map."
+  json_ld:
+    Profile: Person
+    Analysis: Article
+    Note: Article
+    Research: ScholarlyArticle
+    DataProduct: Dataset
+    Course: Course
+    Breadcrumbs: BreadcrumbList
+  citation_meta:
+    required_for: ["Research"]
+    optional_for: ["DataProduct", "Valuation", "Analysis"]
+
+accessibility:
+  id: TECH-A11Y-001
+  standard: "WCAG 2.2 AA"
+  requirements:
+    - "Landmarks and skip link."
+    - "Logical heading order."
+    - "Keyboard access and visible focus."
+    - "44 by 44 CSS pixel touch targets for primary controls."
+    - "Alt text for informative images and empty alt for decorative images."
+    - "Text alternative for charts and equations."
+    - "Semantic captions and headers for tables."
+    - "Language attribute per page and language changes when needed."
+    - "Reduced motion support."
+    - "Error and result announcements for search."
+
+performance:
+  id: TECH-PERF-001
+  budgets:
+    lighthouse_mobile:
+      performance_min: 90
+      accessibility_min: 95
+      best_practices_min: 95
+      seo_min: 95
+    core_web_vitals_target:
+      LCP_ms_max: 2500
+      CLS_max: 0.1
+      INP_ms_max: 200
+    initial_js_kb_gzip_max: 90
+    route_js_default_kb_gzip_max: 35
+    hero_image_kb_max: 250
+    font_total_kb_max: 300
+  rules:
+    - "Astro components ship zero client JavaScript."
+    - "Interactive charts hydrate only when visible unless above fold."
+    - "Fonts use font-display swap and limited subsets."
+
+security:
+  id: TECH-SEC-001
+  requirements:
+    - "No secrets in client code, content, logs or artifacts."
+    - "Dependabot or equivalent update configuration."
+    - "Code scanning or npm audit in CI."
+    - "External links sanitized."
+    - "No unsafe MDX component exposure to untrusted content."
+    - "CSP documented for GitHub Pages-compatible deployment."
+    - "Forms, if approved, use an external protected provider and spam protection."
+    - "Analytics is disabled until APP-009 is approved."
+
+privacy:
+  analytics:
+    status: approval_required
+    decision_id: APP-009
+    default: disabled
+    requirement: "If enabled, use a privacy-respecting option, disclose it and avoid cross-site profiling."
+  contact:
+    status: approval_required
+    decision_id: APP-005
+    default: content_pending
+
+search:
+  id: TECH-SEARCH-001
+  engine: Pagefind
+  timing: "Run after Astro build."
+  index_fields: ["title", "summary", "domains", "methods", "content_type", "language", "body"]
+  exclude: ["private", "draft", "review", "future_scheduled", "placeholder_production", "navigation", "footer"]
+  language_scopes: ["en", "es"]
+  fallback: "If Pagefind is replaced, the alternative must be static, accessible and serverless."
+
+feeds:
+  research: "/research/rss.xml"
+  notes: "/notes/rss.xml"
+  spanish_research: "/es/research/rss.xml"
+  spanish_notes: "/es/notes/rss.xml"
+  rule: "Generate only feeds with at least one eligible item. Never include private or placeholder content."
+
+github_pages:
+  id: TECH-DEPLOY-001
+  workflow: ".github/workflows/deploy.yml"
+  permissions: ["contents:read", "pages:write", "id-token:write"]
+  artifact: "dist/"
+  requirements:
+    - "Use official GitHub Pages actions pinned to a major or commit according to repository policy."
+    - "Build base path correctly for user or project pages."
+    - "Deploy only from the approved default branch."
+    - "PRs run validation without production deployment."
+    - "Use concurrency to prevent overlapping production deployments."
+
+ci:
+  id: TECH-CI-001
+  commands:
+    check: "astro check"
+    content_validate: "node scripts/validate-content.mjs"
+    contracts_validate: "node scripts/validate-contracts.mjs"
+    academic_validate: "node scripts/validate-materials.mjs"
+    build: "astro build"
+    search_index: "pagefind --site dist"
+    links: "node scripts/check-links.mjs"
+    manifest: "node scripts/check-repository-manifest.mjs"
+    placeholders: "node scripts/check-placeholders.mjs"
+    tests: "vitest run or the approved existing test runner"
+    e2e: "playwright test or approved existing browser runner"
+  aggregate: "npm run ci"
+  order: ["contracts_validate", "check", "content_validate", "academic_validate", "tests", "build", "search_index", "links", "manifest", "placeholders", "e2e"]
+
+environment:
+  required:
+    SITE_URL: { critical_for_production: true, placeholder_allowed_in_preview: true }
+    BASE_PATH: { critical_for_production: false, default: "/" }
+    DEFAULT_LANGUAGE: { critical_for_production: true, decision_id: APP-001 }
+    CONTACT_MODE: { critical_for_production: true, decision_id: APP-005 }
+    ANALYTICS_MODE: { critical_for_production: false, default: "off" }
+  secret_values_forbidden_in_client: true
+
+verification:
+  - { id: QA-TECH-001, checks: ["npm_ci", "astro_check", "static_build"] }
+  - { id: QA-TECH-002, checks: ["pagefind_index", "search_languages", "private_exclusion"] }
+  - { id: QA-TECH-003, checks: ["sitemap", "feeds", "canonical", "json_ld", "og"] }
+  - { id: QA-TECH-004, checks: ["performance_budgets", "zero_js_default"] }
+  - { id: QA-TECH-005, checks: ["github_pages_artifact", "base_path", "404"] }
+  - { id: QA-TECH-006, checks: ["security_scan", "no_secrets", "analytics_default_off"] }

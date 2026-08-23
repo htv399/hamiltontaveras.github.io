@@ -1,0 +1,47 @@
+---
+// CMP-FEATURED-2-1. Primary item receives at least twice the visual area
+// of one secondary. Never renders with fewer than three items (page code
+// falls back to CMP-EDITORIAL-ROW when eligible_featured_count < 3).
+import type { RowItem } from "./EditorialRow.astro";
+
+interface Props {
+  primary: RowItem;
+  secondary: [RowItem, RowItem];
+  language: "en" | "es";
+}
+const { primary, secondary, language } = Astro.props;
+const dateLabel = (d?: Date) =>
+  d ? new Intl.DateTimeFormat(language, { year: "numeric", month: "short", day: "numeric" }).format(d) : null;
+---
+<div class="featured-grid">
+  <article class="featured-grid__primary">
+    <a href={primary.href}>
+      <p class="u-tag">{primary.tags.slice(0, 3).join(" · ")}</p>
+      <h2 class="text-h2">{primary.title}</h2>
+      <p class="text-body-l">{primary.summary}</p>
+      {dateLabel(primary.publishedAt) && <p class="text-small">{dateLabel(primary.publishedAt)}</p>}
+    </a>
+  </article>
+  <div class="featured-grid__secondary">
+    {secondary.map((item: RowItem) => (
+      <article>
+        <a href={item.href}>
+          <p class="u-tag">{item.tags.slice(0, 3).join(" · ")}</p>
+          <h3 class="text-h3">{item.title}</h3>
+          <p class="text-small">{item.summary}</p>
+        </a>
+      </article>
+    ))}
+  </div>
+</div>
+
+<style>
+  .featured-grid { display: grid; gap: var(--space-6); }
+  @media (min-width: 769px) {
+    .featured-grid { grid-template-columns: 2fr 1fr; }
+  }
+  .featured-grid__primary a > * + * { margin-top: var(--space-3); }
+  .featured-grid__secondary { display: flex; flex-direction: column; gap: var(--space-5); }
+  .featured-grid__secondary article { border-top: var(--border-hairline); padding-top: var(--space-4); }
+  .featured-grid__secondary a > * + * { margin-top: var(--space-2); }
+</style>

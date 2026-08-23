@@ -1,0 +1,57 @@
+{
+  "name": "hamilton-taveras-portal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.14.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro build",
+    "preview": "astro preview",
+    "contracts:validate": "node scripts/validate-contracts.mjs",
+    "content:validate": "node scripts/validate-content.mjs",
+    "academic:validate": "node scripts/validate-materials.mjs",
+    "materials:check": "node scripts/validate-materials.mjs",
+    "academic:build": "node scripts/academic-build.mjs",
+    "search:index": "pagefind --site dist",
+    "links:check": "node scripts/check-links.mjs",
+    "routes:check": "node scripts/check-links.mjs --routes-only",
+    "manifest:check": "node scripts/check-repository-manifest.mjs",
+    "placeholders:check": "node scripts/check-placeholders.mjs",
+    "seo:check": "node scripts/check-seo.mjs",
+    "og:generate": "node scripts/generate-og.mjs",
+    "test:unit": "vitest run",
+    "test:components": "vitest run",
+    "test:e2e": "playwright test tests/e2e",
+    "test:a11y": "playwright test tests/e2e/a11y.spec.ts",
+    "test:visual": "playwright test tests/visual",
+    "test:responsive": "playwright test tests/e2e/responsive.spec.ts",
+    "perf:budget": "node scripts/check-perf-budget.mjs",
+    "ci": "npm run contracts:validate && npm run check && npm run content:validate && npm run academic:validate && npm run test:unit && npm run build && npm run search:index && npm run links:check && npm run manifest:check && npm run placeholders:check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.14",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/react": "^4.4.2",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^5.18.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@axe-core/playwright": "^4.10.1",
+    "@playwright/test": "^1.49.1",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "js-yaml": "^4.1.0",
+    "pagefind": "^1.3.0",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.11"
+  }
+}

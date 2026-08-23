@@ -1,0 +1,35 @@
+---
+// CMP-EDITORIAL-ROW. Not a floating card: visual, title and finding align
+// on a shared grid rule, with at most three visible tags.
+export interface RowItem {
+  title: string;
+  href: string;
+  summary: string;
+  publishedAt?: Date;
+  tags: string[];
+}
+interface Props {
+  item: RowItem;
+  emphasis: "lead" | "standard" | "compact";
+  language: "en" | "es";
+}
+const { item, emphasis, language } = Astro.props;
+const dateLabel = item.publishedAt
+  ? new Intl.DateTimeFormat(language, { year: "numeric", month: "short", day: "numeric" }).format(item.publishedAt)
+  : null;
+const visibleTags = item.tags.slice(0, 3);
+---
+<article class:list={["editorial-row", `editorial-row--${emphasis}`]}>
+  <a href={item.href} class="editorial-row__link">
+    <p class="u-tag">{visibleTags.join(" · ")}</p>
+    <h3 class:list={[emphasis === "lead" ? "text-h2" : "text-h3"]}>{item.title}</h3>
+    <p class="text-body">{item.summary}</p>
+    {dateLabel && <p class="text-small">{dateLabel}</p>}
+  </a>
+</article>
+
+<style>
+  .editorial-row { border-top: var(--border-hairline); padding-block: var(--space-5); }
+  .editorial-row__link > * + * { margin-top: var(--space-2); }
+  .editorial-row--compact h3 { font-size: var(--size-body-l); }
+</style>

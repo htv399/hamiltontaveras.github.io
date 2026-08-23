@@ -1,0 +1,202 @@
+contract:
+  id: CMP-001
+  version: 1.0.0
+  status: required_v1
+  rules:
+    - "Components accept typed props."
+    - "Optional content produces null, not an empty wrapper."
+    - "Interactive components require a documented reason and a non-JavaScript fallback."
+    - "No component exposes a resource that access or license forbids."
+
+components:
+  - id: CMP-HEADER
+    file: "src/components/shell/SiteHeader.astro"
+    props:
+      current_path: { type: string, required: true }
+      language: { type: Language, required: true }
+      translations: { type: array, required: false }
+    variants: ["transparent_on_navy_hero", "solid_paper", "compact"]
+    rules: ["Desktop shows primary navigation and utilities.", "Mobile shows name, search and menu with at most two levels.", "Active state cannot depend only on color."]
+
+  - id: CMP-NAV
+    file: "src/components/shell/PrimaryNav.astro"
+    props: { items: { type: "NavItem[]", required: true } }
+    rules: ["Use IA primary_navigation exactly.", "No taxonomy in primary navigation."]
+
+  - id: CMP-MOBILE-NAV
+    file: "src/components/shell/MobileNav.tsx"
+    interactive_reason: "Open state, focus management and escape handling."
+    props: { items: { type: "NavItem[]", required: true } }
+    fallback: "Visible first-level links in a noscript block."
+    a11y: ["focus_trap", "escape_closes", "return_focus", "aria_expanded"]
+
+  - id: CMP-FOOTER
+    file: "src/components/shell/SiteFooter.astro"
+    props: { language: { type: Language, required: true }, links: { type: "FooterLink[]", required: true } }
+    rules: ["Include copyright, licenses, accessibility, RSS and contact.", "Repository appears only when configured."]
+
+  - id: CMP-BREADCRUMBS
+    file: "src/components/navigation/Breadcrumbs.astro"
+    props: { items: { type: "BreadcrumbItem[]", required: true } }
+    rules: ["Follow IA breadcrumbs.", "Emit BreadcrumbList JSON-LD."]
+
+  - id: CMP-HERO-EDITORIAL
+    file: "src/components/editorial/EditorialHero.astro"
+    props:
+      name: { type: string, required: true }
+      descriptor: { type: string, required: true }
+      thesis: { type: string, required: true }
+      lead: { type: Analysis, required: true }
+    variants: ["navy", "paper"]
+    rules: ["Desktop composition 7+5 or 8+4.", "Show finding, date and one evidence visual.", "Lead link is one click.", "Mobile renders identity and thesis before visual."]
+
+  - id: CMP-LEAD-ANALYSIS
+    file: "src/components/editorial/LeadAnalysis.astro"
+    props: { item: { type: Analysis, required: true }, priority: { type: boolean, default: false } }
+    rules: ["Finding precedes method.", "Image has width and height.", "No decorative chart."]
+
+  - id: CMP-INDICATOR-STRIP
+    file: "src/components/data/IndicatorStrip.astro"
+    props: { indicators: { type: "Indicator[]", min: 4, max: 6, required: true } }
+    item_required: ["label", "value", "unit", "change", "data_vintage", "source"]
+    rules: ["Render only verified indicators.", "Mobile uses horizontal scroll and accessible labels.", "No live-data implication when values are static."]
+
+  - id: CMP-FEATURED-2-1
+    file: "src/components/editorial/FeaturedAnalysisGrid.astro"
+    props: { primary: { type: ContentItem, required: true }, secondary: { type: "ContentItem[2]", required: true } }
+    rules: ["Primary receives at least twice the visual area of one secondary.", "Do not render with fewer than three items.", "Mobile becomes one lead and two rows."]
+
+  - id: CMP-EDITORIAL-ROW
+    file: "src/components/editorial/EditorialRow.astro"
+    props: { item: { type: ContentItem, required: true }, emphasis: { type: "lead|standard|compact", required: true } }
+    rules: ["Not a floating card.", "Visual, title and finding or summary align on a shared grid.", "Maximum three visible tags."]
+
+  - id: CMP-WORK-SPLIT
+    file: "src/components/editorial/WorkSplit.astro"
+    props: { items: { type: "WorkItem[]", min: 2, max: 4, required: true } }
+    rules: ["Mix evidence formats.", "Avoid equal rectangles."]
+
+  - id: CMP-RESEARCH-FEATURE
+    file: "src/components/research/ResearchFeature.astro"
+    props: { item: { type: Research, required: true } }
+    rules: ["Show format, authors, date, finding and secondary PDF action.", "Title link remains primary."]
+
+  - id: CMP-NOTES-ROW
+    file: "src/components/editorial/NotesRow.astro"
+    props: { items: { type: "Note[]", min: 1, max: 4, required: true } }
+    rules: ["Chronology is visible.", "No frequency claim."]
+
+  - id: CMP-QUESTIONS
+    file: "src/components/editorial/QuestionsModule.astro"
+    props: { questions: { type: "string[]", min: 2, max: 5, required: true } }
+    rules: ["Questions are authored content.", "No icon box per question."]
+
+  - id: CMP-BACKGROUND-CONTACT
+    file: "src/components/editorial/BackgroundContact.astro"
+    props: { bio_short: { type: string, required: true }, cv_href: { type: string, required: true }, contact: { type: ContactConfig, required: true } }
+    rules: ["Compact closing chapter.", "No full CV on Home."]
+
+  - id: CMP-METADATA-BAND
+    file: "src/components/content/MetadataBand.astro"
+    props: { metadata: { type: MetadataView, required: true } }
+    rules: ["Show only relevant fields.", "Desktop horizontal, mobile stacked.", "Dates use localized display and machine datetime."]
+
+  - id: CMP-AUTHORS
+    file: "src/components/content/Authors.astro"
+    props: { authors: { type: "Profile[]", min: 1, required: true } }
+    rules: ["Never invent affiliations.", "Photo is optional."]
+
+  - id: CMP-FIGURE
+    file: "src/components/data/Figure.astro"
+    props:
+      title: { type: string, required: true }
+      unit: { type: string, required: true }
+      source: { type: "Source[]", required: true }
+      data_vintage: { type: string, required: true }
+      note: { type: string, required: true }
+      accessible_summary: { type: string, required: true }
+      media: { type: Media, required: true }
+    variants: ["inline", "wide", "full_bleed"]
+    rules: ["No figure without metadata.", "Full bleed only for featured evidence."]
+
+  - id: CMP-CHART
+    file: "src/components/data/InteractiveChart.tsx"
+    interactive_reason: "Filter, tooltip or series selection when a static figure is insufficient."
+    props: { spec: { type: ChartSpec, required: true }, fallback_table: { type: DataTable, required: true } }
+    rules: ["Lazy hydrate when visible.", "Respect reduced motion.", "Provide table or narrative alternative."]
+
+  - id: CMP-DATA-TABLE
+    file: "src/components/data/DataTable.astro"
+    props: { caption: { type: string, required: true }, columns: { type: "Column[]", required: true }, rows: { type: "Row[]", required: true } }
+    variants: ["financial", "econometric", "standard", "sensitivity"]
+    rules: ["Semantic table elements.", "Numeric columns right aligned.", "Mobile strategy declared per instance."]
+
+  - id: CMP-EQUATION
+    file: "src/components/data/Equation.astro"
+    props: { latex: { type: string, required: true }, label: { type: string, required: false }, explanation: { type: string, required: true } }
+    rules: ["Scrollable on mobile.", "Accessible text explanation required."]
+
+  - id: CMP-CODE
+    file: "src/components/content/CodeBlock.astro"
+    props: { code: { type: string, required: true }, language: { type: string, required: true }, source_href: { type: string, required: false } }
+    rules: ["Copy control is optional progressive enhancement.", "Horizontal scroll on mobile."]
+
+  - id: CMP-RESOURCE-LINKS
+    file: "src/components/resources/ResourceLinks.astro"
+    props: { resources: { type: "Resource[]", required: true } }
+    variants: ["inline", "grouped", "downloads"]
+    rules: ["Filter access before render.", "Show format, version and size when known.", "Do not make repository a primary CTA."]
+
+  - id: CMP-DOWNLOAD
+    file: "src/components/resources/DownloadLink.astro"
+    props: { resource: { type: Resource, required: true } }
+    rules: ["Use download attribute only for same-origin files.", "Include file type and size in accessible label."]
+
+  - id: CMP-DISCLOSURE
+    file: "src/components/content/Disclosure.astro"
+    props: { text: { type: string, required: true }, kind: { type: "financial|data-rights|synthetic|general", required: true } }
+    rules: ["Use restrained type and rule.", "Do not use the generic left-color-box pattern."]
+
+  - id: CMP-FILTERS
+    file: "src/components/filters/ContentFilters.tsx"
+    interactive_reason: "Client-side filtering of a static index."
+    props: { items: { type: "SearchRecord[]", required: true }, dimensions: { type: "FilterDimension[]", required: true } }
+    rules: ["URL query reflects state.", "Clear all is keyboard accessible.", "No filters when fewer than two meaningful values."]
+
+  - id: CMP-FILTER-DRAWER
+    file: "src/components/filters/FilterDrawer.tsx"
+    interactive_reason: "Mobile disclosure, focus and filter state."
+    props: { dimensions: { type: "FilterDimension[]", required: true } }
+
+  - id: CMP-SEARCH
+    file: "src/components/search/Search.tsx"
+    interactive_reason: "Pagefind query and filter state."
+    props: { language: { type: Language, required: true } }
+    states: ["idle", "loading", "results", "empty", "error"]
+    rules: ["Announce result count.", "Preserve query in URL.", "No result exposes private content."]
+
+  - id: CMP-COURSE-SHELF
+    file: "src/components/teaching/CourseShelf.astro"
+    props: { courses: { type: "Course[]", required: true } }
+    rules: ["Active before archived.", "Show period and status.", "Not a carousel."]
+
+  - id: CMP-WEEK-NAV
+    file: "src/components/teaching/WeekNavigation.astro"
+    props: { weeks: { type: "Week[]", required: true }, current_id: { type: string, required: false } }
+    rules: ["Order by week number.", "Show publication state.", "Previous and next are deterministic."]
+
+  - id: CMP-MATERIAL-GROUP
+    file: "src/components/teaching/MaterialGroup.astro"
+    props: { title: { type: string, required: true }, materials: { type: "Material[]", min: 1, required: true } }
+    rules: ["Omit zero-length group.", "Show type, version, license, format and size."]
+
+  - id: CMP-RELATED-WORK
+    file: "src/components/content/RelatedWork.astro"
+    props: { items: { type: "ContentItem[]", min: 1, max: 4, required: true } }
+    rules: ["Use IA-REL-001.", "Omit if zero."]
+
+verification:
+  - { id: QA-CMP-001, checks: ["typed_props", "null_empty_state", "access_filter"] }
+  - { id: QA-CMP-002, checks: ["keyboard", "focus", "noscript_fallback"] }
+  - { id: QA-CMP-003, checks: ["responsive_contract", "no_uniform_card_wall"] }
+  - { id: QA-CMP-004, checks: ["figure_metadata", "table_semantics", "chart_alternative"] }

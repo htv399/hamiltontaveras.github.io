@@ -1,0 +1,154 @@
+---
+// PG-PROJECT / PG-VALUATION / PG-DATA-PRODUCT. All three share the "work"
+// collection with a `kind` discriminator; conditional_blocks render only
+// when populated (05-page-contracts.yml: "Never render a conditional
+// heading without body.").
+import { getCollection, type CollectionEntry } from "astro:content";
+import WorkLayout from "../../layouts/WorkLayout.astro";
+import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
+import MetadataBand from "../../components/content/MetadataBand.astro";
+import Authors from "../../components/content/Authors.astro";
+import Figure from "../../components/data/Figure.astro";
+import DataTable from "../../components/data/DataTable.astro";
+import ResourceLinks from "../../components/resources/ResourceLinks.astro";
+import Disclosure from "../../components/content/Disclosure.astro";
+import RelatedWork from "../../components/content/RelatedWork.astro";
+import { isEligible } from "../../lib/contentGate";
+import { relatedWork, type RelatableItem } from "../../lib/relatedWork";
+import { siteConfig, canonicalBase } from "../../config/site";
+import { t } from "../../i18n/ui";
+
+export async function getStaticPaths() {
+  const all = await getCollection("work");
+  const eligible = all.filter((e) => isEligible(e.data, siteConfig.env));
+  return eligible.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry, pool: eligible } }));
+}
+
+interface Props { entry: CollectionEntry<"work">; pool: CollectionEntry<"work">[] }
+const { entry, pool } = Astro.props as Props;
+const { data } = entry;
+const language = data.language;
+const strings = t(language);
+const path = `/work/${data.slug}/`;
+
+const current: RelatableItem = {
+  id: data.id, href: path, title: data.title, summary: data.summary, domains: data.domains,
+  methods: data.methods, objects: data.objects, language: data.language, access: data.access,
+  status: data.status, placeholder: data.placeholder, relatedIds: data.related_ids
+};
+const poolItems: RelatableItem[] = pool.map((p) => ({
+  id: p.data.id, href: `/work/${p.data.slug}/`, title: p.data.title, summary: p.data.summary,
+  domains: p.data.domains, methods: p.data.methods, objects: p.data.objects, language: p.data.language,
+  access: p.data.access, status: p.data.status, placeholder: p.data.placeholder
+}));
+const related = relatedWork(current, poolItems, siteConfig.env);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": data.kind === "data-product" ? "Dataset" : "Article",
+  name: data.title,
+  headline: data.title,
+  description: data.summary,
+  datePublished: data.published_at?.toISOString(),
+  dateModified: data.updated_at?.toISOString(),
+  author: data.authors.map((a) => ({ "@type": "Person", name: a.display_name })),
+  url: `${canonicalBase.value.replace(/\/$/, "")}${path}`
+};
+const breadcrumbItems = [{ label: strings.breadcrumbHome, href: "/" }, { label: "Work", href: "/work/" }, { label: data.title }];
+---
+<WorkLayout title={`${data.title} — ${siteConfig.name}`} description={data.summary} path={path} language={language} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems} />
+  {data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
+
+  <MetadataBand metadata={{ publishedAt: data.published_at, updatedAt: data.updated_at, license: data.license }} language={language} />
+
+  <p class="u-tag" style="margin-top: var(--space-5);">{data.kind.replace("-", " ")}</p>
+  <h1 class="text-h1 font-editorial">{data.title}</h1>
+  <div style="margin-top: var(--space-3);"><Authors authors={data.authors} /></div>
+
+  <p class="text-h3 font-editorial reading-column" style="margin-top: var(--space-5); color: var(--color-slate-500);">{data.question}</p>
+
+  {data.context && (
+    <div class="reading-column" style="margin-top: var(--space-6);">
+      <h2 class="text-h3">Context</h2>
+      <p class="text-body">{data.context}</p>
+    </div>
+  )}
+
+  {data.kind === "project" && (
+    <>
+      {data.evidence.map((fig) => (
+        <div style="margin-top: var(--space-6);">
+          <Figure title={fig.title} unit={fig.unit} source={fig.source.map((s) => ({ label: s }))} data_vintage={fig.data_vintage} note={fig.method_note} accessible_summary={fig.accessible_summary} />
+        </div>
+      ))}
+      {data.data && <div class="reading-column" style="margin-top: var(--space-6);"><h2 class="text-h3">Data</h2><p class="text-body">{data.data}</p></div>}
+      {data.architecture && <div class="reading-column" style="margin-top: var(--space-6);"><h2 class="text-h3">Architecture</h2><p class="text-body">{data.architecture}</p></div>}
+      {data.methodology && <div class="reading-column" style="margin-top: var(--space-6);"><h2 class="text-h3">Methodology</h2><p class="text-body">{data.methodology}</p></div>}
+      {data.model && <div class="reading-column" style="margin-top: var(--space-6);"><h2 class="text-h3">Model</h2><p class="text-body">{data.model}</p></div>}
+      {data.analysis && <div class="reading-column" style="margin-top: var(--space-6);"><h2 class="text-h3">Analysis</h2><p class="text-body">{data.analysis}</p></div>}
+      {data.valuation && <div class="reading-column" style="margin-top: var(--space-6);"><h2 class="text-h3">Valuation</h2><p class="text-body">{data.valuation}</p></div>}
+      <div class="reading-column" style="margin-top: var(--space-6);">
+        <h2 class="text-h3">Results</h2>
+        <p class="text-body-l"><strong>{data.results}</strong></p>
+      </div>
+    </>
+  )}
+
+  {data.kind === "data-product" && (
+    <div class="reading-column" style="margin-top: var(--space-6);">
+      <h2 class="text-h3">Coverage</h2>
+      <DataTable
+        caption="Coverage"
+        columns={[{ key: "field", label: "Field" }, { key: "value", label: "Value" }]}
+        rows={[
+          { cells: { field: "Geography", value: data.coverage.geography } },
+          { cells: { field: "Period", value: data.coverage.period } },
+          { cells: { field: "Frequency", value: data.coverage.frequency } }
+        ]}
+      />
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Provenance</h2>
+      <ul>
+        {data.provenance.map((p) => <li class="text-body">{p.source} — {p.transformation}</li>)}
+      </ul>
+      {data.architecture && <><h2 class="text-h3" style="margin-top: var(--space-6);">Architecture</h2><p class="text-body">{data.architecture}</p></>}
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Update policy</h2>
+      <p class="text-body">{data.update_policy}</p>
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Result</h2>
+      <p class="text-body-l"><strong>{data.result}</strong></p>
+    </div>
+  )}
+
+  {data.kind === "valuation" && (
+    <div class="reading-column" style="margin-top: var(--space-6);">
+      <p class="text-small">Valuation date: {new Intl.DateTimeFormat(language, { year: "numeric", month: "long", day: "numeric" }).format(data.valuation_date)}</p>
+      <h2 class="text-h3" style="margin-top: var(--space-5);">Data and adjustments</h2>
+      <p class="text-body">{data.data_and_adjustments}</p>
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Value drivers</h2>
+      <p class="text-body">{data.value_drivers}</p>
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Model</h2>
+      <p class="text-body">{data.model}</p>
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Scenarios</h2>
+      <DataTable
+        caption="Scenarios"
+        columns={[{ key: "name", label: "Scenario" }, { key: "value", label: "Value", numeric: true }]}
+        rows={data.scenarios.map((s) => ({ cells: { name: s.name, value: s.value } }))}
+      />
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Interpretation</h2>
+      <p class="text-body">{data.interpretation}</p>
+      <h2 class="text-h3" style="margin-top: var(--space-6);">Limitations</h2>
+      <p class="text-body">{data.limitations}</p>
+      <div style="margin-top: var(--space-6);">
+        <Disclosure text={data.disclosure} kind="financial" />
+      </div>
+    </div>
+  )}
+
+  {data.resources && data.resources.length > 0 && (
+    <div style="margin-top: var(--space-6);">
+      <ResourceLinks resources={data.resources} variant="grouped" siteEnv={siteConfig.env} />
+    </div>
+  )}
+
+  <RelatedWork items={related.map((r) => ({ href: r.href, title: r.title, summary: r.summary }))} language={language} />
+</WorkLayout>

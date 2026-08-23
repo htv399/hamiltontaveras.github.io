@@ -1,0 +1,38 @@
+---
+// PG-404. Shared 404 for GitHub Pages; recovers navigation without
+// simulating missing content. No oversized decorative illustration.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Search from "../components/search/Search.tsx";
+import { siteConfig } from "../config/site";
+import { primaryNavigation } from "../config/navigation";
+import { t } from "../i18n/ui";
+
+const language = "en" as const;
+const strings = t(language);
+---
+<BaseLayout title={`${strings.notFoundTitle} — ${siteConfig.name}`} description={strings.notFoundBody} path="/404.html" language={language} noindex>
+  <section class="shell section-standard">
+    <h1 class="text-h1 font-editorial">{strings.notFoundTitle}</h1>
+    <p class="text-body-l">{strings.notFoundBody}</p>
+    <div style="margin-top: var(--space-6); max-width: 480px;">
+      <Search
+        client:idle
+        language={language}
+        placeholder={strings.searchPlaceholder}
+        idleLabel={strings.searchIdle}
+        loadingLabel={strings.searchLoading}
+        emptyLabel={strings.searchEmpty}
+        errorLabel={strings.searchError}
+        resultLabelOne={strings.searchResultLabelOne}
+        resultLabelMany={strings.searchResultLabelMany}
+      />
+    </div>
+    <nav aria-label="Primary" style="margin-top: var(--space-8);">
+      <ul class="cluster">
+        {primaryNavigation.map((item) => (
+          <li><a href={item.route.en}>{item.label.en}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </section>
+</BaseLayout>

@@ -1,0 +1,73 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SITE_ENV: production
+      # APP-003 (approval_required): replace with the approved canonical
+      # domain before the first production deploy. BASE_PATH must match
+      # whether this repository is a user/org page ("/") or a project page
+      # ("/repo-name").
+      SITE_URL: ${{ vars.SITE_URL }}
+      BASE_PATH: ${{ vars.BASE_PATH || '/' }}
+      DEFAULT_LANGUAGE: ${{ vars.DEFAULT_LANGUAGE || 'en' }}
+      CONTACT_MODE: ${{ vars.CONTACT_MODE || 'pending' }}
+      ANALYTICS_MODE: "off"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Install dependencies (no lockfile mutation)
+        run: npm ci
+
+      - name: Block deploy on unresolved production placeholders
+        run: |
+          npm run contracts:validate
+          npm run content:validate
+          npm run placeholders:check
+
+      - name: Build
+        run: npm run build
+
+      - name: Search index
+        run: npm run search:index
+
+      - name: Check links, routes and manifest
+        run: |
+          npm run links:check
+          npm run manifest:check
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

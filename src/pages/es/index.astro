@@ -1,0 +1,138 @@
+---
+// PG-HOME (Spanish). PG-ES-001: reuses the same component contracts and
+// localized UI strings; no duplicated editorial pieces are required.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EditorialHero from "../../components/editorial/EditorialHero.astro";
+import EditorialRow from "../../components/editorial/EditorialRow.astro";
+import FeaturedAnalysisGrid from "../../components/editorial/FeaturedAnalysisGrid.astro";
+import QuestionsModule from "../../components/editorial/QuestionsModule.astro";
+import WorkSplit from "../../components/editorial/WorkSplit.astro";
+import ResearchFeature from "../../components/research/ResearchFeature.astro";
+import NotesRow from "../../components/editorial/NotesRow.astro";
+import CourseShelf from "../../components/teaching/CourseShelf.astro";
+import BackgroundContact from "../../components/editorial/BackgroundContact.astro";
+import { buildHomeViewModel } from "../../lib/homeData";
+import { siteConfig, descriptorEs } from "../../config/site";
+
+const language = "es" as const;
+const siteEnv = siteConfig.env;
+const vm = await buildHomeViewModel(language, siteEnv);
+
+const editorialQuestions = [
+  "¿Cómo puede la información institucional volverse lo bastante confiable para sostener una decisión económica?",
+  "¿Qué supuestos determinan realmente el resultado de una valoración, y qué tan sensible es ese resultado?",
+  "¿Cómo debe comunicarse la evidencia cuantitativa cuando la incertidumbre forma parte de la respuesta?"
+];
+---
+<BaseLayout
+  title={`${siteConfig.name} — ${descriptorEs}`}
+  description={descriptorEs}
+  path="/es/"
+  language={language}
+  headerVariant="transparent_on_navy_hero"
+>
+  {vm.hasLead && vm.lead && (
+    <EditorialHero
+      name={siteConfig.name}
+      descriptor={descriptorEs}
+      thesis={siteConfig.thesis}
+      lead={{
+        title: vm.lead.data.title,
+        slug: vm.lead.data.slug,
+        key_finding: vm.lead.data.key_finding,
+        published_at: vm.lead.data.published_at,
+        domains: vm.lead.data.domains,
+        evidence: vm.lead.data.evidence
+      }}
+      language={language}
+    />
+  )}
+
+  {vm.hasFeaturedGrid && vm.featured.length >= 3 && (
+    <section class="section-standard surface-white">
+      <div class="shell">
+        <FeaturedAnalysisGrid primary={vm.featured[0]} secondary={[vm.featured[1], vm.featured[2]]} language={language} />
+      </div>
+    </section>
+  )}
+  {!vm.hasFeaturedGrid && vm.featured.length > 0 && (
+    <section class="section-dense surface-white">
+      <div class="shell">
+        {vm.featured.map((item) => <EditorialRow item={item} emphasis="standard" language={language} />)}
+      </div>
+    </section>
+  )}
+
+  <section class="section-dense surface-paper">
+    <div class="shell">
+      <QuestionsModule questions={editorialQuestions} />
+    </div>
+  </section>
+
+  {vm.hasWorkSplit && (
+    <section class="section-standard surface-white">
+      <div class="shell">
+        <h2 class="text-h2">Trabajo</h2>
+        <div style="margin-top: var(--space-6);">
+          <WorkSplit items={vm.workRows.slice(0, 4)} language={language} />
+        </div>
+      </div>
+    </section>
+  )}
+
+  {vm.hasResearch && vm.research[0] && (
+    <section class="section-standard surface-mist">
+      <div class="shell">
+        <ResearchFeature
+          item={{
+            title: vm.research[0].data.title,
+            href: vm.researchHref(vm.research[0].data.slug),
+            format: vm.research[0].data.format,
+            authors: vm.research[0].data.authors,
+            publishedAt: vm.research[0].data.published_at,
+            keyFinding: vm.research[0].data.key_finding
+          }}
+          language={language}
+        />
+      </div>
+    </section>
+  )}
+
+  {vm.hasNotes && (
+    <section class="section-dense surface-white">
+      <div class="shell">
+        <h2 class="text-h3">Notas</h2>
+        <div style="margin-top: var(--space-5);">
+          <NotesRow items={vm.notesRows} language={language} />
+        </div>
+      </div>
+    </section>
+  )}
+
+  {vm.hasCourses && (
+    <section class="section-dense surface-paper">
+      <div class="shell">
+        <h2 class="text-h3">Docencia</h2>
+        <div style="margin-top: var(--space-5);">
+          <CourseShelf
+            courses={vm.courses.map((c) => ({
+              title: c.data.title,
+              href: vm.courseHref(c.data.slug),
+              period: c.data.period,
+              archived: c.data.archived ?? false,
+              summary: c.data.summary
+            }))}
+            language={language}
+          />
+        </div>
+      </div>
+    </section>
+  )}
+
+  <BackgroundContact
+    bioShort={descriptorEs}
+    cvHref="/es/cv/"
+    contact={{ mode: siteConfig.contactMode }}
+    language={language}
+  />
+</BaseLayout>

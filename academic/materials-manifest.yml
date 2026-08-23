@@ -1,0 +1,15 @@
+# TCH-001 metadata_bridge. Maps academic/ sources to public/materials/
+# outputs and to src/content/materials/*.yml records. Empty today because
+# no academic/ source yet has an approved license, a verified period or a
+# published week (TCH-COURSE-003, APP-006) — see academic/courses/econometrics-i/
+# for the one real (content_pending) course source currently migrated.
+#
+# Shape once a source is ready to publish:
+# - id: MATERIAL-<slug>
+#   source: academic/courses/<course>/<file>.qmd
+#   output: public/materials/<course>/<file>.html
+#   material_record: src/content/materials/<course>/<slug>.yml
+#   license: <APP-006 family policy id>
+#   access: public | summary-only | private
+
+bridges: []

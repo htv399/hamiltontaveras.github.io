@@ -1,0 +1,70 @@
+---
+// PG-NOTE-DETAIL.
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import EditorialLayout from "../../layouts/EditorialLayout.astro";
+import Breadcrumbs from "../../components/navigation/Breadcrumbs.astro";
+import MetadataBand from "../../components/content/MetadataBand.astro";
+import Authors from "../../components/content/Authors.astro";
+import RelatedWork from "../../components/content/RelatedWork.astro";
+import { isEligible } from "../../lib/contentGate";
+import { relatedWork, type RelatableItem } from "../../lib/relatedWork";
+import { siteConfig, canonicalBase } from "../../config/site";
+import { t } from "../../i18n/ui";
+
+export async function getStaticPaths() {
+  const all = await getCollection("notes");
+  const eligible = all.filter((e) => isEligible(e.data, siteConfig.env));
+  return eligible.map((entry) => ({ params: { slug: entry.data.slug }, props: { entry, pool: eligible } }));
+}
+
+interface Props { entry: CollectionEntry<"notes">; pool: CollectionEntry<"notes">[] }
+const { entry, pool } = Astro.props as Props;
+const { data } = entry;
+const { Content } = await render(entry);
+const language = data.language;
+const strings = t(language);
+const path = `/notes/${data.slug}/`;
+
+const current: RelatableItem = {
+  id: data.id, href: path, title: data.title, summary: data.summary, domains: data.domains,
+  methods: data.methods, objects: data.objects, language: data.language, access: data.access,
+  status: data.status, placeholder: data.placeholder, relatedIds: data.related_ids
+};
+const poolItems: RelatableItem[] = pool.map((p) => ({
+  id: p.data.id, href: `/notes/${p.data.slug}/`, title: p.data.title, summary: p.data.summary,
+  domains: p.data.domains, methods: p.data.methods, objects: p.data.objects, language: p.data.language,
+  access: p.data.access, status: p.data.status, placeholder: p.data.placeholder
+}));
+const related = relatedWork(current, poolItems, siteConfig.env);
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: data.title,
+  description: data.summary,
+  datePublished: data.published_at?.toISOString(),
+  dateModified: data.updated_at?.toISOString(),
+  author: data.authors.map((a) => ({ "@type": "Person", name: a.display_name })),
+  url: `${canonicalBase.value.replace(/\/$/, "")}${path}`
+};
+const breadcrumbItems = [{ label: strings.breadcrumbHome, href: "/" }, { label: "Notes", href: "/notes/" }, { label: data.title }];
+---
+<EditorialLayout title={`${data.title} — ${siteConfig.name}`} description={data.summary} path={path} language={language} jsonLd={jsonLd}>
+  <Breadcrumbs items={breadcrumbItems} />
+  {data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
+
+  <MetadataBand metadata={{ publishedAt: data.published_at, updatedAt: data.updated_at }} language={language} />
+
+  <p class="u-tag" style="margin-top: var(--space-5);">{data.note_type}</p>
+  <h1 class="text-h1 font-editorial">{data.title}</h1>
+  {data.dek && <p class="text-body-l">{data.dek}</p>}
+  <div style="margin-top: var(--space-3);"><Authors authors={data.authors} /></div>
+
+  {data.key_point && <p class="text-body-l" style="margin-top: var(--space-5);"><strong>{data.key_point}</strong></p>}
+
+  <div class="content-body" style="margin-top: var(--space-6);">
+    <Content />
+  </div>
+
+  <RelatedWork items={related.map((r) => ({ href: r.href, title: r.title, summary: r.summary }))} language={language} />
+</EditorialLayout>

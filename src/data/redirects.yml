@@ -1,0 +1,4 @@
+# REP-CONFIG-008. IA-SLUG-001: no chains, no loops, every destination must
+# exist. Empty until a published slug changes or a legacy Quarto route needs
+# preserving. scripts/validate-content.mjs validates this file's shape.
+redirects: []
