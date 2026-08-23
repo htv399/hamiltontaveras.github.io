@@ -23,7 +23,7 @@ jobs:
       SITE_ENV: preview
       SITE_URL: https://htv399.github.io/hamiltontaveras.github.io
       BASE_PATH: /hamiltontaveras.github.io
-      DEFAULT_LANGUAGE: ${{ vars.DEFAULT_LANGUAGE || 'en' }}
+      DEFAULT_LANGUAGE: ${{ vars.DEFAULT_LANGUAGE || 'es' }}
       CONTACT_MODE: ${{ vars.CONTACT_MODE || 'pending' }}
       ANALYTICS_MODE: "off"
     steps:

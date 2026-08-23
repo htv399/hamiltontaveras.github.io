@@ -74,6 +74,7 @@ p, li { max-width: 72ch; }
 
 a {
   color: var(--color-blue-600);
+  text-decoration: none;
   text-underline-offset: 0.15em;
 }
 a:hover { color: var(--color-navy-900); }
@@ -81,4 +82,6 @@ main p a:not([class]), .reading-column a {
   text-decoration: underline;
   text-decoration-thickness: 0.08em;
 }
-a:hover, a:focus-visible { text-decoration: underline; }
+main p a:not([class]):hover, .reading-column a:hover {
+  text-decoration-thickness: 0.12em;
+}

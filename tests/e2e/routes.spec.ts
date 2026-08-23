@@ -37,17 +37,17 @@ test("404 route renders the not-found page", async ({ page }) => {
 
 test("primary navigation is exactly IA-NAV-001..006 (QA-IA-002)", async ({ page }) => {
   await page.goto(withBase("/"));
-  const nav = page.getByRole("navigation", { name: "Primary" });
+  const nav = page.getByRole("navigation", { name: "Navegación principal" });
   const labels = await nav.getByRole("link").allTextContents();
-  expect(labels.map((l) => l.trim())).toEqual(["Home", "Work", "Research", "Notes", "Teaching", "About"]);
+  expect(labels.map((l) => l.trim())).toEqual(["Inicio", "Trabajo", "Investigación", "Notas", "Docencia", "Perfil"]);
 });
 
 test("mobile menu opens, traps focus, closes on escape and returns focus (QA-FUNC-003)", async ({ page }) => {
   await page.setViewportSize({ width: 480, height: 900 });
   await page.goto(withBase("/"));
-  const trigger = page.getByRole("button", { name: "Menu" });
+  const trigger = page.getByRole("button", { name: "Menú" });
   await trigger.click();
-  const dialog = page.getByRole("dialog", { name: "Menu" });
+  const dialog = page.getByRole("dialog", { name: "Menú" });
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();

@@ -1,169 +1,53 @@
 ---
-// PG-HOME (English). Section order and fallbacks follow 05-page-contracts.yml
-// exactly; every optional module is model-driven, never hardcoded content.
+// PG-HOME. Spanish is the primary preview language. Optional publication
+// modules remain available on their own routes and are intentionally omitted
+// here so the landing page works as a concise professional portfolio.
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EditorialHero from "../components/editorial/EditorialHero.astro";
-import EditorialRow from "../components/editorial/EditorialRow.astro";
 import FeaturedAnalysisGrid from "../components/editorial/FeaturedAnalysisGrid.astro";
-import QuestionsModule from "../components/editorial/QuestionsModule.astro";
-import WorkSplit from "../components/editorial/WorkSplit.astro";
-import ResearchFeature from "../components/research/ResearchFeature.astro";
-import NotesRow from "../components/editorial/NotesRow.astro";
-import CourseShelf from "../components/teaching/CourseShelf.astro";
 import BackgroundContact from "../components/editorial/BackgroundContact.astro";
 import IndicatorStrip from "../components/data/IndicatorStrip.astro";
 import { buildHomeViewModel } from "../lib/homeData";
-import { siteConfig } from "../config/site";
+import { siteConfig, descriptorEs } from "../config/site";
 
-const language = "en" as const;
-const siteEnv = siteConfig.env;
-const vm = await buildHomeViewModel(language, siteEnv);
-
-const editorialQuestions = [
-  "How can institutional data become reliable enough to support an economic decision?",
-  "Which assumptions actually drive a valuation result, and how sensitive is that result to them?",
-  "How should quantitative evidence be communicated when uncertainty is part of the answer?"
-];
+const language = "es" as const;
+const vm = await buildHomeViewModel(language, siteConfig.env);
+const thesis = "Información, modelos, juicio y valor: un método para convertir datos en evidencia económica y financiera clara.";
 const indicators = [
-  { label: "Synthetic activity", value: "104.8", unit: "index", change: { direction: "up" as const, label: "+1.6 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" },
-  { label: "Model dispersion", value: "7.2", unit: "range", change: { direction: "down" as const, label: "−0.8 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" },
-  { label: "Data coverage", value: "88", unit: "demo %", change: { direction: "up" as const, label: "+4 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" },
-  { label: "Scenario balance", value: "52", unit: "index", change: { direction: "flat" as const, label: "0.0 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" }
+  { label: "Actividad sintética", value: "104.8", unit: "índice", change: { direction: "up" as const, label: "+1.6 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" },
+  { label: "Dispersión del modelo", value: "7.2", unit: "rango", change: { direction: "down" as const, label: "−0.8 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" },
+  { label: "Cobertura de datos", value: "88", unit: "% sintético", change: { direction: "up" as const, label: "+4 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" },
+  { label: "Balance de escenarios", value: "52", unit: "índice", change: { direction: "flat" as const, label: "0.0 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" }
 ];
-const featuredItems = vm.lead ? [{
-  title: vm.lead.data.title,
-  href: vm.analysisHref(vm.lead.data.slug),
-  summary: vm.lead.data.key_finding,
-  publishedAt: vm.lead.data.published_at,
-  tags: ["analysis", ...vm.lead.data.domains]
-}, ...vm.workRows.slice(0, 2)] : vm.workRows;
+const order = ["project", "data-product", "valuation"];
+const selectedWork = [...vm.workRows].sort((a, b) => order.indexOf(a.tags[0]) - order.indexOf(b.tags[0])).slice(0, 3);
 ---
-<BaseLayout
-  title={`${siteConfig.name} — ${siteConfig.descriptor}`}
-  description={siteConfig.descriptor}
-  path="/"
-  language={language}
-  headerVariant="transparent_on_navy_hero"
->
+<BaseLayout title={`${siteConfig.name} — ${descriptorEs}`} description={descriptorEs} path="/" language={language} headerVariant="transparent_on_navy_hero">
   {vm.hasLead && vm.lead && (
-    <EditorialHero
-      name={siteConfig.name}
-      descriptor={siteConfig.descriptor}
-      thesis={siteConfig.thesis}
-      lead={{
-        title: vm.lead.data.title,
-        slug: vm.lead.data.slug,
-        key_finding: vm.lead.data.key_finding,
-        published_at: vm.lead.data.published_at,
-        domains: vm.lead.data.domains,
-        evidence: vm.lead.data.evidence
-      }}
-      language={language}
-    />
+    <EditorialHero name={siteConfig.name} descriptor={descriptorEs} thesis={thesis} lead={{ title: vm.lead.data.title, slug: vm.lead.data.slug, key_finding: vm.lead.data.key_finding, published_at: vm.lead.data.published_at, domains: vm.lead.data.domains, evidence: vm.lead.data.evidence }} language={language} />
   )}
-
   <section class="home-indicators surface-paper">
     <div class="shell">
-      <div class="home-indicators__intro"><p class="text-micro">Demonstration data</p><p class="text-small">Synthetic signals used only to preview the publication system.</p></div>
+      <div class="home-indicators__intro"><p class="text-micro">Indicadores de preview</p><p class="text-small">Señales sintéticas para mostrar el sistema; no representan datos reales.</p></div>
       <IndicatorStrip indicators={indicators} language={language} />
     </div>
   </section>
-
-  {featuredItems.length >= 3 && (
-    <section class="section-standard surface-white">
+  {selectedWork.length === 3 && (
+    <section class="home-work section-standard surface-white">
       <div class="shell">
-        <header class="home-section-head"><p class="text-micro">Selected intelligence</p><h2 class="text-h2 font-editorial">Evidence, organized by decision</h2></header>
-        <FeaturedAnalysisGrid primary={featuredItems[0]} secondary={[featuredItems[1], featuredItems[2]]} language={language} />
+        <header class="home-section-head"><p class="text-micro">Trabajo seleccionado · contenido demostrativo</p><h2>Evidencia para decisiones económicas y financieras</h2><p>Una muestra visual de cómo se documentan preguntas, arquitectura de datos y supuestos de valoración.</p></header>
+        <FeaturedAnalysisGrid primary={selectedWork[0]} secondary={[selectedWork[1], selectedWork[2]]} language={language} />
       </div>
     </section>
   )}
-  {featuredItems.length > 0 && featuredItems.length < 3 && (
-    <section class="section-dense surface-white">
-      <div class="shell">
-        {featuredItems.map((item) => <EditorialRow item={item} emphasis="standard" language={language} />)}
-      </div>
-    </section>
-  )}
-
-  <section class="section-dense surface-paper">
-    <div class="shell">
-      <header class="home-section-head"><p class="text-micro">Questions that organize the work</p><h2 class="text-h2 font-editorial">Where evidence meets judgment</h2></header>
-      <QuestionsModule questions={editorialQuestions} />
-    </div>
-  </section>
-
-  {vm.hasWorkSplit && (
-    <section class="section-standard surface-white">
-      <div class="shell">
-        <header class="home-section-head"><p class="text-micro">Work</p><h2 class="text-h2 font-editorial">Systems, products and valuation evidence</h2><p class="text-body">Three synthetic formats demonstrate how questions, architecture and quantitative judgment can be made inspectable.</p></header>
-        <div style="margin-top: var(--space-6);">
-          <WorkSplit items={vm.workRows.slice(0, 4)} language={language} />
-        </div>
-      </div>
-    </section>
-  )}
-
-  {vm.hasResearch && vm.research[0] && (
-    <section class="section-standard surface-mist">
-      <div class="shell">
-        <ResearchFeature
-          item={{
-            title: vm.research[0].data.title,
-            href: vm.researchHref(vm.research[0].data.slug),
-            format: vm.research[0].data.format,
-            authors: vm.research[0].data.authors,
-            publishedAt: vm.research[0].data.published_at,
-            keyFinding: vm.research[0].data.key_finding
-          }}
-          language={language}
-        />
-      </div>
-    </section>
-  )}
-
-  {vm.hasNotes && (
-    <section class="section-dense surface-white">
-      <div class="shell">
-        <header class="home-section-head"><p class="text-micro">Notes</p><h2 class="text-h2 font-editorial">Short-form analytical observations</h2></header>
-        <div style="margin-top: var(--space-5);">
-          <NotesRow items={vm.notesRows} language={language} />
-        </div>
-      </div>
-    </section>
-  )}
-
-  {vm.hasCourses && (
-    <section class="section-dense surface-paper">
-      <div class="shell">
-        <header class="home-section-head"><p class="text-micro">Teaching</p><h2 class="text-h2 font-editorial">Methods presented as an academic publication</h2></header>
-        <div style="margin-top: var(--space-5);">
-          <CourseShelf
-            courses={vm.courses.map((c) => ({
-              title: c.data.title,
-              href: vm.courseHref(c.data.slug),
-              period: c.data.period,
-              archived: c.data.archived ?? false,
-              summary: c.data.summary
-            }))}
-            language={language}
-          />
-        </div>
-      </div>
-    </section>
-  )}
-
-  <BackgroundContact
-    bioShort={siteConfig.descriptor}
-    cvHref="/cv/"
-    contact={{ mode: siteConfig.contactMode }}
-    language={language}
-  />
+  <BackgroundContact bioShort="Economista enfocado en sistemas de datos, análisis cuantitativo y valoración, con énfasis en evidencia clara y decisiones trazables." aboutHref="/es/about/" cvHref="/es/cv/" contactHref="/es/contact/" contact={{ mode: siteConfig.contactMode }} language={language} />
 </BaseLayout>
-
 <style>
   .home-indicators { padding-block: var(--space-5); }
   .home-indicators__intro { display: flex; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-4); }
-  .home-section-head { margin-bottom: var(--space-7); max-width: 880px; }
+  .home-section-head { margin-bottom: var(--space-7); max-width: 800px; }
   .home-section-head > * + * { margin-top: var(--space-2); }
+  .home-section-head h2 { font-size: var(--size-section-title); line-height: 1.15; }
+  .home-section-head > p:last-child { font-size: var(--size-body); }
   @media (max-width: 768px) { .home-indicators__intro { flex-direction: column; gap: var(--space-1); } .home-section-head { margin-bottom: var(--space-5); } }
 </style>

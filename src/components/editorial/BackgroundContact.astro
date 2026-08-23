@@ -19,15 +19,15 @@ const aboutHref = Astro.props.aboutHref ?? (language === "es" ? "/es/about/" : "
 const contactHref = Astro.props.contactHref ?? (language === "es" ? "/es/contact/" : "/contact/");
 const strings = t(language);
 ---
-<section class="background-contact surface-mist section-standard">
+<section class="background-contact surface-mist section-dense">
   <div class="shell background-contact__inner">
     <div>
       <p class="text-micro">{language === "es" ? "Perfil profesional" : "Professional profile"}</p>
-      <h2 class="text-h2 font-editorial">{language === "es" ? "Trabajo analítico con contexto, método y juicio." : "Analytical work grounded in context, method and judgment."}</h2>
-      <p class="text-body-l">{bioShort}</p>
+      <h2>{language === "es" ? "Trabajo analítico con contexto, método y juicio." : "Analytical work grounded in context, method and judgment."}</h2>
+      <p class="text-body">{bioShort}</p>
     </div>
     <div class="background-contact__links">
-      <a href={aboutHref}>{language === "es" ? "Conocer el enfoque" : "About the approach"} →</a>
+      <a href={aboutHref}>{language === "es" ? "Perfil" : "About"} →</a>
       <a href={cvHref}>{strings.viewCv} →</a>
       <a href={contactHref}>{strings.contact} →</a>
     </div>
@@ -36,9 +36,9 @@ const strings = t(language);
 
 <style>
   .background-contact__inner { max-width: var(--editorial-max); display: grid; gap: var(--space-7); }
-  .background-contact__inner h2 { margin-top: var(--space-3); max-width: 24ch; }
-  .background-contact__inner .text-body-l { margin-top: var(--space-4); max-width: 58ch; }
-  .background-contact__links { display: flex; flex-direction: column; border-top: var(--border-strong); }
-  .background-contact__links a { padding-block: var(--space-4); border-bottom: var(--border-hairline); font-weight: 600; }
+  .background-contact__inner h2 { margin-top: var(--space-3); max-width: 24ch; font-size: var(--size-section-title); line-height: 1.15; }
+  .background-contact__inner .text-body { margin-top: var(--space-4); max-width: 58ch; }
+  .background-contact__links { display: flex; flex-wrap: wrap; gap: var(--space-5); border-top: var(--border-strong); padding-top: var(--space-4); }
+  .background-contact__links a { font-weight: 600; }
   @media (min-width: 769px) { .background-contact__inner { grid-template-columns: 8fr 4fr; align-items: end; } }
 </style>

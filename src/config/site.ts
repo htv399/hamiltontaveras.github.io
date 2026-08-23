@@ -21,7 +21,7 @@ export const SITE_ENV: SiteEnv = (import.meta.env.SITE_ENV as SiteEnv) || "previ
 export const defaultLanguage: Decision<Language> = {
   id: "APP-001",
   resolved: false,
-  value: (import.meta.env.DEFAULT_LANGUAGE as Language) || "en"
+  value: (import.meta.env.DEFAULT_LANGUAGE as Language) || "es"
 };
 
 /** APP-002: professional descriptor. PRD-006 records the recommended text. */

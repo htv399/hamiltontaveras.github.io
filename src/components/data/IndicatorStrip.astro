@@ -19,7 +19,7 @@ const { indicators, language } = Astro.props;
 <div class="indicator-strip" role="list" aria-label={language === "es" ? "Indicadores, datos estáticos" : "Indicators, static data"}>
   {indicators.map((ind) => (
     <div role="listitem" class="indicator">
-      <div class="indicator__heading"><p class="u-tag">{ind.label}</p><span class="indicator__demo text-micro">Demo</span></div>
+      <div class="indicator__heading"><p class="u-tag">{ind.label}</p><span class="indicator__demo text-micro">{language === "es" ? "Sintético" : "Demo"}</span></div>
       <p class="indicator__value">{ind.value}<span> {ind.unit}</span></p>
       {ind.change && (
         <p class:list={["indicator__change text-small", `indicator__change--${ind.change.direction === "down" ? "negative" : ind.change.direction === "up" ? "positive" : ""}`]}>
@@ -38,7 +38,7 @@ const { indicators, language } = Astro.props;
   .indicator:last-child { border-right: 0; padding-right: 0; }
   .indicator__heading { display: flex; justify-content: space-between; gap: var(--space-2); }
   .indicator__demo { color: var(--color-blue-600); }
-  .indicator__value { margin-top: var(--space-3); font-size: var(--size-h2); line-height: 1; }
+  .indicator__value { margin-top: var(--space-3); font: 500 var(--size-feature-title)/1 var(--font-mono); }
   .indicator__value span { font: 400 var(--size-micro)/1 var(--font-ui); color: var(--color-slate-500); }
   .indicator__change { margin-top: var(--space-2); font-family: var(--font-mono); }
   .indicator__source { margin-top: var(--space-3); color: var(--color-slate-500); }

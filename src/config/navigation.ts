@@ -10,7 +10,7 @@ export interface NavItem {
 }
 
 export const primaryNavigation: NavItem[] = [
-  { key: "home", label: { en: "Home", es: "Inicio" }, route: { en: "/", es: "/es/" } },
+  { key: "home", label: { en: "Home", es: "Inicio" }, route: { en: "/", es: "/" } },
   { key: "work", label: { en: "Work", es: "Trabajo" }, route: { en: "/work/", es: "/es/work/" } },
   { key: "research", label: { en: "Research", es: "Investigación" }, route: { en: "/research/", es: "/es/research/" } },
   { key: "notes", label: { en: "Notes", es: "Notas" }, route: { en: "/notes/", es: "/es/notes/" } },

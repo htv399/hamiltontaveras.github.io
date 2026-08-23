@@ -32,12 +32,13 @@ const chartUnit = language === "es" ? "Índice demostrativo, base 100" : "Demons
 const chartSource = language === "es" ? "Fuente: serie sintética generada para esta preview" : "Source: synthetic series generated for this preview";
 const chartNote = language === "es" ? "Nota: cinco observaciones ilustrativas; no describen una economía, mercado o empresa." : "Note: five illustrative observations; they do not describe an economy, market or company.";
 const chartSummary = language === "es" ? "Serie demostrativa que parte de 100, sube a 104, baja a 101 y termina en 108." : "Demonstration series starts at 100, rises to 104, falls to 101 and ends at 108.";
+const chartHigh = language === "es" ? "Máximo ilustrativo" : "Illustrative high";
 ---
 <section class:list={["editorial-hero", variant === "navy" ? "surface-navy" : "surface-paper"]}>
   <div class="shell editorial-hero__inner">
     <div class="editorial-hero__identity">
       <p class="text-micro editorial-hero__kicker">{language === "es" ? "Economía · datos · valoración" : "Economics · data · valuation"}</p>
-      <h1 class="text-display-xl font-editorial">{name}</h1>
+      <h1>{name}</h1>
       <p class="editorial-hero__descriptor text-body-l">{descriptor}</p>
       <p class="editorial-hero__thesis text-body">{thesis}</p>
       <div class="editorial-hero__story">
@@ -53,7 +54,7 @@ const chartSummary = language === "es" ? "Serie demostrativa que parte de 100, s
       <div class="editorial-hero__chart-head">
         <div>
           <p class="text-micro">{language === "es" ? "Datos demostrativos" : "Demonstration data"}</p>
-          <h2 class="text-h3 font-editorial">{chartTitle}</h2>
+          <h2 class="text-h3">{chartTitle}</h2>
         </div>
         <p class="text-micro font-mono">{language === "es" ? "Corte: 23 ago 2026" : "Cut-off: 23 Aug 2026"}</p>
       </div>
@@ -72,7 +73,7 @@ const chartSummary = language === "es" ? "Serie demostrativa que parte de 100, s
         <path class="chart-area" d="M52 198 L168 142 L286 184 L404 112 L520 72 L520 268 L52 268 Z" aria-hidden="true"/>
         <path class="chart-line" d="M52 198 L168 142 L286 184 L404 112 L520 72" aria-hidden="true"/>
         <g class="chart-points" aria-hidden="true"><circle cx="52" cy="198" r="4"/><circle cx="168" cy="142" r="4"/><circle cx="286" cy="184" r="4"/><circle cx="404" cy="112" r="4"/><circle class="chart-point-key" cx="520" cy="72" r="7"/></g>
-        <g class="chart-annotation" aria-hidden="true"><line x1="420" y1="36" x2="513" y2="67"/><text x="316" y="30">Illustrative high</text><text x="435" y="50" class="font-mono">108</text></g>
+        <g class="chart-annotation" aria-hidden="true"><line x1="420" y1="36" x2="513" y2="67"/><text x="316" y="30">{chartHigh}</text><text x="435" y="50" class="font-mono">108</text></g>
       </svg>
       <div class="editorial-hero__chart-footer">
         <p>{chartSource}</p><p>{chartNote}</p>
@@ -83,14 +84,14 @@ const chartSummary = language === "es" ? "Serie demostrativa que parte de 100, s
 </section>
 
 <style>
-  .editorial-hero__inner { display: grid; gap: var(--space-7); padding-block: clamp(112px, 13vh, 152px) var(--space-8); }
+  .editorial-hero__inner { display: grid; gap: var(--space-7); padding-block: calc(var(--header-height-desktop) + var(--space-6)) var(--space-7); }
   @media (min-width: 769px) {
-    .editorial-hero__inner { grid-template-columns: 7fr 5fr; align-items: end; min-height: min(820px, 100vh); }
+    .editorial-hero__inner { grid-template-columns: 7fr 5fr; align-items: center; min-height: min(720px, 100svh); }
   }
   .editorial-hero__identity > * + * { margin-top: var(--space-4); }
-  .editorial-hero__identity h1 { color: var(--color-white); max-width: 11ch; }
+  .editorial-hero__identity h1 { color: var(--color-white); max-width: 14ch; font: 600 var(--size-hero-name)/.98 var(--font-ui); }
   .editorial-hero__kicker { color: var(--color-mist-100); }
-  .editorial-hero__descriptor { max-width: 42ch; font-weight: 500; }
+  .editorial-hero__descriptor { max-width: 42ch; font-size: var(--size-descriptor); line-height: 1.45; font-weight: 500; }
   .editorial-hero__thesis { color: var(--color-mist-100); max-width: 52ch; }
   .editorial-hero__story { border-top: var(--border-key-result); max-width: 58ch; padding-top: var(--space-4); margin-top: var(--space-6); }
   .editorial-hero__story > * + * { margin-top: var(--space-2); }
@@ -100,7 +101,7 @@ const chartSummary = language === "es" ? "Serie demostrativa que parte de 100, s
   .editorial-hero__chart-head { display: flex; justify-content: space-between; gap: var(--space-4); align-items: start; border-bottom: var(--border-hairline); padding-bottom: var(--space-3); }
   .editorial-hero__chart-head h2 { margin-top: var(--space-1); }
   .editorial-hero__unit { color: var(--color-slate-500); margin-top: var(--space-3); }
-  .editorial-hero__chart svg { display: block; width: 100%; height: clamp(280px, 30vw, 360px); margin-top: var(--space-2); }
+  .editorial-hero__chart svg { display: block; width: 100%; height: clamp(260px, 26vw, 320px); margin-top: var(--space-2); }
   .chart-grid line { stroke: var(--color-mist-100); stroke-width: 1; }
   .chart-axis { fill: var(--color-slate-500); font-size: var(--size-micro); }
   .chart-area { fill: var(--color-mist-100); opacity: .72; }

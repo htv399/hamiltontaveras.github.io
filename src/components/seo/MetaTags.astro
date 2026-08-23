@@ -7,14 +7,15 @@ interface Props {
   title: string;
   description: string;
   path: string;
+  canonicalPath?: string;
   language: "en" | "es";
   ogImage?: string;
   noindex?: boolean;
 }
 
-const { title, description, path, language, ogImage, noindex = false } = Astro.props;
+const { title, description, path, canonicalPath, language, ogImage, noindex = false } = Astro.props;
 const base = canonicalBase.value.replace(/\/$/, "");
-const canonical = `${base}${path}`;
+const canonical = `${base}${canonicalPath ?? path}`;
 const socialImage = ogImage ?? `${base}/og/default.png`;
 ---
 <title>{title}</title>

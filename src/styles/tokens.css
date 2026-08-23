@@ -31,6 +31,15 @@
   --size-small: 0.875rem;
   --size-micro: 0.75rem;
 
+  /* Role-based editorial hierarchy. Home and publication components use
+     these tokens instead of defining one-off display sizes. */
+  --size-hero-name: 4.25rem;
+  --size-section-title: 2rem;
+  --size-feature-title: 1.75rem;
+  --size-secondary-title: 1.375rem;
+  --size-descriptor: 1.25rem;
+  --size-metadata: 0.8125rem;
+
   --line-display-xl: 0.98;
   --line-display-l: 1.02;
   --line-h1: 1.08;
@@ -89,6 +98,17 @@
   --duration-fast: 120ms;
   --duration-standard: 220ms;
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --size-hero-name: 2.75rem;
+    --size-section-title: 1.75rem;
+    --size-feature-title: 1.5rem;
+    --size-secondary-title: 1.25rem;
+    --size-descriptor: 1.125rem;
+    --size-metadata: 0.75rem;
+  }
 }
 
 /* Breakpoints (documented; used directly as media queries, not custom

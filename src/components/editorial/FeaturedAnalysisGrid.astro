@@ -11,22 +11,28 @@ interface Props {
 }
 const { primary, secondary, language } = Astro.props as Props;
 const dateLabel = (d?: Date) =>
-  d ? new Intl.DateTimeFormat(language, { year: "numeric", month: "short", day: "numeric" }).format(d) : null;
-const label = (item: RowItem) => item.tags[0]?.replaceAll("-", " ") ?? (language === "es" ? "Análisis" : "Analysis");
+  d ? new Intl.DateTimeFormat(language, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" }).format(d) : null;
+const kindLabels: Record<string, Record<"en" | "es", string>> = {
+  project: { en: "Project", es: "Proyecto" },
+  "data-product": { en: "Data product", es: "Producto de datos" },
+  valuation: { en: "Valuation", es: "Valoración" },
+  analysis: { en: "Analysis", es: "Análisis" }
+};
+const label = (item: RowItem) => kindLabels[item.tags[0] ?? "analysis"]?.[language] ?? (language === "es" ? "Trabajo" : "Work");
 ---
 <div class="featured-grid">
   <article class="featured-grid__primary">
     <a href={primary.href}>
       <div class="featured-grid__artifact featured-grid__artifact--primary" role="img" aria-label={language === "es" ? "Exhibit demostrativo de una serie con cambio de tendencia" : "Demonstration exhibit of a series changing direction"}>
-        <p class="text-micro">{language === "es" ? "Exhibit · datos demostrativos" : "Exhibit · demonstration data"}</p>
+        <p class="text-micro">{language === "es" ? "Visual · datos demostrativos" : "Exhibit · demonstration data"}</p>
         <svg viewBox="0 0 720 220" aria-hidden="true"><path d="M20 176 L146 138 L270 150 L400 88 L526 104 L700 34"/><line x1="20" y1="190" x2="700" y2="190"/><circle cx="700" cy="34" r="7"/></svg>
         <p class="featured-grid__artifact-note font-mono">100 → 108 <span>{language === "es" ? "índice sintético" : "synthetic index"}</span></p>
       </div>
-      <p class="u-tag">{label(primary)} · {primary.tags.slice(1, 3).join(" · ")}</p>
-      <h2 class="text-h2 font-editorial">{primary.title}</h2>
-      <p class="text-body-l">{primary.summary}</p>
-      {dateLabel(primary.publishedAt) && <p class="text-small">{dateLabel(primary.publishedAt)}</p>}
-      <span class="featured-grid__read">{language === "es" ? "Leer análisis" : "Read analysis"} →</span>
+      <p class="u-tag">{label(primary)} · {language === "es" ? "demostración" : "demonstration"}</p>
+      <h2 class="font-editorial">{primary.title}</h2>
+      <p class="text-body">{primary.summary}</p>
+      {dateLabel(primary.publishedAt) && <p class="featured-grid__date">{dateLabel(primary.publishedAt)}</p>}
+      <span class="featured-grid__read">{language === "es" ? "Ver pieza" : "View piece"} →</span>
     </a>
   </article>
   <div class="featured-grid__secondary">
@@ -37,9 +43,10 @@ const label = (item: RowItem) => item.tags[0]?.replaceAll("-", " ") ?? (language
             {index === 0 ? <><span></span><span></span><span></span><span></span></> : <><i></i><i></i><i></i></>}
           </div>
           <p class="u-tag">{label(item)} · {language === "es" ? "demostración" : "demonstration"}</p>
-          <h3 class="text-h3 font-editorial">{item.title}</h3>
+          <h3 class="font-editorial">{item.title}</h3>
           <p class="text-small">{item.summary}</p>
-          {dateLabel(item.publishedAt) && <p class="text-micro">{dateLabel(item.publishedAt)}</p>}
+          {dateLabel(item.publishedAt) && <p class="featured-grid__date">{dateLabel(item.publishedAt)}</p>}
+          <span class="featured-grid__read">{language === "es" ? "Ver pieza" : "View piece"} →</span>
         </a>
       </article>
     ))}
@@ -52,6 +59,8 @@ const label = (item: RowItem) => item.tags[0]?.replaceAll("-", " ") ?? (language
     .featured-grid { grid-template-columns: 8fr 4fr; }
   }
   .featured-grid__primary a > * + * { margin-top: var(--space-3); }
+  .featured-grid a { display: block; color: inherit; }
+  .featured-grid__primary h2 { font-size: var(--size-feature-title); line-height: 1.16; }
   .featured-grid__artifact { background: var(--color-navy-900); color: var(--color-white); padding: var(--space-5); margin-bottom: var(--space-5); }
   .featured-grid__artifact svg { width: 100%; height: 220px; margin-top: var(--space-3); }
   .featured-grid__artifact path { fill: none; stroke: var(--color-azure-400); stroke-width: 5; vector-effect: non-scaling-stroke; }
@@ -60,9 +69,11 @@ const label = (item: RowItem) => item.tags[0]?.replaceAll("-", " ") ?? (language
   .featured-grid__artifact-note { display: flex; justify-content: space-between; border-top: 1px solid var(--color-slate-500); padding-top: var(--space-3); font-size: var(--size-h3); }
   .featured-grid__artifact-note span { font: 400 var(--size-micro)/1.4 var(--font-ui); color: var(--color-mist-100); }
   .featured-grid__read { display: inline-block; font-weight: 600; color: var(--color-blue-600); }
+  .featured-grid__date { color: var(--color-slate-500); font: 400 var(--size-metadata)/1.4 var(--font-mono); }
   .featured-grid__secondary { display: flex; flex-direction: column; gap: var(--space-6); }
   .featured-grid__secondary article { border-top: var(--border-strong); padding-top: var(--space-4); }
   .featured-grid__secondary a > * + * { margin-top: var(--space-2); }
+  .featured-grid__secondary h3 { font-size: var(--size-secondary-title); line-height: 1.2; }
   .featured-grid__mini-artifact { height: 76px; display: flex; align-items: end; gap: var(--space-2); background: var(--color-mist-100); padding: var(--space-3); margin-bottom: var(--space-3); }
   .featured-grid__mini-artifact span { flex: 1; background: var(--color-blue-600); height: 38%; }
   .featured-grid__mini-artifact span:nth-child(2) { height: 72%; }
@@ -72,8 +83,10 @@ const label = (item: RowItem) => item.tags[0]?.replaceAll("-", " ") ?? (language
   .featured-grid__mini-artifact--table i { display: block; border-top: var(--border-strong); }
   @media (max-width: 768px) {
     .featured-grid__artifact svg { height: 180px; }
-    .featured-grid__secondary article { display: grid; grid-template-columns: 104px 1fr; column-gap: var(--space-4); }
-    .featured-grid__secondary article a { display: contents; }
-    .featured-grid__mini-artifact { grid-row: 1 / span 4; height: 100%; min-height: 112px; margin: 0; }
+    .featured-grid__secondary article a { display: grid; grid-template-columns: 104px 1fr; column-gap: var(--space-4); align-items: start; }
+    .featured-grid__secondary article a > :not(.featured-grid__mini-artifact) { grid-column: 2; }
+    .featured-grid__mini-artifact { grid-column: 1; grid-row: 1 / span 5; height: 100%; min-height: 128px; margin: 0; }
+    .featured-grid__secondary a > * + * { margin-top: 0; }
+    .featured-grid__secondary h3, .featured-grid__secondary p, .featured-grid__secondary .featured-grid__read { margin-top: var(--space-2); }
   }
 </style>
