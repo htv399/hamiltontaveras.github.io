@@ -1,5 +1,5 @@
 # SEED-001 fixture. Demonstrative only; excluded from production authorship
 # by scripts/check-placeholders.mjs via the linked content's placeholder:true.
 id: PROFILE-DEMO
-display_name: "[Nombre pendiente]"
-role_label: "[Descriptor pendiente]"
+display_name: "Fixture editorial demostrativo"
+role_label: "Ejemplo sintético sin atribución personal"

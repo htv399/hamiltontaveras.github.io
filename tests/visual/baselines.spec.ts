@@ -2,6 +2,7 @@
 // Project and Week at the required viewports. First run creates the
 // baseline; subsequent runs diff against it.
 import { test, expect } from "@playwright/test";
+import { withBase } from "../helpers/basePath";
 
 const pages = [
   { name: "home", route: "/" },
@@ -19,7 +20,7 @@ for (const p of pages) {
   for (const vp of viewports) {
     test(`visual: ${p.name} @ ${vp.name}`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await page.goto(p.route);
+      await page.goto(withBase(p.route));
       await expect(page).toHaveScreenshot(`${p.name}-${vp.name}.png`, { fullPage: true, maxDiffPixelRatio: 0.02 });
     });
   }

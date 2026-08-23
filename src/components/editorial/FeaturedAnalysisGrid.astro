@@ -9,26 +9,37 @@ interface Props {
   secondary: [RowItem, RowItem];
   language: "en" | "es";
 }
-const { primary, secondary, language } = Astro.props;
+const { primary, secondary, language } = Astro.props as Props;
 const dateLabel = (d?: Date) =>
   d ? new Intl.DateTimeFormat(language, { year: "numeric", month: "short", day: "numeric" }).format(d) : null;
+const label = (item: RowItem) => item.tags[0]?.replaceAll("-", " ") ?? (language === "es" ? "Análisis" : "Analysis");
 ---
 <div class="featured-grid">
   <article class="featured-grid__primary">
     <a href={primary.href}>
-      <p class="u-tag">{primary.tags.slice(0, 3).join(" · ")}</p>
-      <h2 class="text-h2">{primary.title}</h2>
+      <div class="featured-grid__artifact featured-grid__artifact--primary" role="img" aria-label={language === "es" ? "Exhibit demostrativo de una serie con cambio de tendencia" : "Demonstration exhibit of a series changing direction"}>
+        <p class="text-micro">{language === "es" ? "Exhibit · datos demostrativos" : "Exhibit · demonstration data"}</p>
+        <svg viewBox="0 0 720 220" aria-hidden="true"><path d="M20 176 L146 138 L270 150 L400 88 L526 104 L700 34"/><line x1="20" y1="190" x2="700" y2="190"/><circle cx="700" cy="34" r="7"/></svg>
+        <p class="featured-grid__artifact-note font-mono">100 → 108 <span>{language === "es" ? "índice sintético" : "synthetic index"}</span></p>
+      </div>
+      <p class="u-tag">{label(primary)} · {primary.tags.slice(1, 3).join(" · ")}</p>
+      <h2 class="text-h2 font-editorial">{primary.title}</h2>
       <p class="text-body-l">{primary.summary}</p>
       {dateLabel(primary.publishedAt) && <p class="text-small">{dateLabel(primary.publishedAt)}</p>}
+      <span class="featured-grid__read">{language === "es" ? "Leer análisis" : "Read analysis"} →</span>
     </a>
   </article>
   <div class="featured-grid__secondary">
-    {secondary.map((item: RowItem) => (
+    {secondary.map((item: RowItem, index: number) => (
       <article>
         <a href={item.href}>
-          <p class="u-tag">{item.tags.slice(0, 3).join(" · ")}</p>
-          <h3 class="text-h3">{item.title}</h3>
+          <div class:list={["featured-grid__mini-artifact", index === 1 && "featured-grid__mini-artifact--table"]} aria-hidden="true">
+            {index === 0 ? <><span></span><span></span><span></span><span></span></> : <><i></i><i></i><i></i></>}
+          </div>
+          <p class="u-tag">{label(item)} · {language === "es" ? "demostración" : "demonstration"}</p>
+          <h3 class="text-h3 font-editorial">{item.title}</h3>
           <p class="text-small">{item.summary}</p>
+          {dateLabel(item.publishedAt) && <p class="text-micro">{dateLabel(item.publishedAt)}</p>}
         </a>
       </article>
     ))}
@@ -36,12 +47,33 @@ const dateLabel = (d?: Date) =>
 </div>
 
 <style>
-  .featured-grid { display: grid; gap: var(--space-6); }
+  .featured-grid { display: grid; gap: var(--space-7); }
   @media (min-width: 769px) {
-    .featured-grid { grid-template-columns: 2fr 1fr; }
+    .featured-grid { grid-template-columns: 8fr 4fr; }
   }
   .featured-grid__primary a > * + * { margin-top: var(--space-3); }
-  .featured-grid__secondary { display: flex; flex-direction: column; gap: var(--space-5); }
-  .featured-grid__secondary article { border-top: var(--border-hairline); padding-top: var(--space-4); }
+  .featured-grid__artifact { background: var(--color-navy-900); color: var(--color-white); padding: var(--space-5); margin-bottom: var(--space-5); }
+  .featured-grid__artifact svg { width: 100%; height: 220px; margin-top: var(--space-3); }
+  .featured-grid__artifact path { fill: none; stroke: var(--color-azure-400); stroke-width: 5; vector-effect: non-scaling-stroke; }
+  .featured-grid__artifact line { stroke: var(--color-slate-500); }
+  .featured-grid__artifact circle { fill: var(--color-gold-500); }
+  .featured-grid__artifact-note { display: flex; justify-content: space-between; border-top: 1px solid var(--color-slate-500); padding-top: var(--space-3); font-size: var(--size-h3); }
+  .featured-grid__artifact-note span { font: 400 var(--size-micro)/1.4 var(--font-ui); color: var(--color-mist-100); }
+  .featured-grid__read { display: inline-block; font-weight: 600; color: var(--color-blue-600); }
+  .featured-grid__secondary { display: flex; flex-direction: column; gap: var(--space-6); }
+  .featured-grid__secondary article { border-top: var(--border-strong); padding-top: var(--space-4); }
   .featured-grid__secondary a > * + * { margin-top: var(--space-2); }
+  .featured-grid__mini-artifact { height: 76px; display: flex; align-items: end; gap: var(--space-2); background: var(--color-mist-100); padding: var(--space-3); margin-bottom: var(--space-3); }
+  .featured-grid__mini-artifact span { flex: 1; background: var(--color-blue-600); height: 38%; }
+  .featured-grid__mini-artifact span:nth-child(2) { height: 72%; }
+  .featured-grid__mini-artifact span:nth-child(3) { height: 54%; }
+  .featured-grid__mini-artifact span:nth-child(4) { height: 88%; background: var(--color-gold-500); }
+  .featured-grid__mini-artifact--table { display: grid; align-items: stretch; gap: var(--space-2); }
+  .featured-grid__mini-artifact--table i { display: block; border-top: var(--border-strong); }
+  @media (max-width: 768px) {
+    .featured-grid__artifact svg { height: 180px; }
+    .featured-grid__secondary article { display: grid; grid-template-columns: 104px 1fr; column-gap: var(--space-4); }
+    .featured-grid__secondary article a { display: contents; }
+    .featured-grid__mini-artifact { grid-row: 1 / span 4; height: 100%; min-height: 112px; margin: 0; }
+  }
 </style>

@@ -26,6 +26,9 @@ const basePathHtml = {
       const htmlFiles = entries
         .filter((entry) => entry.isFile() && entry.name.endsWith(".html"))
         .map((entry) => `${entry.parentPath}/${entry.name}`);
+      const cssFiles = entries
+        .filter((entry) => entry.isFile() && entry.name.endsWith(".css"))
+        .map((entry) => `${entry.parentPath}/${entry.name}`);
 
       const prefix = (value) => {
         if (!value.startsWith("/") || value.startsWith("//")) return value;
@@ -40,7 +43,12 @@ const basePathHtml = {
           .replace(/&quot;(\/(?!\/)[^&<]*?)&quot;/g, (_, value) => `&quot;${prefix(value)}&quot;`);
         if (output !== input) await writeFile(file, output, "utf8");
       }));
-      logger.info(`Normalized root-relative links in ${htmlFiles.length} HTML files for ${NORMALIZED_BASE_PATH}.`);
+      await Promise.all(cssFiles.map(async (file) => {
+        const input = await readFile(file, "utf8");
+        const output = input.replace(/url\((['"]?)(\/(?!\/)[^)'"]+)\1\)/g, (_, quote, value) => `url(${quote}${prefix(value)}${quote})`);
+        if (output !== input) await writeFile(file, output, "utf8");
+      }));
+      logger.info(`Normalized root-relative links in ${htmlFiles.length} HTML and ${cssFiles.length} CSS files for ${NORMALIZED_BASE_PATH}.`);
     }
   }
 };

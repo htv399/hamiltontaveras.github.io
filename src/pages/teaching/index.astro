@@ -9,16 +9,23 @@ import { siteConfig } from "../../config/site";
 
 const language = "en" as const;
 const all = (await getCollection("courses")).filter((e) => isEligible(e.data, siteConfig.env));
+const weeks = (await getCollection("weeks")).filter((e) => isEligible(e.data, siteConfig.env));
+const materials = (await getCollection("materials")).filter((e) => isEligible(e.data, siteConfig.env));
 const courses = all.map((c) => ({
   title: c.data.title,
   href: `/teaching/${c.data.slug}/`,
   period: c.data.period,
   archived: c.data.archived ?? false,
-  summary: c.data.summary
+  summary: c.data.summary,
+  question: weeks.find((w) => w.data.course_id === c.data.id)?.data.question,
+  weeksCount: weeks.filter((w) => w.data.course_id === c.data.id).length,
+  resourceTypes: [...new Set(weeks.filter((w) => w.data.course_id === c.data.id).flatMap((w) => w.data.resources).map((id) => materials.find((m) => m.data.id === id)?.data.material_type).filter((type): type is NonNullable<typeof type> => Boolean(type)))]
 }));
 ---
 <BaseLayout title={`Teaching — ${siteConfig.name}`} description="Courses and materials connecting formal reasoning, empirical practice and clear interpretation." path="/teaching/" language={language}>
   <section class="shell section-standard">
+    <p class="text-micro">Teaching</p>
+    <h1 class="text-display-l font-editorial" style="margin-top: var(--space-3);">Courses as inspectable publications.</h1>
     <p class="text-body-l reading-column">
       Courses and materials designed to connect formal reasoning, empirical practice and clear interpretation. Teaching
       behaves as a publication: it does not expose grades, announcements or student administration.

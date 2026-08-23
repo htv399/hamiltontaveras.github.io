@@ -14,11 +14,13 @@ const rows = sorted.map((n) => ({
   href: `/notes/${n.data.slug}/`,
   summary: n.data.summary,
   publishedAt: n.data.published_at,
-  tags: n.data.domains
+  tags: [n.data.note_type, ...n.data.domains]
 }));
 ---
 <BaseLayout title={`Notas — ${siteConfig.name}`} description="Notas breves sobre datos, economía, valoración, mercados y métodos." path="/es/notes/" language={language}>
   <section class="shell section-standard">
+    <p class="text-micro">Notas</p>
+    <h1 class="text-display-l font-editorial" style="margin-top: var(--space-3);">Argumentos concisos, mantenidos al día.</h1>
     <p class="text-body-l reading-column">
       Las notas son más breves que un paper de investigación y más puntuales que un caso de proyecto: una afirmación
       clara, su evidencia y las condiciones bajo las cuales esa afirmación puede cambiar.

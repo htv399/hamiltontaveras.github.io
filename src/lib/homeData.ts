@@ -61,7 +61,10 @@ export async function buildHomeViewModel(language: "en" | "es", siteEnv: SiteEnv
 
   const workRows = work
     .filter((w) => w.id !== lead?.id)
-    .map((w) => toRow(w.data, workHref(language, w.data.slug)));
+    .map((w) => ({
+      ...toRow(w.data, workHref(language, w.data.slug)),
+      tags: [w.data.kind, ...w.data.domains]
+    }));
 
   return {
     lead,
@@ -72,7 +75,10 @@ export async function buildHomeViewModel(language: "en" | "es", siteEnv: SiteEnv
     hasWorkSplit: workRows.length >= 2,
     research: research.filter((r) => r.id !== undefined),
     hasResearch: research.length >= 1,
-    notesRows: notes.slice(0, 4).map((n) => toRow(n.data, noteHref(language, n.data.slug))),
+    notesRows: notes.slice(0, 4).map((n) => ({
+      ...toRow(n.data, noteHref(language, n.data.slug)),
+      tags: [n.data.note_type, ...n.data.domains]
+    })),
     hasNotes: notes.length >= 1,
     courses,
     hasCourses: courses.length >= 1,

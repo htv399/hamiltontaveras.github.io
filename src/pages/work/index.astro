@@ -3,34 +3,26 @@
 // editorial listing; empty_state explains scope instead of showing empty
 // filters (05-page-contracts.yml).
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ContentFilters from "../../components/filters/ContentFilters.tsx";
+import WorkSplit from "../../components/editorial/WorkSplit.astro";
 import { getCollection } from "astro:content";
 import { isEligible } from "../../lib/contentGate";
 import { siteConfig } from "../../config/site";
-import { domainLabels } from "../../config/taxonomies";
-import { t } from "../../i18n/ui";
 
 const language = "en" as const;
-const strings = t(language);
 const allWork = (await getCollection("work")).filter((e) => isEligible(e.data, siteConfig.env));
-
-const domainOptions = [...new Set(allWork.flatMap((w) => w.data.domains))].map((d) => ({
-  value: d,
-  label: domainLabels[d as keyof typeof domainLabels]?.[language] ?? d
-}));
-const kindOptions = [...new Set(allWork.map((w) => w.data.kind))].map((k) => ({ value: k, label: k }));
-
-const records = allWork.map((w) => ({
+const rows = allWork.map((w) => ({
   id: w.data.id,
   title: w.data.title,
   href: `/work/${w.data.slug}/`,
   summary: w.data.summary,
-  publishedAt: w.data.published_at?.toISOString(),
-  tags: { domain: w.data.domains, kind: [w.data.kind] }
+  publishedAt: w.data.published_at,
+  tags: [w.data.kind, ...w.data.domains]
 }));
 ---
 <BaseLayout title={`Work — ${siteConfig.name}`} description="Selected work in data systems, economics, corporate finance, valuation and quantitative finance." path="/work/" language={language}>
   <section class="shell section-standard">
+    <p class="text-micro">Selected work</p>
+    <h1 class="text-display-l font-editorial" style="margin-top: var(--space-3);">From architecture to decision.</h1>
     <p class="text-body-l reading-column">
       Projects are documented as decision records: the question, the evidence, the method and the result. Confidential
       work appears only at an approved level of abstraction.
@@ -43,16 +35,7 @@ const records = allWork.map((w) => ({
       </p>
     ) : (
       <div style="margin-top: var(--space-8);">
-        <ContentFilters
-          client:idle
-          items={records}
-          dimensions={[
-            { key: "domain", label: "Domain", options: domainOptions },
-            { key: "kind", label: "Kind", options: kindOptions }
-          ]}
-          clearLabel={strings.filterClear}
-          emptyHeading={strings.noResultsHeading}
-        />
+        <WorkSplit items={rows.slice(0, 4)} language={language} />
       </div>
     )}
   </section>

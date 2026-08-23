@@ -13,11 +13,14 @@ const { items, language } = Astro.props;
   {items.map((item) => (
     <li>
       <a href={item.href}>
-        <p class="text-small">
+        <div class="notes-row__meta">
+          <span class="u-tag">{item.tags[0]?.replaceAll("-", " ")}</span>
+          <p class="text-small">
           {item.publishedAt &&
             new Intl.DateTimeFormat(language, { year: "numeric", month: "short", day: "numeric" }).format(item.publishedAt)}
-        </p>
-        <h4 class="text-body-l">{item.title}</h4>
+          </p>
+        </div>
+        <h4 class="text-h3 font-editorial">{item.title}</h4>
         <p class="text-small">{item.summary}</p>
       </a>
     </li>
@@ -25,7 +28,9 @@ const { items, language } = Astro.props;
 </ul>
 
 <style>
-  .notes-row { display: flex; flex-direction: column; gap: var(--space-4); }
-  .notes-row li { border-top: var(--border-hairline); padding-top: var(--space-3); }
-  .notes-row a > * + * { margin-top: var(--space-1); }
+  .notes-row { display: flex; flex-direction: column; }
+  .notes-row li { border-top: var(--border-hairline); padding-block: var(--space-4); }
+  .notes-row a { display: grid; grid-template-columns: 2fr 4fr 6fr; gap: var(--space-5); align-items: baseline; }
+  .notes-row__meta { display: flex; flex-direction: column; gap: var(--space-1); }
+  @media (max-width: 768px) { .notes-row a { grid-template-columns: 1fr; gap: var(--space-2); } }
 </style>

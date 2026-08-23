@@ -95,6 +95,7 @@ entries:
 
   - { id: REP-TEST-001, path: "tests/unit/**/*", kind: pattern, purpose: "Esquemas y componentes.", origin: ["QA-CMP-001", "QA-CM-001"], action: create, depends_on: ["src/"] }
   - { id: REP-TEST-002, path: "tests/e2e/**/*", kind: pattern, purpose: "Rutas, interacción y responsive.", origin: ["QA-RESP-001", "QA-FUNC-001"], action: create, depends_on: ["dist/"] }
+  - { id: REP-TEST-004, path: "tests/helpers/**/*", kind: pattern, purpose: "Utilidades compartidas para validar despliegues con base path.", origin: ["QA-RESP-001", "QA-VIS-001"], action: create, depends_on: ["playwright.config.ts"] }
   - { id: REP-TEST-003, path: "tests/visual/**/*", kind: pattern, purpose: "Baselines Home, Research y detalles.", origin: ["QA-VIS-001"], action: create, depends_on: ["tests/e2e/"] }
   - { id: REP-TEST-004, path: "tests/fixtures/**/*", kind: pattern, purpose: "Seed demostrativo para todos los modelos.", origin: ["SEED-001"], action: create, depends_on: ["src/content.config.ts"] }
 
@@ -115,4 +116,3 @@ verification:
     - "Every unexpected source file is classified before release."
     - "No generated cache is committed."
     - "Manifest references only existing contract IDs."
-

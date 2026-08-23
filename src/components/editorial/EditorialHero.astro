@@ -27,43 +27,93 @@ const strings = t(language);
 // src/pages/analysis/[...slug].astro.
 const href = `/analysis/${lead.slug}/`;
 const evidence = lead.evidence[0];
-const dateLabel = lead.published_at
-  ? new Intl.DateTimeFormat(language, { year: "numeric", month: "long", day: "numeric" }).format(lead.published_at)
-  : null;
+const chartTitle = language === "es" ? "Pulso sintético de actividad" : "Synthetic activity pulse";
+const chartUnit = language === "es" ? "Índice demostrativo, base 100" : "Demonstration index, base 100";
+const chartSource = language === "es" ? "Fuente: serie sintética generada para esta preview" : "Source: synthetic series generated for this preview";
+const chartNote = language === "es" ? "Nota: cinco observaciones ilustrativas; no describen una economía, mercado o empresa." : "Note: five illustrative observations; they do not describe an economy, market or company.";
+const chartSummary = language === "es" ? "Serie demostrativa que parte de 100, sube a 104, baja a 101 y termina en 108." : "Demonstration series starts at 100, rises to 104, falls to 101 and ends at 108.";
 ---
 <section class:list={["editorial-hero", variant === "navy" ? "surface-navy" : "surface-paper"]}>
-  <div class="shell editorial-hero__inner section-feature">
+  <div class="shell editorial-hero__inner">
     <div class="editorial-hero__identity">
-      <h1 class="text-display-l font-editorial">{name}</h1>
-      <p class="text-body-l">{descriptor}</p>
+      <p class="text-micro editorial-hero__kicker">{language === "es" ? "Economía · datos · valoración" : "Economics · data · valuation"}</p>
+      <h1 class="text-display-xl font-editorial">{name}</h1>
+      <p class="editorial-hero__descriptor text-body-l">{descriptor}</p>
       <p class="editorial-hero__thesis text-body">{thesis}</p>
-    </div>
-    <a href={href} class="editorial-hero__lead" aria-label={`${strings.readMore}: ${lead.title}`}>
-      <div class="editorial-hero__evidence" role="img" aria-label={evidence?.accessible_summary ?? evidence?.title}>
-        <span class="u-tag">{strings.demoNotice}</span>
+      <div class="editorial-hero__story">
+        <p class="u-tag">{language === "es" ? "Análisis principal · datos demostrativos" : "Lead analysis · demonstration data"}</p>
+        <h2 class="text-h3 font-editorial">{lead.title}</h2>
+        <p class="text-body">{lead.key_finding}</p>
+        <a href={href} class="editorial-hero__cta" aria-label={`${strings.readMore}: ${lead.title}`}>
+          {language === "es" ? "Explorar el análisis" : "Explore the analysis"} <span aria-hidden="true">→</span>
+        </a>
       </div>
-      <p class="u-tag">{lead.domains.join(" · ")}</p>
-      <h2 class="text-h3">{lead.title}</h2>
-      <p class="text-body">{lead.key_finding}</p>
-      {dateLabel && <p class="text-small">{dateLabel}</p>}
-    </a>
+    </div>
+    <figure class="editorial-hero__chart">
+      <div class="editorial-hero__chart-head">
+        <div>
+          <p class="text-micro">{language === "es" ? "Datos demostrativos" : "Demonstration data"}</p>
+          <h2 class="text-h3 font-editorial">{chartTitle}</h2>
+        </div>
+        <p class="text-micro font-mono">{language === "es" ? "Corte: 23 ago 2026" : "Cut-off: 23 Aug 2026"}</p>
+      </div>
+      <p class="editorial-hero__unit text-micro">{chartUnit}</p>
+      <svg viewBox="0 0 560 310" role="img" aria-labelledby="hero-chart-title hero-chart-desc" preserveAspectRatio="none">
+        <title id="hero-chart-title">{chartTitle}</title>
+        <desc id="hero-chart-desc">{chartSummary}</desc>
+        <g class="chart-grid" aria-hidden="true">
+          <line x1="52" y1="58" x2="530" y2="58"/><line x1="52" y1="128" x2="530" y2="128"/>
+          <line x1="52" y1="198" x2="530" y2="198"/><line x1="52" y1="268" x2="530" y2="268"/>
+        </g>
+        <g class="chart-axis font-mono" aria-hidden="true">
+          <text x="8" y="62">110</text><text x="8" y="132">105</text><text x="8" y="202">100</text><text x="8" y="272">95</text>
+          <text x="52" y="298">T1</text><text x="168" y="298">T2</text><text x="286" y="298">T3</text><text x="404" y="298">T4</text><text x="510" y="298">T5</text>
+        </g>
+        <path class="chart-area" d="M52 198 L168 142 L286 184 L404 112 L520 72 L520 268 L52 268 Z" aria-hidden="true"/>
+        <path class="chart-line" d="M52 198 L168 142 L286 184 L404 112 L520 72" aria-hidden="true"/>
+        <g class="chart-points" aria-hidden="true"><circle cx="52" cy="198" r="4"/><circle cx="168" cy="142" r="4"/><circle cx="286" cy="184" r="4"/><circle cx="404" cy="112" r="4"/><circle class="chart-point-key" cx="520" cy="72" r="7"/></g>
+        <g class="chart-annotation" aria-hidden="true"><line x1="420" y1="36" x2="513" y2="67"/><text x="316" y="30">Illustrative high</text><text x="435" y="50" class="font-mono">108</text></g>
+      </svg>
+      <div class="editorial-hero__chart-footer">
+        <p>{chartSource}</p><p>{chartNote}</p>
+        <p class="visually-hidden">{evidence?.accessible_summary ?? chartSummary}</p>
+      </div>
+    </figure>
   </div>
 </section>
 
 <style>
-  .editorial-hero__inner { display: grid; gap: var(--space-7); }
+  .editorial-hero__inner { display: grid; gap: var(--space-7); padding-block: clamp(112px, 13vh, 152px) var(--space-8); }
   @media (min-width: 769px) {
-    .editorial-hero__inner { grid-template-columns: 7fr 5fr; align-items: start; }
+    .editorial-hero__inner { grid-template-columns: 7fr 5fr; align-items: end; min-height: min(820px, 100vh); }
   }
   .editorial-hero__identity > * + * { margin-top: var(--space-4); }
-  .editorial-hero__thesis { opacity: 0.85; max-width: 46ch; }
-  .editorial-hero__lead { display: block; }
-  .editorial-hero__lead > * + * { margin-top: var(--space-2); }
-  .editorial-hero__evidence {
-    aspect-ratio: 4 / 3;
-    background: rgba(255, 255, 255, 0.08);
-    border: var(--border-hairline);
-    display: flex; align-items: flex-end; padding: var(--space-3);
+  .editorial-hero__identity h1 { color: var(--color-white); max-width: 11ch; }
+  .editorial-hero__kicker { color: var(--color-mist-100); }
+  .editorial-hero__descriptor { max-width: 42ch; font-weight: 500; }
+  .editorial-hero__thesis { color: var(--color-mist-100); max-width: 52ch; }
+  .editorial-hero__story { border-top: var(--border-key-result); max-width: 58ch; padding-top: var(--space-4); margin-top: var(--space-6); }
+  .editorial-hero__story > * + * { margin-top: var(--space-2); }
+  .editorial-hero__story h2 { color: var(--color-white); }
+  .editorial-hero__cta { display: inline-flex; gap: var(--space-2); align-items: center; font-weight: 600; margin-top: var(--space-4); }
+  .editorial-hero__chart { background: var(--color-white); color: var(--color-ink-800); padding: var(--space-5); margin: 0; }
+  .editorial-hero__chart-head { display: flex; justify-content: space-between; gap: var(--space-4); align-items: start; border-bottom: var(--border-hairline); padding-bottom: var(--space-3); }
+  .editorial-hero__chart-head h2 { margin-top: var(--space-1); }
+  .editorial-hero__unit { color: var(--color-slate-500); margin-top: var(--space-3); }
+  .editorial-hero__chart svg { display: block; width: 100%; height: clamp(280px, 30vw, 360px); margin-top: var(--space-2); }
+  .chart-grid line { stroke: var(--color-mist-100); stroke-width: 1; }
+  .chart-axis { fill: var(--color-slate-500); font-size: var(--size-micro); }
+  .chart-area { fill: var(--color-mist-100); opacity: .72; }
+  .chart-line { fill: none; stroke: var(--color-blue-600); stroke-width: 5; vector-effect: non-scaling-stroke; }
+  .chart-points circle { fill: var(--color-blue-600); }
+  .chart-points .chart-point-key { fill: var(--color-gold-500); stroke: var(--color-white); stroke-width: 3; }
+  .chart-annotation line { stroke: var(--color-gold-500); stroke-width: 2; }
+  .chart-annotation text { fill: var(--color-navy-900); font-size: var(--size-small); }
+  .editorial-hero__chart-footer { border-top: var(--border-hairline); padding-top: var(--space-3); display: grid; gap: var(--space-1); font-size: var(--size-micro); color: var(--color-slate-500); }
+  @media (max-width: 768px) {
+    .editorial-hero__inner { padding-block: calc(var(--header-height-mobile) + var(--space-7)) var(--space-7); }
+    .editorial-hero__chart { min-height: 420px; padding: var(--space-4); }
+    .editorial-hero__chart-head { flex-direction: column; gap: var(--space-2); }
+    .editorial-hero__chart svg { height: 280px; }
   }
-  .surface-paper .editorial-hero__evidence { background: var(--color-mist-100); border: none; }
 </style>

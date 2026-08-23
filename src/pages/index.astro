@@ -11,6 +11,7 @@ import ResearchFeature from "../components/research/ResearchFeature.astro";
 import NotesRow from "../components/editorial/NotesRow.astro";
 import CourseShelf from "../components/teaching/CourseShelf.astro";
 import BackgroundContact from "../components/editorial/BackgroundContact.astro";
+import IndicatorStrip from "../components/data/IndicatorStrip.astro";
 import { buildHomeViewModel } from "../lib/homeData";
 import { siteConfig } from "../config/site";
 
@@ -23,6 +24,19 @@ const editorialQuestions = [
   "Which assumptions actually drive a valuation result, and how sensitive is that result to them?",
   "How should quantitative evidence be communicated when uncertainty is part of the answer?"
 ];
+const indicators = [
+  { label: "Synthetic activity", value: "104.8", unit: "index", change: { direction: "up" as const, label: "+1.6 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" },
+  { label: "Model dispersion", value: "7.2", unit: "range", change: { direction: "down" as const, label: "−0.8 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" },
+  { label: "Data coverage", value: "88", unit: "demo %", change: { direction: "up" as const, label: "+4 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" },
+  { label: "Scenario balance", value: "52", unit: "index", change: { direction: "flat" as const, label: "0.0 demo pts" }, data_vintage: "23 Aug 2026", source: "Synthetic preview series" }
+];
+const featuredItems = vm.lead ? [{
+  title: vm.lead.data.title,
+  href: vm.analysisHref(vm.lead.data.slug),
+  summary: vm.lead.data.key_finding,
+  publishedAt: vm.lead.data.published_at,
+  tags: ["analysis", ...vm.lead.data.domains]
+}, ...vm.workRows.slice(0, 2)] : vm.workRows;
 ---
 <BaseLayout
   title={`${siteConfig.name} — ${siteConfig.descriptor}`}
@@ -48,23 +62,32 @@ const editorialQuestions = [
     />
   )}
 
-  {vm.hasFeaturedGrid && vm.featured.length >= 3 && (
+  <section class="home-indicators surface-paper">
+    <div class="shell">
+      <div class="home-indicators__intro"><p class="text-micro">Demonstration data</p><p class="text-small">Synthetic signals used only to preview the publication system.</p></div>
+      <IndicatorStrip indicators={indicators} language={language} />
+    </div>
+  </section>
+
+  {featuredItems.length >= 3 && (
     <section class="section-standard surface-white">
       <div class="shell">
-        <FeaturedAnalysisGrid primary={vm.featured[0]} secondary={[vm.featured[1], vm.featured[2]]} language={language} />
+        <header class="home-section-head"><p class="text-micro">Selected intelligence</p><h2 class="text-h2 font-editorial">Evidence, organized by decision</h2></header>
+        <FeaturedAnalysisGrid primary={featuredItems[0]} secondary={[featuredItems[1], featuredItems[2]]} language={language} />
       </div>
     </section>
   )}
-  {!vm.hasFeaturedGrid && vm.featured.length > 0 && (
+  {featuredItems.length > 0 && featuredItems.length < 3 && (
     <section class="section-dense surface-white">
       <div class="shell">
-        {vm.featured.map((item) => <EditorialRow item={item} emphasis="standard" language={language} />)}
+        {featuredItems.map((item) => <EditorialRow item={item} emphasis="standard" language={language} />)}
       </div>
     </section>
   )}
 
   <section class="section-dense surface-paper">
     <div class="shell">
+      <header class="home-section-head"><p class="text-micro">Questions that organize the work</p><h2 class="text-h2 font-editorial">Where evidence meets judgment</h2></header>
       <QuestionsModule questions={editorialQuestions} />
     </div>
   </section>
@@ -72,7 +95,7 @@ const editorialQuestions = [
   {vm.hasWorkSplit && (
     <section class="section-standard surface-white">
       <div class="shell">
-        <h2 class="text-h2">Work</h2>
+        <header class="home-section-head"><p class="text-micro">Work</p><h2 class="text-h2 font-editorial">Systems, products and valuation evidence</h2><p class="text-body">Three synthetic formats demonstrate how questions, architecture and quantitative judgment can be made inspectable.</p></header>
         <div style="margin-top: var(--space-6);">
           <WorkSplit items={vm.workRows.slice(0, 4)} language={language} />
         </div>
@@ -101,7 +124,7 @@ const editorialQuestions = [
   {vm.hasNotes && (
     <section class="section-dense surface-white">
       <div class="shell">
-        <h2 class="text-h3">Notes</h2>
+        <header class="home-section-head"><p class="text-micro">Notes</p><h2 class="text-h2 font-editorial">Short-form analytical observations</h2></header>
         <div style="margin-top: var(--space-5);">
           <NotesRow items={vm.notesRows} language={language} />
         </div>
@@ -112,7 +135,7 @@ const editorialQuestions = [
   {vm.hasCourses && (
     <section class="section-dense surface-paper">
       <div class="shell">
-        <h2 class="text-h3">Teaching</h2>
+        <header class="home-section-head"><p class="text-micro">Teaching</p><h2 class="text-h2 font-editorial">Methods presented as an academic publication</h2></header>
         <div style="margin-top: var(--space-5);">
           <CourseShelf
             courses={vm.courses.map((c) => ({
@@ -136,3 +159,11 @@ const editorialQuestions = [
     language={language}
   />
 </BaseLayout>
+
+<style>
+  .home-indicators { padding-block: var(--space-5); }
+  .home-indicators__intro { display: flex; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-4); }
+  .home-section-head { margin-bottom: var(--space-7); max-width: 880px; }
+  .home-section-head > * + * { margin-top: var(--space-2); }
+  @media (max-width: 768px) { .home-indicators__intro { flex-direction: column; gap: var(--space-1); } .home-section-head { margin-bottom: var(--space-5); } }
+</style>

@@ -7,24 +7,46 @@ interface Props {
   items: RowItem[]; // 2 to 4
   language: "en" | "es";
 }
-const { items } = Astro.props;
+const { items, language } = Astro.props as Props;
 const [lead, ...rest] = items;
+const kind = (item: RowItem) => item.tags[0] ?? "project";
+const kindLabel = (item: RowItem) => kind(item).replaceAll("-", " ");
 ---
 <div class="work-split">
   <article class="work-split__lead">
     <a href={lead.href}>
-      <p class="u-tag">{lead.tags.slice(0, 3).join(" · ")}</p>
-      <h3 class="text-h3">{lead.title}</h3>
+      <div class="work-visual work-visual--flow" role="img" aria-label={language === "es" ? "Diagrama demostrativo de flujo desde fuentes sintéticas hasta una decisión" : "Demonstration flow from synthetic sources to a decision"}>
+        <p class="text-micro">{language === "es" ? "Arquitectura sintética" : "Synthetic architecture"}</p>
+        <div class="work-flow" aria-hidden="true"><span>Sources</span><i>→</i><span>Quality</span><i>→</i><span>Model</span><i>→</i><span>Decision</span></div>
+        <p class="text-micro">{language === "es" ? "Datos demostrativos · sin sistema real" : "Demonstration data · no real system"}</p>
+      </div>
+      <p class="u-tag">{kindLabel(lead)} · {lead.tags.slice(1, 3).join(" · ")}</p>
+      <h3 class="text-h2 font-editorial">{lead.title}</h3>
       <p class="text-body">{lead.summary}</p>
+      <span class="work-split__read">{language === "es" ? "Ver evidencia" : "View evidence"} →</span>
     </a>
   </article>
   <div class="work-split__rest">
     {rest.map((item) => (
       <article>
         <a href={item.href}>
-          <p class="u-tag">{item.tags.slice(0, 3).join(" · ")}</p>
-          <h4 class="text-body-l">{item.title}</h4>
+          {kind(item) === "data-product" ? (
+            <div class="work-visual work-visual--coverage" role="img" aria-label={language === "es" ? "Cobertura sintética de cuatro fuentes demostrativas" : "Synthetic coverage across four demonstration sources"}>
+              <p class="text-micro">{language === "es" ? "Cobertura demostrativa" : "Demonstration coverage"}</p>
+              <div aria-hidden="true"><span style="--coverage: 94%"></span><span style="--coverage: 78%"></span><span style="--coverage: 88%"></span></div>
+              <p class="text-micro">94 · 78 · 88 <em>{language === "es" ? "índices sintéticos" : "synthetic indices"}</em></p>
+            </div>
+          ) : (
+            <div class="work-visual work-visual--sensitivity" role="img" aria-label={language === "es" ? "Tabla sintética de sensibilidad con nueve escenarios" : "Synthetic sensitivity table with nine scenarios"}>
+              <p class="text-micro">{language === "es" ? "Sensibilidad demostrativa" : "Demonstration sensitivity"}</p>
+              <div aria-hidden="true">{[92, 99, 104, 97, 105, 112, 101, 110, 118].map((value, index) => <span class:list={[index === 4 && "is-key"]}>{value}</span>)}</div>
+              <p class="text-micro">{language === "es" ? "Entidad ficticia · unidades sintéticas" : "Fictitious entity · synthetic units"}</p>
+            </div>
+          )}
+          <p class="u-tag">{kindLabel(item)} · {item.tags.slice(1, 3).join(" · ")}</p>
+          <h4 class="text-h3 font-editorial">{item.title}</h4>
           <p class="text-small">{item.summary}</p>
+          <span class="work-split__read">{language === "es" ? "Abrir pieza" : "Open piece"} →</span>
         </a>
       </article>
     ))}
@@ -32,12 +54,29 @@ const [lead, ...rest] = items;
 </div>
 
 <style>
-  .work-split { display: grid; gap: var(--space-6); }
+  .work-split { display: grid; gap: var(--space-7); }
   @media (min-width: 769px) {
     .work-split { grid-template-columns: 8fr 4fr; }
   }
   .work-split__lead a > * + * { margin-top: var(--space-3); }
-  .work-split__rest { display: flex; flex-direction: column; gap: var(--space-4); }
-  .work-split__rest article { border-top: var(--border-hairline); padding-top: var(--space-3); }
-  .work-split__rest a > * + * { margin-top: var(--space-1); }
+  .work-split__rest { display: flex; flex-direction: column; gap: var(--space-6); }
+  .work-split__rest article { border-top: var(--border-strong); padding-top: var(--space-4); }
+  .work-split__rest a > * + * { margin-top: var(--space-2); }
+  .work-split__read { display: inline-block; color: var(--color-blue-600); font-weight: 600; font-size: var(--size-small); }
+  .work-visual { background: var(--color-paper); border-top: var(--border-strong); padding: var(--space-4); margin-bottom: var(--space-4); color: var(--color-ink-800); }
+  .work-flow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 190px; }
+  .work-flow span { background: var(--color-white); border: var(--border-strong); padding: var(--space-3); font: 500 var(--size-small)/1.3 var(--font-mono); }
+  .work-flow i { color: var(--color-gold-500); font-style: normal; }
+  .work-visual--coverage > div { display: grid; gap: var(--space-2); margin-block: var(--space-5); }
+  .work-visual--coverage span { display: block; width: var(--coverage); height: 12px; background: var(--color-blue-600); }
+  .work-visual--coverage span:nth-child(2) { background: var(--color-azure-400); }
+  .work-visual--coverage span:nth-child(3) { background: var(--color-gold-500); }
+  .work-visual em { font: 400 var(--size-micro)/1 var(--font-ui); color: var(--color-slate-500); }
+  .work-visual--sensitivity > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-block: var(--space-4); background: var(--color-white); }
+  .work-visual--sensitivity span { padding: var(--space-2); text-align: right; font: 400 var(--size-small)/1.3 var(--font-mono); background: var(--color-mist-100); }
+  .work-visual--sensitivity .is-key { border: var(--border-key-result); background: var(--color-white); font-weight: 600; }
+  @media (max-width: 600px) {
+    .work-flow { display: grid; grid-template-columns: 1fr auto 1fr; min-height: 0; }
+    .work-flow span:last-of-type { grid-column: 3; }
+  }
 </style>

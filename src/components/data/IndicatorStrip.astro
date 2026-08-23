@@ -19,14 +19,32 @@ const { indicators, language } = Astro.props;
 <div class="indicator-strip" role="list" aria-label={language === "es" ? "Indicadores, datos estáticos" : "Indicators, static data"}>
   {indicators.map((ind) => (
     <div role="listitem" class="indicator">
-      <p class="u-tag">{ind.label}</p>
-      <p class="indicator__value">{ind.value}<span class="text-small"> {ind.unit}</span></p>
+      <div class="indicator__heading"><p class="u-tag">{ind.label}</p><span class="indicator__demo text-micro">Demo</span></div>
+      <p class="indicator__value">{ind.value}<span> {ind.unit}</span></p>
       {ind.change && (
-        <p class:list={["text-small", `indicator__change--${ind.change.direction === "down" ? "negative" : ind.change.direction === "up" ? "positive" : ""}`]}>
+        <p class:list={["indicator__change text-small", `indicator__change--${ind.change.direction === "down" ? "negative" : ind.change.direction === "up" ? "positive" : ""}`]}>
           {ind.change.label}
         </p>
       )}
-      <p class="text-micro">{ind.data_vintage} · {ind.source}</p>
+      <p class="indicator__source text-micro">{ind.data_vintage} · {ind.source}</p>
     </div>
   ))}
 </div>
+
+<style>
+  .indicator-strip { border-top: var(--border-strong); border-bottom: var(--border-hairline); gap: 0; }
+  .indicator { padding: var(--space-4) var(--space-5); border-right: var(--border-hairline); min-width: 0; }
+  .indicator:first-child { padding-left: 0; }
+  .indicator:last-child { border-right: 0; padding-right: 0; }
+  .indicator__heading { display: flex; justify-content: space-between; gap: var(--space-2); }
+  .indicator__demo { color: var(--color-blue-600); }
+  .indicator__value { margin-top: var(--space-3); font-size: var(--size-h2); line-height: 1; }
+  .indicator__value span { font: 400 var(--size-micro)/1 var(--font-ui); color: var(--color-slate-500); }
+  .indicator__change { margin-top: var(--space-2); font-family: var(--font-mono); }
+  .indicator__source { margin-top: var(--space-3); color: var(--color-slate-500); }
+  @media (max-width: 768px) {
+    .indicator-strip { padding-bottom: var(--space-2); }
+    .indicator { min-width: 220px; padding-inline: var(--space-4); scroll-snap-align: start; }
+    .indicator:first-child { padding-left: 0; }
+  }
+</style>

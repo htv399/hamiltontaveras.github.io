@@ -13,29 +13,95 @@ interface Props {
     publishedAt?: Date;
     keyFinding: string;
     pdfHref?: string;
+    abstract?: string;
+    question?: string;
+    contribution?: string;
+    version?: string;
+    status?: string;
+    citation?: string;
+    disclosure?: string;
   };
   language: "en" | "es";
+  expanded?: boolean;
 }
-const { item, language } = Astro.props;
+const { item, language, expanded = false } = Astro.props;
 const strings = t(language);
+const visibleAuthors = item.authors.filter((author) => !author.display_name.startsWith("["));
 const dateLabel = item.publishedAt
   ? new Intl.DateTimeFormat(language, { year: "numeric", month: "long", day: "numeric" }).format(item.publishedAt)
   : null;
 ---
-<article class="research-feature">
-  <p class="u-tag">{item.format}</p>
-  <h2 class="text-h2 font-editorial"><a href={item.href}>{item.title}</a></h2>
-  <p class="text-body-l">{item.keyFinding}</p>
-  <div class="cluster text-small">
-    <span>{item.authors.map((a) => a.display_name).join(", ")}</span>
-    {dateLabel && <span>{dateLabel}</span>}
-  </div>
-  {item.pdfHref && (
-    <a href={item.pdfHref} class="research-feature__pdf text-small">{strings.download} PDF</a>
+<article class:list={["research-feature", expanded && "research-feature--expanded"]}>
+  <header class="research-feature__header">
+    <p class="u-tag">{item.format} · {language === "es" ? "publicación demostrativa" : "demonstration publication"}</p>
+    <h2 class:list={[expanded ? "text-display-l" : "text-h2", "font-editorial"]}><a href={item.href}>{item.title}</a></h2>
+    <div class="research-feature__metadata text-small">
+      {visibleAuthors.length > 0 ? <span>{visibleAuthors.map((a) => a.display_name).join(", ")}</span> : <span>{language === "es" ? "Fixture editorial sin atribución personal" : "Editorial fixture with no personal attribution"}</span>}
+      {dateLabel && <span>{dateLabel}</span>}
+      {item.version && <span>{language === "es" ? "Versión" : "Version"} {item.version}</span>}
+      {item.status && <span>{item.status}</span>}
+    </div>
+    {item.abstract && <p class="research-feature__abstract text-body-l">{item.abstract}</p>}
+  </header>
+
+  {expanded ? (
+    <div class="research-feature__body">
+      <div class="research-feature__argument">
+        {item.question && <section><p class="text-micro">{language === "es" ? "Pregunta" : "Question"}</p><h3 class="text-h3 font-editorial">{item.question}</h3></section>}
+        {item.contribution && <section><p class="text-micro">{language === "es" ? "Contribución demostrativa" : "Demonstration contribution"}</p><p>{item.contribution}</p></section>}
+        <section class="research-feature__finding"><p class="text-micro">{language === "es" ? "Lectura principal" : "Primary reading"}</p><p class="text-body-l font-editorial">{item.keyFinding}</p></section>
+        <div class="research-feature__actions">
+          <a href={item.href}>{language === "es" ? "Leer publicación" : "Read publication"} →</a>
+          {item.pdfHref && <a href={item.pdfHref}>{strings.download} PDF</a>}
+          {item.citation && <a href={`${item.href}#citation`}>{language === "es" ? "Cita" : "Citation"}</a>}
+        </div>
+      </div>
+      <figure class="research-feature__exhibit">
+        <div class="research-feature__exhibit-head"><div><p class="text-micro">Exhibit 1 · {language === "es" ? "Datos demostrativos" : "Demonstration data"}</p><h3 class="text-h3 font-editorial">{language === "es" ? "Señal y rango de incertidumbre" : "Signal and uncertainty range"}</h3></div><p class="text-micro font-mono">Index · 5 periods</p></div>
+        <svg viewBox="0 0 620 300" role="img" aria-labelledby="research-exhibit-title research-exhibit-desc">
+          <title id="research-exhibit-title">{language === "es" ? "Señal sintética con intervalo" : "Synthetic signal with interval"}</title>
+          <desc id="research-exhibit-desc">{language === "es" ? "Una serie demostrativa asciende de 96 a 109 dentro de una banda de incertidumbre ficticia." : "A demonstration series rises from 96 to 109 inside a fictitious uncertainty band."}</desc>
+          <g class="research-grid" aria-hidden="true"><line x1="44" y1="52" x2="590" y2="52"/><line x1="44" y1="122" x2="590" y2="122"/><line x1="44" y1="192" x2="590" y2="192"/><line x1="44" y1="262" x2="590" y2="262"/></g>
+          <path class="research-band" d="M44 224 L174 170 L304 192 L434 106 L570 62 L570 128 L434 166 L304 238 L174 220 L44 270 Z" aria-hidden="true"/>
+          <path class="research-line" d="M44 246 L174 196 L304 216 L434 136 L570 94" aria-hidden="true"/>
+          <circle cx="570" cy="94" r="7" aria-hidden="true"/>
+        </svg>
+        <figcaption><p>{language === "es" ? "Fuente: serie sintética creada para demostrar el tratamiento editorial." : "Source: synthetic series created to demonstrate the editorial treatment."}</p><p>{language === "es" ? "Nota: no representa una economía, activo, institución o resultado real. Corte demostrativo: 23 ago 2026." : "Note: does not represent an economy, asset, institution or real result. Demonstration cut-off: 23 Aug 2026."}</p></figcaption>
+      </figure>
+    </div>
+  ) : (
+    <>
+      <p class="text-body-l">{item.keyFinding}</p>
+      <div class="cluster text-small">{visibleAuthors.length > 0 && <span>{visibleAuthors.map((a) => a.display_name).join(", ")}</span>}{dateLabel && <span>{dateLabel}</span>}</div>
+      {item.pdfHref && <a href={item.pdfHref} class="research-feature__pdf text-small">{strings.download} PDF</a>}
+    </>
   )}
+  {expanded && item.disclosure && <p class="research-feature__disclosure text-small">{item.disclosure}</p>}
 </article>
 
 <style>
-  .research-feature > * + * { margin-top: var(--space-3); }
+  .research-feature > * + * { margin-top: var(--space-4); }
   .research-feature__pdf { font-weight: 600; }
+  .research-feature__header { max-width: 980px; }
+  .research-feature__header > * + * { margin-top: var(--space-4); }
+  .research-feature__metadata { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); color: var(--color-ink-800); }
+  .research-feature__abstract { max-width: 68ch; }
+  .research-feature__body { display: grid; gap: var(--space-7); margin-top: var(--space-7); }
+  .research-feature__argument { display: flex; flex-direction: column; gap: var(--space-6); }
+  .research-feature__argument section > * + * { margin-top: var(--space-2); }
+  .research-feature__finding { border-top: var(--border-key-result); padding-top: var(--space-4); }
+  .research-feature__actions { display: flex; flex-wrap: wrap; gap: var(--space-4); border-top: var(--border-hairline); padding-top: var(--space-4); font-weight: 600; }
+  .research-feature__exhibit { margin: 0; background: var(--color-paper); padding: var(--space-5); border-top: var(--border-strong); }
+  .research-feature__exhibit-head { display: flex; justify-content: space-between; gap: var(--space-4); }
+  .research-feature__exhibit-head h3 { margin-top: var(--space-1); }
+  .research-feature__exhibit svg { width: 100%; height: 320px; margin-top: var(--space-3); }
+  .research-grid line { stroke: var(--color-mist-100); }
+  .research-band { fill: var(--color-azure-400); opacity: .22; }
+  .research-line { fill: none; stroke: var(--color-blue-600); stroke-width: 5; vector-effect: non-scaling-stroke; }
+  .research-feature__exhibit circle { fill: var(--color-gold-500); }
+  .research-feature__exhibit figcaption { border-top: var(--border-hairline); padding-top: var(--space-3); font-size: var(--size-micro); color: var(--color-slate-500); }
+  .research-feature__exhibit figcaption p + p { margin-top: var(--space-1); }
+  .research-feature__disclosure { border-top: var(--border-hairline); padding-top: var(--space-4); color: var(--color-slate-500); }
+  @media (min-width: 900px) { .research-feature__body { grid-template-columns: 4fr 8fr; align-items: start; } }
+  @media (max-width: 768px) { .research-feature__exhibit { padding: var(--space-4); } .research-feature__exhibit svg { height: 280px; } .research-feature__exhibit-head { flex-direction: column; } }
 </style>

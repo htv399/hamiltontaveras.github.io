@@ -7,12 +7,15 @@ interface CourseItem {
   period: string;
   archived: boolean;
   summary: string;
+  question?: string;
+  weeksCount?: number;
+  resourceTypes?: string[];
 }
 interface Props {
   courses: CourseItem[];
   language: "en" | "es";
 }
-const { courses } = Astro.props;
+const { courses, language } = Astro.props;
 const active = courses.filter((c) => !c.archived);
 const archived = courses.filter((c) => c.archived);
 const ordered = [...active, ...archived];
@@ -21,16 +24,23 @@ const ordered = [...active, ...archived];
   {ordered.map((course) => (
     <li class="course-shelf__item">
       <a href={course.href}>
-        <p class="u-tag">{course.period}{course.archived ? " · Archived" : ""}</p>
-        <h3 class="text-h3">{course.title}</h3>
+        <div class="course-shelf__meta"><p class="u-tag">{course.period}{course.archived ? ` · ${language === "es" ? "Archivado" : "Archived"}` : ""}</p>{course.weeksCount !== undefined && <p class="text-micro font-mono">{course.weeksCount} {language === "es" ? (course.weeksCount === 1 ? "semana" : "semanas") : (course.weeksCount === 1 ? "week" : "weeks")}</p>}</div>
+        <h3 class="text-h2 font-editorial">{course.title}</h3>
         <p class="text-body">{course.summary}</p>
+        {course.question && <p class="course-shelf__question text-body-l font-editorial">{course.question}</p>}
+        {course.resourceTypes && course.resourceTypes.length > 0 && <p class="text-micro">{language === "es" ? "Recursos" : "Resources"} · {course.resourceTypes.join(" · ")}</p>}
+        <span class="course-shelf__read">{language === "es" ? "Abrir curso" : "Open course"} →</span>
       </a>
     </li>
   ))}
 </ul>
 
 <style>
-  .course-shelf { display: flex; flex-direction: column; gap: var(--space-5); }
-  .course-shelf__item { border-top: var(--border-hairline); padding-top: var(--space-4); }
-  .course-shelf__item a > * + * { margin-top: var(--space-2); }
+  .course-shelf { display: flex; flex-direction: column; }
+  .course-shelf__item { border-top: var(--border-strong); padding-block: var(--space-5); }
+  .course-shelf__item a { display: grid; grid-template-columns: 2fr 4fr 5fr 1fr; gap: var(--space-5); align-items: start; }
+  .course-shelf__meta { display: flex; flex-direction: column; gap: var(--space-2); }
+  .course-shelf__question { border-top: var(--border-key-result); padding-top: var(--space-3); }
+  .course-shelf__read { font-weight: 600; color: var(--color-blue-600); font-size: var(--size-small); }
+  @media (max-width: 900px) { .course-shelf__item a { grid-template-columns: 1fr; gap: var(--space-3); } }
 </style>

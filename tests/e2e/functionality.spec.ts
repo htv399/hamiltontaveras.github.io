@@ -1,9 +1,10 @@
 // QA-FUNC-001 / QA-FUNC-002. Search returns results and announces a count;
 // filters narrow a listing, reflect state in the URL and survive reload.
 import { test, expect } from "@playwright/test";
+import { withBase } from "../helpers/basePath";
 
 test("search finds a known page and updates the URL query (QA-FUNC-002)", async ({ page }) => {
-  await page.goto("/search/");
+  await page.goto(withBase("/search/"));
   await page.getByRole("searchbox").fill("econometrics");
   await expect(page.getByRole("status")).toContainText(/result/i, { timeout: 10_000 });
   await expect(page).toHaveURL(/[?&]q=econometrics/);
@@ -11,13 +12,13 @@ test("search finds a known page and updates the URL query (QA-FUNC-002)", async 
 });
 
 test("search announces zero results distinctly (QA-FUNC-002)", async ({ page }) => {
-  await page.goto("/search/");
+  await page.goto(withBase("/search/"));
   await page.getByRole("searchbox").fill("zzzznoresultsxyz");
   await expect(page.getByRole("status")).toContainText(/no results/i, { timeout: 10_000 });
 });
 
 test("Work filters narrow the listing and survive reload (QA-FUNC-001)", async ({ page }) => {
-  await page.goto("/work/");
+  await page.goto(withBase("/work/"));
   const list = page.locator(".content-filters__results li");
   const before = await list.count();
   expect(before).toBeGreaterThan(0);

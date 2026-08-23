@@ -15,11 +15,13 @@ const rows = sorted.map((n) => ({
   href: `/notes/${n.data.slug}/`,
   summary: n.data.summary,
   publishedAt: n.data.published_at,
-  tags: n.data.domains
+  tags: [n.data.note_type, ...n.data.domains]
 }));
 ---
 <BaseLayout title={`Notes — ${siteConfig.name}`} description="Concise notes on data, economics, valuation, markets and methods." path="/notes/" language={language}>
   <section class="shell section-standard">
+    <p class="text-micro">Notes</p>
+    <h1 class="text-display-l font-editorial" style="margin-top: var(--space-3);">Concise arguments, kept current.</h1>
     <p class="text-body-l reading-column">
       Notes are shorter than research papers and more focused than project cases: a clear claim, its supporting
       evidence, and the conditions under which that claim may change.
