@@ -6,6 +6,8 @@ export const staticRoutePairs: Record<string, { en: string; es: string }> = {
   impact: { en: "/impact-products/", es: "/es/impact-products/" },
   teaching: { en: "/teaching/", es: "/es/teaching/" },
   econometrics: { en: "/teaching/econometrics-i/", es: "/es/teaching/econometrics-i/" },
+  econometricsWeek01: { en: "/teaching/econometrics-i/week-01/", es: "/es/teaching/econometrics-i/week-01/" },
+  econometricsWeek02: { en: "/teaching/econometrics-i/week-02/", es: "/es/teaching/econometrics-i/week-02/" },
   about: { en: "/about/", es: "/es/about/" },
   cv: { en: "/cv/", es: "/es/cv/" },
   contact: { en: "/contact/", es: "/es/contact/" },

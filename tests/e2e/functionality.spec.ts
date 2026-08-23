@@ -29,15 +29,31 @@ test("Teaching exposes the approved Econometrics I course", async ({ page }) => 
   await expect(page.getByRole("link", { name: /Econometrics I/i })).toBeVisible();
 });
 
-test("Econometrics I renders source content, mathematics and responsive navigation", async ({ page }) => {
+test("Econometrics I landing lists both published classes", async ({ page }) => {
   await page.goto(withBase("/teaching/econometrics-i/"));
-  await expect(page.getByRole("heading", { level: 2, name: /Introducción a la econometría/i })).toBeVisible();
-  await expect(page.locator(".katex-display").first()).toBeVisible();
-  await expect(page.locator(".toc-desktop nav")).toBeVisible();
-  await page.setViewportSize({ width: 480, height: 900 });
-  await expect(page.locator(".toc-desktop")).toBeHidden();
-  await expect(page.locator(".toc-mobile")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Read class: Introducción a la econometría/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Read class: Probabilidad aplicada/i })).toBeVisible();
 });
+
+test("legacy Econometrics I section links continue at the Week 01 route", async ({ page }) => {
+  await page.goto(withBase("/teaching/econometrics-i/#qué-hace-la-econometría"));
+  await expect(page).toHaveURL(/\/teaching\/econometrics-i\/week-01\//);
+  expect(await page.evaluate(() => decodeURIComponent(location.hash))).toBe("#qué-hace-la-econometría");
+});
+
+for (const route of ["/teaching/econometrics-i/week-01/", "/teaching/econometrics-i/week-02/"]) {
+  test(`${route} renders source content, mathematics and responsive navigation`, async ({ page }) => {
+    await page.goto(withBase(route));
+    const title = route.endsWith("week-02/") ? /Probabilidad aplicada/i : /Introducción a la econometría/i;
+    await expect(page.getByRole("heading", { level: 2, name: title })).toBeVisible();
+    await expect(page.locator(".katex-display").first()).toBeVisible();
+    await expect(page.locator(".toc-desktop nav")).toBeVisible();
+    await expect(page.locator(".academic-highlight").first()).toBeVisible();
+    await page.setViewportSize({ width: 480, height: 900 });
+    await expect(page.locator(".toc-desktop")).toBeHidden();
+    await expect(page.locator(".toc-mobile")).toBeVisible();
+  });
+}
 
 test("CV is structured HTML with download, print and responsive index", async ({ page }) => {
   await page.goto(withBase("/cv/"));

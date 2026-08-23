@@ -2,19 +2,23 @@
 interface HeroLink { label: string; href: string }
 interface Props {
   brand: string;
-  descriptor: string;
+  professionalName: string;
+  professionalMeta: string;
   introduction: string;
   eyebrow: string;
   primaryCta: HeroLink;
   secondaryCta: HeroLink;
 }
-const { brand, descriptor, introduction, eyebrow, primaryCta, secondaryCta } = Astro.props;
+const { brand, professionalName, professionalMeta, introduction, eyebrow, primaryCta, secondaryCta } = Astro.props;
 ---
 <section class="platform-hero surface-navy">
   <div class="shell platform-hero__inner">
     <p class="text-micro platform-hero__eyebrow">{eyebrow}</p>
     <h1>{brand}</h1>
-    <p class="platform-hero__descriptor">{descriptor}</p>
+    <div class="platform-hero__identity">
+      <p class="platform-hero__descriptor">{professionalName}</p>
+      <p class="platform-hero__professional-meta">{professionalMeta}</p>
+    </div>
     <p class="platform-hero__intro">{introduction}</p>
     <div class="platform-hero__actions">
       <a class="platform-hero__primary" href={primaryCta.href}>{primaryCta.label}<span aria-hidden="true"> →</span></a>
@@ -27,7 +31,9 @@ const { brand, descriptor, introduction, eyebrow, primaryCta, secondaryCta } = A
   .platform-hero__inner { padding-block: calc(var(--header-height-desktop) + var(--space-8)) var(--space-9); max-width: 1080px; }
   .platform-hero__eyebrow { color: var(--color-mist-100); }
   .platform-hero h1 { margin-top: var(--space-4); color: var(--color-white); font: 600 var(--size-hero-name)/1.04 var(--font-ui); letter-spacing: -0.025em; }
-  .platform-hero__descriptor { margin-top: var(--space-5); max-width: 62ch; color: var(--color-white); font-size: var(--size-body-l); line-height: 1.5; }
+  .platform-hero__identity { margin-top: var(--space-5); max-width: 62ch; }
+  .platform-hero__descriptor { color: var(--color-white); font-size: clamp(1.05rem, 1.4vw, 1.25rem); line-height: 1.45; }
+  .platform-hero__professional-meta { margin-top: var(--space-1); color: var(--color-mist-100); font-size: var(--size-small); font-style: italic; line-height: 1.55; }
   .platform-hero__intro { margin-top: var(--space-3); max-width: 66ch; color: var(--color-mist-100); font-size: var(--size-body); }
   .platform-hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-6); }
   .platform-hero__actions a { display: inline-flex; align-items: center; min-height: 46px; padding: var(--space-3) var(--space-5); font-weight: 600; border: 1px solid var(--color-white); }

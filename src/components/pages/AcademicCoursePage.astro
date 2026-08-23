@@ -1,53 +1,67 @@
 ---
-import { getEntry, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { isEligible } from "../../lib/contentGate";
 import { siteConfig, canonicalBase, type Language } from "../../config/site";
+
 interface Props { language: Language }
 const { language } = Astro.props;
 const es = language === "es";
 const prefix = es ? "/es" : "";
-const week = await getEntry("weeks", "introduccion-causalidad-tipos-datos");
-if (!week) throw new Error("Published Econometrics I unit was not found.");
-const { Content, headings } = await render(week);
-const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const path = `${prefix}/teaching/econometrics-i/`;
+const course = await getEntry("courses", "econometrics-i");
+if (!course) throw new Error("Econometrics I course metadata was not found.");
+const weeks = (await getCollection("weeks"))
+  .filter((week) => week.data.course_id === course.data.id && isEligible(week.data, siteConfig.env))
+  .sort((a, b) => a.data.week_number - b.data.week_number);
+const firstWeek = weeks.find((week) => week.data.week_number === 1);
+const legacyWeekAnchors = firstWeek ? (await render(firstWeek)).headings.map((heading) => heading.slug) : [];
 const copy = es ? {
-  back:"Docencia", label:"Curso", status:"Publicado · En desarrollo editorial", updated:"Última actualización", source:"Material fuente", resources:"Recursos disponibles", resourceValue:"Lectura académica · ecuaciones · tablas", toc:"En esta página", intro:"Esta primera unidad conserva el contenido académico original en español y adapta únicamente su presentación para la web.", language:"Español"
+  back: "Docencia", label: "Curso", intro: "Material académico en español publicado como una secuencia de clases permanentes.", language: "Español", status: "Publicación académica continua", classes: "Clases", read: "Leer clase"
 } : {
-  back:"Teaching", label:"Course", status:"Published · Editorial development", updated:"Last updated", source:"Source material", resources:"Available resources", resourceValue:"Academic reading · equations · tables", toc:"On this page", intro:"Course materials available in Spanish. This first unit preserves the original academic content and adapts only its web presentation.", language:"Spanish"
+  back: "Teaching", label: "Course", intro: "Course materials available in Spanish and published as a sequence of permanent classes.", language: "Spanish", status: "Continuous academic publication", classes: "Classes", read: "Read class"
 };
-const jsonLd={"@context":"https://schema.org","@type":"Course","name":"Econometrics I","description":week.data.summary,"inLanguage":"es","provider":{"@type":"Person","name":"Hamilton Taveras"},"url":`${canonicalBase.value.replace(/\/$/,"")}${path}`};
+const jsonLd = { "@context": "https://schema.org", "@type": "Course", name: course.data.title, description: course.data.summary, inLanguage: "es", provider: { "@type": "Person", name: "Hamilton Taveras" }, url: `${canonicalBase.value.replace(/\/$/, "")}${path}` };
 ---
-<BaseLayout title={`Econometrics I · ${es ? "Docencia" : "Teaching"} — ${siteConfig.name}`} description={week.data.summary} path={path} language={language} jsonLd={jsonLd}>
-  <header class="course-header surface-paper"><div class="shell"><a class="course-back" href={`${prefix}/teaching/`}>← {copy.back}</a><p class="text-micro">{copy.label} · Econometrics I</p><h1>Econometrics I</h1><p class="course-intro">{copy.intro}</p><dl class="course-meta"><div><dt>{es ? "Idioma" : "Language"}</dt><dd>{copy.language}</dd></div><div><dt>{es ? "Estado" : "Status"}</dt><dd>{copy.status}</dd></div><div><dt>{copy.updated}</dt><dd>{es ? "18 de agosto de 2026" : "18 August 2026"}</dd></div><div><dt>{copy.source}</dt><dd><code>01-causalidad-tipos-datos/contenido.md</code></dd></div><div><dt>{copy.resources}</dt><dd>{copy.resourceValue}</dd></div></dl></div></header>
-  <div class="shell academic-layout">
-    <details class="toc-mobile"><summary>{copy.toc}</summary><nav aria-label={copy.toc}><ol>{toc.map((heading)=><li class:list={[heading.depth===3&&"toc-child"]}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details>
-    <article class="academic-content" lang="es" data-academic-content data-copy-label={es ? "Copiar enlace a" : "Copy link to"}><Content /></article>
-    <aside class="toc-desktop"><nav aria-label={copy.toc}><p class="text-micro">{copy.toc}</p><ol>{toc.map((heading)=><li class:list={[heading.depth===3&&"toc-child"]}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></aside>
-  </div>
+<BaseLayout title={`Econometrics I · ${es ? "Docencia" : "Teaching"} — ${siteConfig.name}`} description={course.data.summary} path={path} language={language} jsonLd={jsonLd}>
+  <header class="course-header surface-paper">
+    <div class="shell">
+      <a class="course-back" href={`${prefix}/teaching/`}>← {copy.back}</a>
+      <p class="text-micro">{copy.label} · {course.data.code}</p>
+      <h1>Econometrics I</h1>
+      <p class="course-description">{course.data.description}</p>
+      <p class="course-intro">{copy.intro}</p>
+      <dl class="course-meta">
+        <div><dt>{es ? "Idioma" : "Language"}</dt><dd>{copy.language}</dd></div>
+        <div><dt>{es ? "Estado" : "Status"}</dt><dd>{copy.status}</dd></div>
+        <div><dt>{es ? "Clases publicadas" : "Published classes"}</dt><dd>{String(weeks.length).padStart(2, "0")}</dd></div>
+      </dl>
+    </div>
+  </header>
+  <section class="shell class-index" aria-labelledby="class-index-title" data-legacy-week-anchors={JSON.stringify(legacyWeekAnchors)}>
+    <h2 id="class-index-title" class="text-micro">{copy.classes}</h2>
+    <ol>
+      {weeks.map((week) => {
+        const number = String(week.data.week_number).padStart(2, "0");
+        const href = `${prefix}/teaching/econometrics-i/week-${number}/`;
+        return <li>
+          <p class="class-number" aria-hidden="true">{number}</p>
+          <div><h3>{week.data.title}</h3><p>{week.data.overview}</p></div>
+          <a href={href} aria-label={`${copy.read}: ${week.data.title}`}>{copy.read} →</a>
+        </li>;
+      })}
+    </ol>
+  </section>
   <script>
-    const article = document.querySelector<HTMLElement>("[data-academic-content]");
-    if (article) {
-      const headings = [...article.querySelectorAll<HTMLElement>("h2[id],h3[id]")];
-      for (const heading of headings) {
-        const anchor = document.createElement("a");
-        anchor.href = `#${heading.id}`;
-        anchor.className = "heading-anchor";
-        anchor.setAttribute("aria-label", `${article.dataset.copyLabel ?? "Copy link to"} ${heading.textContent ?? "section"}`);
-        anchor.textContent = "#";
-        anchor.addEventListener("click", () => navigator.clipboard?.writeText(location.origin + location.pathname + anchor.hash));
-        heading.append(anchor);
+    const classIndex = document.querySelector<HTMLElement>("[data-legacy-week-anchors]");
+    if (classIndex && location.hash) {
+      const legacyAnchors = JSON.parse(classIndex.dataset.legacyWeekAnchors ?? "[]") as string[];
+      if (legacyAnchors.includes(decodeURIComponent(location.hash.slice(1)))) {
+        location.replace(new URL(`week-01/${location.hash}`, location.href));
       }
-      const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc-desktop a[href^="#"]')];
-      const observer = new IntersectionObserver((entries) => {
-        const visible = entries.find((entry) => entry.isIntersecting);
-        if (!visible) return;
-        links.forEach((link) => link.toggleAttribute("aria-current", link.hash === `#${visible.target.id}`));
-      }, { rootMargin: "-18% 0px -72% 0px" });
-      headings.forEach((heading) => observer.observe(heading));
     }
   </script>
 </BaseLayout>
-<style is:global>
-  .course-header .shell{padding-block:var(--space-8);max-width:1180px}.course-back{display:inline-flex;min-height:44px;align-items:center;font-weight:600;margin-bottom:var(--space-5)}.course-header h1{margin-top:var(--space-3)}.course-intro{margin-top:var(--space-4);font-size:var(--size-body-l);max-width:68ch}.course-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-6);padding-block:var(--space-4);border-block:var(--border-hairline)}.course-meta div{min-width:0}.course-meta dt{font:500 var(--size-micro)/1.4 var(--font-ui);text-transform:uppercase;letter-spacing:.07em;color:var(--color-slate-500)}.course-meta dd{margin-top:var(--space-1);font-size:var(--size-small);overflow-wrap:anywhere}.course-meta code{font-family:var(--font-mono);font-size:.9em}.academic-layout{display:grid;grid-template-columns:minmax(0,760px) minmax(220px,300px);justify-content:center;gap:var(--space-9);padding-block:var(--space-8)}.academic-content{font-family:var(--font-editorial);font-size:1.075rem;line-height:1.68;min-width:0}.academic-content>*+*{margin-top:var(--space-4)}.academic-content h2{font-size:var(--size-h2);margin-top:var(--space-8);padding-top:var(--space-3);border-top:var(--border-strong)}.academic-content h3{font-size:var(--size-h3);margin-top:var(--space-7)}.academic-content h3{counter-increment:academic-section}.academic-content{counter-reset:academic-section}.academic-content h3::before{content:counter(academic-section) ". ";font-family:var(--font-mono);font-size:.75em;color:var(--color-blue-600)}.academic-content .heading-anchor{margin-left:var(--space-2);font:500 .75em/1 var(--font-mono);opacity:0;text-decoration:none}.academic-content h2:hover .heading-anchor,.academic-content h3:hover .heading-anchor,.academic-content .heading-anchor:focus{opacity:1}.academic-content table{display:block;width:max-content;min-width:100%;max-width:100%;overflow-x:auto;border-collapse:collapse;font-family:var(--font-ui);font-size:var(--size-small)}.academic-content th,.academic-content td{padding:var(--space-2) var(--space-3);border-bottom:var(--border-hairline);white-space:nowrap}.academic-content th{background:var(--color-mist-100);text-align:left}.academic-content pre{overflow-x:auto;padding:var(--space-4);background:var(--color-navy-900);color:var(--color-white);font-family:var(--font-mono);font-size:var(--size-small)}.academic-content .katex-display{overflow-x:auto;overflow-y:hidden;padding-block:var(--space-2)}.toc-desktop nav{position:sticky;top:calc(var(--header-height-desktop) + var(--space-5));max-height:calc(100vh - var(--header-height-desktop) - var(--space-8));overflow:auto;padding-left:var(--space-4);border-left:var(--border-hairline)}.toc-desktop ol,.toc-mobile ol{margin-top:var(--space-3);display:grid;gap:var(--space-2)}.toc-desktop a,.toc-mobile a{font-size:var(--size-small);line-height:1.35;color:var(--color-slate-500)}.toc-desktop a[aria-current]{color:var(--color-blue-600);font-weight:600}.toc-child{padding-left:var(--space-3)}.toc-mobile{display:none}.toc-mobile summary{cursor:pointer;font-weight:600;min-height:44px;padding-block:var(--space-3)}@media(max-width:900px){.course-meta{grid-template-columns:1fr 1fr}.academic-layout{grid-template-columns:1fr;gap:var(--space-5)}.toc-desktop{display:none}.toc-mobile{display:block;border-block:var(--border-hairline)}.academic-content{font-size:1rem}.academic-content h2{font-size:var(--size-h3)}.academic-content h3{font-size:1.18rem}}@media(max-width:480px){.course-meta{grid-template-columns:1fr}.academic-layout{padding-top:var(--space-5)}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}
+<style>
+  .course-header .shell{padding-block:var(--space-8);max-width:1180px}.course-back{display:inline-flex;min-height:44px;align-items:center;font-weight:600;margin-bottom:var(--space-5)}.course-header h1{margin-top:var(--space-3)}.course-description{margin-top:var(--space-4);font:500 var(--size-body-l)/var(--line-body-l) var(--font-editorial);max-width:68ch}.course-intro{margin-top:var(--space-3);max-width:68ch}.course-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-6);padding-block:var(--space-4);border-block:var(--border-hairline)}.course-meta dt{font:500 var(--size-micro)/1.4 var(--font-ui);text-transform:uppercase;letter-spacing:.07em;color:var(--color-slate-500)}.course-meta dd{margin-top:var(--space-1);font-size:var(--size-small)}.class-index{padding-block:var(--space-8)}.class-index>ol{margin-top:var(--space-4);border-top:var(--border-strong)}.class-index li{display:grid;grid-template-columns:80px minmax(0,1fr) max-content;gap:var(--space-5);align-items:start;padding-block:var(--space-6);border-bottom:var(--border-hairline)}.class-number{font:500 var(--size-body-l)/1 var(--font-mono);color:var(--color-blue-600)}.class-index h3{font:500 var(--size-h3)/var(--line-h3) var(--font-editorial)}.class-index h3+p{margin-top:var(--space-2);max-width:68ch;color:var(--color-slate-500)}.class-index a{display:inline-flex;align-items:center;min-height:44px;font-weight:600}@media(max-width:768px){.class-index li{grid-template-columns:48px 1fr}.class-index li>a{grid-column:2}.course-meta{grid-template-columns:1fr 1fr}}@media(max-width:480px){.course-meta{grid-template-columns:1fr}.class-index li{grid-template-columns:1fr}.class-index li>a{grid-column:1}.class-number{font-size:var(--size-small)}}
 </style>

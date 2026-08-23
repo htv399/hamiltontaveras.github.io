@@ -9,6 +9,8 @@ const path = es ? "/es/" : "/";
 const copy = es ? {
   title: "CaribbeanQuant — Plataformas de datos, productos cuantitativos y docencia",
   descriptor: spanishDescriptor,
+  professionalName: "Sitio profesional de Hamilton Taveras",
+  professionalMeta: "M.A. en Economía · Director de Datos · Ingeniero de Datos · Consultor",
   introduction: spanishIntroduction,
   eyebrow: "Datos · Productos cuantitativos · Docencia",
   primary: "Explorar la Plataforma DaaS",
@@ -30,6 +32,8 @@ const copy = es ? {
 } : {
   title: "CaribbeanQuant — Data platforms, quantitative products and teaching",
   descriptor: siteConfig.descriptor,
+  professionalName: "Professional website of Hamilton Taveras",
+  professionalMeta: "M.A. in Economics · Chief Data Officer · Data Engineer · Consultant",
   introduction: siteConfig.introduction,
   eyebrow: "Data · Quantitative products · Teaching",
   primary: "Explore DaaS Platform",
@@ -56,7 +60,7 @@ const jsonLd = [
 ];
 ---
 <BaseLayout title={copy.title} description={copy.descriptor} path={path} language={language} headerVariant="transparent_on_navy_hero" jsonLd={jsonLd}>
-  <EditorialHero brand={siteConfig.name} descriptor={copy.descriptor} introduction={copy.introduction} eyebrow={copy.eyebrow} primaryCta={{ label: copy.primary, href: `${prefix}/daas-platform/` }} secondaryCta={{ label: copy.about, href: `${prefix}/about/` }} />
+  <EditorialHero brand={siteConfig.name} professionalName={copy.professionalName} professionalMeta={copy.professionalMeta} introduction={copy.introduction} eyebrow={copy.eyebrow} primaryCta={{ label: copy.primary, href: `${prefix}/daas-platform/` }} secondaryCta={{ label: copy.about, href: `${prefix}/about/` }} />
   <section class="home-entry surface-white"><div class="shell entry-grid"><div><p class="text-micro">{copy.platform}</p><h2>{copy.platformTitle}</h2></div><div><p class="entry-lead">{copy.daas}</p><p>{copy.daasText}</p><a href={`${prefix}/daas-platform/`}>{copy.daasLink} →</a></div></div></section>
   <section class="home-entry surface-paper"><div class="shell entry-grid"><div><p class="text-micro">{copy.products}</p><h2>{copy.impact}</h2></div><div><p>{copy.impactText}</p><a href={`${prefix}/impact-products/`}>{copy.impactLink} →</a></div></div></section>
   <section class="home-entry surface-white"><div class="shell entry-grid"><div><p class="text-micro">{copy.academic}</p><h2>{copy.teaching}</h2></div><div><p>{copy.teachingText}</p><a href={`${prefix}/teaching/`}>{copy.teachingLink} →</a></div></div></section>

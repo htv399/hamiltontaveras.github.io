@@ -5,10 +5,10 @@ import { withBase } from "../helpers/basePath";
 import { AxeBuilder } from "@axe-core/playwright";
 
 const templates = [
-  "/", "/daas-platform/", "/impact-products/", "/teaching/", "/teaching/econometrics-i/",
+  "/", "/daas-platform/", "/impact-products/", "/teaching/", "/teaching/econometrics-i/", "/teaching/econometrics-i/week-01/", "/teaching/econometrics-i/week-02/",
   "/work/", "/research/", "/notes/",
   "/about/", "/cv/", "/contact/", "/resources/", "/search/",
-  "/es/", "/es/daas-platform/", "/es/impact-products/", "/es/teaching/", "/es/teaching/econometrics-i/", "/es/about/", "/es/cv/",
+  "/es/", "/es/daas-platform/", "/es/impact-products/", "/es/teaching/", "/es/teaching/econometrics-i/", "/es/teaching/econometrics-i/week-01/", "/es/teaching/econometrics-i/week-02/", "/es/about/", "/es/cv/",
   "/404-check-page-that-does-not-exist/"
 ];
 

@@ -10,6 +10,8 @@ const pages = [
   { name: "impact-products", route: "/impact-products/" },
   { name: "teaching", route: "/teaching/" },
   { name: "econometrics-i", route: "/teaching/econometrics-i/" },
+  { name: "econometrics-i-week-01", route: "/teaching/econometrics-i/week-01/" },
+  { name: "econometrics-i-week-02", route: "/teaching/econometrics-i/week-02/" },
   { name: "about", route: "/about/" },
   { name: "cv", route: "/cv/" }
 ];

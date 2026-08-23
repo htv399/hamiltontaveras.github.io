@@ -20,7 +20,11 @@ const detailRoutes = [
   "/notes/demo-note/",
   "/teaching/econometrics-i-demo/",
   "/teaching/econometrics-i/",
-  "/es/teaching/econometrics-i/"
+  "/teaching/econometrics-i/week-01/",
+  "/teaching/econometrics-i/week-02/",
+  "/es/teaching/econometrics-i/",
+  "/es/teaching/econometrics-i/week-01/",
+  "/es/teaching/econometrics-i/week-02/"
 ];
 
 for (const route of [...staticRoutes, ...detailRoutes]) {
@@ -57,6 +61,11 @@ test("language selector preserves reciprocal routes and the session choice", asy
   await selector.click();
   await expect(page).toHaveURL(/\/es\/about\/$/);
   expect(await page.evaluate(() => sessionStorage.getItem("caribbeanquant-language"))).toBe("es");
+});
+
+test("language selector preserves reciprocal Econometrics I class routes", async ({ page }) => {
+  await page.goto(withBase("/teaching/econometrics-i/week-02/"));
+  await expect(page.getByRole("link", { name: "Ver sitio en español" })).toHaveAttribute("href", /\/es\/teaching\/econometrics-i\/week-02\/$/);
 });
 
 test("mobile menu opens, traps focus, closes on escape and returns focus (QA-FUNC-003)", async ({ page }) => {

@@ -28,6 +28,11 @@ learning_objectives:
   - "Distinguir preguntas predictivas y causales."
   - "Definir un efecto causal mediante resultados potenciales."
   - "Reconocer datos de corte transversal, series de tiempo y panel."
+next_week_id: WEEK-ECONOMETRICS-I-02
+source_path: "01-causalidad-tipos-datos/contenido.md"
+highlight_sections:
+  - solo-observamos-uno-de-los-dos-resultados
+  - lo-que-sabemos-y-lo-que-todavia-no-sabemos
 ---
 
 ## Introducción a la econometría, causalidad y tipos de datos

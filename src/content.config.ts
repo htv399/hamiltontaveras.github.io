@@ -214,7 +214,9 @@ const weeks = defineCollection({
     concepts: z.array(z.string()).optional(),
     learning_objectives: z.array(z.string()).optional(),
     previous_week_id: z.string().optional(),
-    next_week_id: z.string().optional()
+    next_week_id: z.string().optional(),
+    source_path: z.string().optional(),
+    highlight_sections: z.array(z.string()).max(3).optional()
   })
 });
 

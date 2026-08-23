@@ -1,0 +1,75 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { isEligible } from "../../lib/contentGate";
+import { siteConfig, canonicalBase, type Language } from "../../config/site";
+
+interface Props { language: Language; weekNumber: number }
+const { language, weekNumber } = Astro.props;
+const es = language === "es";
+const prefix = es ? "/es" : "";
+const weeks = (await getCollection("weeks"))
+  .filter((entry) => entry.data.course_id === "COURSE-ECONOMETRICS-I" && isEligible(entry.data, siteConfig.env))
+  .sort((a, b) => a.data.week_number - b.data.week_number);
+const week = weeks.find((entry) => entry.data.week_number === weekNumber);
+if (!week) throw new Error(`Published Econometrics I class ${weekNumber} was not found.`);
+const { Content, headings } = await render(week);
+const toc = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 4);
+const number = String(week.data.week_number).padStart(2, "0");
+const path = `${prefix}/teaching/econometrics-i/week-${number}/`;
+const currentIndex = weeks.findIndex((entry) => entry.id === week.id);
+const previous = currentIndex > 0 ? weeks[currentIndex - 1] : undefined;
+const next = currentIndex < weeks.length - 1 ? weeks[currentIndex + 1] : undefined;
+const weekHref = (value: number) => `${prefix}/teaching/econometrics-i/week-${String(value).padStart(2, "0")}/`;
+const copy = es ? {
+  back: "Volver al curso", label: "Clase", updated: "Última actualización", source: "Material fuente", resources: "Recursos disponibles", resourceValue: "Lectura académica · ecuaciones · tablas", toc: "En esta página", languageLabel: "Idioma", language: "Español", previous: "Clase anterior", next: "Clase siguiente", index: "Índice del curso", copy: "Copiar enlace a"
+} : {
+  back: "Back to course", label: "Class", updated: "Last updated", source: "Source material", resources: "Available resources", resourceValue: "Academic reading · equations · tables", toc: "On this page", languageLabel: "Language", language: "Spanish", previous: "Previous class", next: "Next class", index: "Course index", copy: "Copy link to"
+};
+const formattedDate = new Intl.DateTimeFormat(es ? "es-DO" : "en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(week.data.updated_at);
+const jsonLd = { "@context":"https://schema.org", "@type":"LearningResource", name:week.data.title, description:week.data.summary, inLanguage:"es", isPartOf:{"@type":"Course",name:"Econometrics I"}, url:`${canonicalBase.value.replace(/\/$/, "")}${path}` };
+---
+<BaseLayout title={`${week.data.title} · Econometrics I · ${es ? "Docencia" : "Teaching"} — ${siteConfig.name}`} description={week.data.summary} path={path} language={language} jsonLd={jsonLd}>
+  <header class="course-header surface-paper"><div class="shell"><a class="course-back" href={`${prefix}/teaching/econometrics-i/`}>← {copy.back}</a><p class="text-micro">{copy.label} {number} · Econometrics I</p><h1>Econometrics I</h1><p class="course-intro">{week.data.title}</p><dl class="course-meta"><div><dt>{copy.languageLabel}</dt><dd>{copy.language}</dd></div><div><dt>{copy.updated}</dt><dd>{formattedDate}</dd></div><div><dt>{copy.source}</dt><dd><code>{week.data.source_path}</code></dd></div><div><dt>{copy.resources}</dt><dd>{copy.resourceValue}</dd></div></dl></div></header>
+  <div class="shell academic-layout">
+    <details class="toc-mobile"><summary>{copy.toc}</summary><nav aria-label={copy.toc}><ol>{toc.map((heading)=><li class:list={[heading.depth===3&&"toc-child",heading.depth===4&&"toc-grandchild"]}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details>
+    <article class="academic-content" lang="es" data-academic-content data-copy-label={copy.copy} data-highlight-sections={JSON.stringify(week.data.highlight_sections ?? [])}><Content /></article>
+    <aside class="toc-desktop"><nav aria-label={copy.toc}><p class="text-micro">{copy.toc}</p><ol>{toc.map((heading)=><li class:list={[heading.depth===3&&"toc-child",heading.depth===4&&"toc-grandchild"]}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></aside>
+  </div>
+  <nav class="shell class-navigation" aria-label={es ? "Navegación entre clases" : "Class navigation"}>
+    {previous ? <a href={weekHref(previous.data.week_number)}>← {copy.previous}<span>{previous.data.title}</span></a> : <span />}
+    <a class="class-index-link" href={`${prefix}/teaching/econometrics-i/`}>{copy.index}</a>
+    {next ? <a class="class-next" href={weekHref(next.data.week_number)}>{copy.next} →<span>{next.data.title}</span></a> : <span />}
+  </nav>
+  <script>
+    const article = document.querySelector<HTMLElement>("[data-academic-content]");
+    if (article) {
+      const headings = [...article.querySelectorAll<HTMLElement>("h2[id],h3[id],h4[id]")];
+      for (const heading of headings) {
+        const anchor = document.createElement("a");
+        anchor.href = `#${heading.id}`;
+        anchor.className = "heading-anchor";
+        anchor.setAttribute("aria-label", `${article.dataset.copyLabel ?? "Copy link to"} ${heading.textContent ?? "section"}`);
+        anchor.textContent = "#";
+        anchor.addEventListener("click", () => navigator.clipboard?.writeText(location.origin + location.pathname + anchor.hash));
+        heading.append(anchor);
+      }
+      const highlightSections = JSON.parse(article.dataset.highlightSections ?? "[]") as string[];
+      for (const id of highlightSections) {
+        let candidate = document.getElementById(id)?.nextElementSibling;
+        while (candidate && !candidate.matches("p,h2,h3,h4")) candidate = candidate.nextElementSibling;
+        if (candidate?.matches("p")) candidate.classList.add("academic-highlight");
+      }
+      const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc-desktop a[href^="#"]')];
+      const observer = new IntersectionObserver((entries) => {
+        const visible = entries.find((entry) => entry.isIntersecting);
+        if (!visible) return;
+        links.forEach((link) => link.toggleAttribute("aria-current", link.hash === `#${visible.target.id}`));
+      }, { rootMargin: "-18% 0px -72% 0px" });
+      headings.forEach((heading) => observer.observe(heading));
+    }
+  </script>
+</BaseLayout>
+<style is:global>
+  .course-header .shell{padding-block:var(--space-8);max-width:1180px}.course-back{display:inline-flex;min-height:44px;align-items:center;font-weight:600;margin-bottom:var(--space-5)}.course-header h1{margin-top:var(--space-3)}.course-intro{margin-top:var(--space-4);font:500 var(--size-h3)/var(--line-h3) var(--font-editorial);max-width:68ch}.course-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-6);padding-block:var(--space-4);border-block:var(--border-hairline)}.course-meta div{min-width:0}.course-meta dt{font:500 var(--size-micro)/1.4 var(--font-ui);text-transform:uppercase;letter-spacing:.07em;color:var(--color-slate-500)}.course-meta dd{margin-top:var(--space-1);font-size:var(--size-small);overflow-wrap:anywhere}.course-meta code{font-family:var(--font-mono);font-size:.9em}.academic-layout{display:grid;grid-template-columns:minmax(0,760px) minmax(220px,300px);justify-content:center;gap:var(--space-9);padding-block:var(--space-8)}.academic-content{font-family:var(--font-editorial);font-size:1.075rem;line-height:1.68;min-width:0}.academic-content>*+*{margin-top:var(--space-4)}.academic-content h2{font-size:var(--size-h2);margin-top:var(--space-8);padding-top:var(--space-3);border-top:var(--border-strong)}.academic-content h3{font-size:var(--size-h3);margin-top:var(--space-7)}.academic-content h4{font-size:1.18rem;margin-top:var(--space-6)}.academic-content ul,.academic-content ol{padding-left:1.35em}.academic-content li+li{margin-top:var(--space-2)}.academic-content .heading-anchor{margin-left:var(--space-2);font:500 .75em/1 var(--font-mono);opacity:0;text-decoration:none}.academic-content h2:hover .heading-anchor,.academic-content h3:hover .heading-anchor,.academic-content h4:hover .heading-anchor,.academic-content .heading-anchor:focus{opacity:1}.academic-content .academic-highlight{margin-block:var(--space-6);padding:var(--space-4) var(--space-5);border-left:2px solid var(--color-gold-500);background:var(--color-mist-100)}.academic-content table{display:block;width:max-content;min-width:100%;max-width:100%;overflow-x:auto;border-collapse:collapse;font-family:var(--font-ui);font-size:var(--size-small)}.academic-content th,.academic-content td{padding:var(--space-2) var(--space-3);border-bottom:var(--border-hairline);white-space:nowrap}.academic-content th{background:var(--color-mist-100);text-align:left}.academic-content pre{overflow-x:auto;padding:var(--space-4);background:var(--color-navy-900);color:var(--color-white);font-family:var(--font-mono);font-size:var(--size-small)}.academic-content .katex-display{overflow-x:auto;overflow-y:hidden;padding-block:var(--space-2)}.toc-desktop nav{position:sticky;top:calc(var(--header-height-desktop) + var(--space-5));max-height:calc(100vh - var(--header-height-desktop) - var(--space-8));overflow:auto;padding-left:var(--space-4);border-left:var(--border-hairline)}.toc-desktop ol,.toc-mobile ol{margin-top:var(--space-3);display:grid;gap:var(--space-2)}.toc-desktop a,.toc-mobile a{font-size:var(--size-small);line-height:1.35;color:var(--color-slate-500)}.toc-desktop a[aria-current]{color:var(--color-blue-600);font-weight:600}.toc-child{padding-left:var(--space-3)}.toc-grandchild{padding-left:var(--space-5)}.toc-mobile{display:none}.toc-mobile summary{cursor:pointer;font-weight:600;min-height:44px;padding-block:var(--space-3)}.class-navigation{display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-5);align-items:start;padding-block:var(--space-7);border-top:var(--border-strong)}.class-navigation a{display:flex;flex-direction:column;gap:var(--space-1);min-height:44px;font-weight:600}.class-navigation a span{font-size:var(--size-small);font-weight:400;color:var(--color-slate-500)}.class-index-link{align-items:center}.class-next{text-align:right;align-items:flex-end}@media(max-width:900px){.course-meta{grid-template-columns:1fr 1fr}.academic-layout{grid-template-columns:1fr;gap:var(--space-5)}.toc-desktop{display:none}.toc-mobile{display:block;border-block:var(--border-hairline)}.academic-content{font-size:1rem}.academic-content h2{font-size:var(--size-h3)}.academic-content h3{font-size:1.18rem}.academic-content h4{font-size:1.08rem}}@media(max-width:600px){.class-navigation{grid-template-columns:1fr}.class-navigation>span{display:none}.class-index-link{align-items:flex-start;grid-row:1}.class-next{text-align:left;align-items:flex-start}.course-meta{grid-template-columns:1fr}.academic-layout{padding-top:var(--space-5)}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}
+</style>
