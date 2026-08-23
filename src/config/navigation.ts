@@ -10,17 +10,15 @@ export interface NavItem {
 }
 
 export const primaryNavigation: NavItem[] = [
-  { key: "home", label: { en: "Home", es: "Home" }, route: { en: "/", es: "/" } },
-  { key: "daas-platform", label: { en: "DaaS Platform", es: "DaaS Platform" }, route: { en: "/daas-platform/", es: "/daas-platform/" } },
-  { key: "impact-products", label: { en: "Impact Products", es: "Impact Products" }, route: { en: "/impact-products/", es: "/impact-products/" } },
-  { key: "teaching", label: { en: "Teaching", es: "Teaching" }, route: { en: "/teaching/", es: "/teaching/" } },
-  { key: "about", label: { en: "About Me", es: "About Me" }, route: { en: "/about/", es: "/about/" } }
+  { key: "home", label: { en: "Home", es: "Inicio" }, route: { en: "/", es: "/es/" } },
+  { key: "daas-platform", label: { en: "DaaS Platform", es: "Plataforma DaaS" }, route: { en: "/daas-platform/", es: "/es/daas-platform/" } },
+  { key: "impact-products", label: { en: "Impact Products", es: "Productos de impacto" }, route: { en: "/impact-products/", es: "/es/impact-products/" } },
+  { key: "teaching", label: { en: "Teaching", es: "Docencia" }, route: { en: "/teaching/", es: "/es/teaching/" } },
+  { key: "about", label: { en: "About Me", es: "Sobre mí" }, route: { en: "/about/", es: "/es/about/" } },
+  { key: "search", label: { en: "Search", es: "Buscar" }, route: { en: "/search/", es: "/es/search/" } }
 ];
 
-export const utilityNavigation: NavItem[] = [
-  { key: "cv", label: { en: "CV", es: "CV" }, route: { en: "/cv/", es: "/cv/" } },
-  { key: "search", label: { en: "Search", es: "Search" }, route: { en: "/search/", es: "/search/" } }
-];
+export const utilityNavigation: NavItem[] = [];
 
 export interface FooterLink {
   key: string;
@@ -29,10 +27,10 @@ export interface FooterLink {
 }
 
 export const footerRequiredLinks: FooterLink[] = [
-  { key: "contact", label: { en: "Contact", es: "Contact" }, route: { en: "/contact/", es: "/contact/" } },
-  { key: "resources", label: { en: "Resources", es: "Resources" }, route: { en: "/resources/", es: "/resources/" } },
-  { key: "licenses", label: { en: "Licenses", es: "Licenses" }, route: { en: "/licenses/", es: "/licenses/" } },
-  { key: "accessibility", label: { en: "Accessibility", es: "Accessibility" }, route: { en: "/accessibility/", es: "/accessibility/" } },
+  { key: "contact", label: { en: "Contact", es: "Contacto" }, route: { en: "/contact/", es: "/es/contact/" } },
+  { key: "resources", label: { en: "Resources", es: "Recursos" }, route: { en: "/resources/", es: "/es/resources/" } },
+  { key: "licenses", label: { en: "Licenses", es: "Licencias" }, route: { en: "/licenses/", es: "/es/licenses/" } },
+  { key: "accessibility", label: { en: "Accessibility", es: "Accesibilidad" }, route: { en: "/accessibility/", es: "/es/accessibility/" } },
   { key: "sitemap", label: { en: "Sitemap", es: "Sitemap" }, route: { en: "/sitemap-index.xml", es: "/sitemap-index.xml" } }
 ];
 
@@ -48,5 +46,7 @@ export const forbiddenPrimaryEntries = [
   "valuation",
   "quantitative-finance",
   "projects",
-  "blog"
+  "blog",
+  "profile",
+  "cv"
 ];

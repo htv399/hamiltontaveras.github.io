@@ -60,7 +60,7 @@ PRD-017, required_v1. Evitar cuadrículas uniformes de tarjetas cuando las pieza
 
 ## Alcance de v1
 
-- Home compacta en inglés.
+- Home compacta y equivalente en inglés y español.
 - DaaS Platform con overview y módulos de catálogo, dashboards, monitores, recursos y acceso condicional.
 - Impact Products con landing y detalles de productos cuantitativos reales cuando existan.
 - Teaching con cursos, semanas y materiales.

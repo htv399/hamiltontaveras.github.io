@@ -8,8 +8,7 @@ import { siteConfig } from "../../config/site";
 interface Props {
   language: "en" | "es";
 }
-const { language: _language } = Astro.props;
-const language = "en" as const;
+const { language } = Astro.props;
 const year = new Date().getFullYear();
 const links = footerRequiredLinks.filter((link) => link.key !== "contact" || siteConfig.contactMode !== "pending");
 ---

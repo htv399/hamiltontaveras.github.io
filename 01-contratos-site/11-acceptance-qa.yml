@@ -96,7 +96,7 @@ suites:
       status: required_v1
       maps_to: ["IA-NAV-007"]
       method: dom_assertion
-      assertion: "Primary navigation contains exactly Home, DaaS Platform, Impact Products, Teaching and About Me. CV and Search appear as utilities; no language selector is shown."
+      assertion: "Primary navigation contains exactly Home, DaaS Platform, Impact Products, Teaching, About Me and Search, or their approved Spanish equivalents, in that order, followed by the compact ES/EN selector. CV appears only contextually inside About Me."
     - id: QA-IA-003
       status: required_v1
       maps_to: ["IA-SLUG-001"]

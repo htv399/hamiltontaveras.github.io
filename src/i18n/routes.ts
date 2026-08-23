@@ -1,25 +1,11 @@
-// REP-CONFIG-006. IA-REL-003: hreflang and the language switch appear only
-// between real equivalents. required_equivalent_pages always have both
-// routes; selective_pages only pair up when a translation_key match exists
-// in content (checked at render time by the pages themselves).
-
-export const requiredEquivalentPages = ["home", "work", "about", "contact"] as const;
-export const selectivePages = [
-  "research",
-  "notes",
-  "project",
-  "course",
-  "week",
-  "material",
-  "resources"
-] as const;
+import type { Language } from "../config/site";
 
 export const staticRoutePairs: Record<string, { en: string; es: string }> = {
   home: { en: "/", es: "/es/" },
-  work: { en: "/work/", es: "/es/work/" },
-  research: { en: "/research/", es: "/es/research/" },
-  notes: { en: "/notes/", es: "/es/notes/" },
+  daas: { en: "/daas-platform/", es: "/es/daas-platform/" },
+  impact: { en: "/impact-products/", es: "/es/impact-products/" },
   teaching: { en: "/teaching/", es: "/es/teaching/" },
+  econometrics: { en: "/teaching/econometrics-i/", es: "/es/teaching/econometrics-i/" },
   about: { en: "/about/", es: "/es/about/" },
   cv: { en: "/cv/", es: "/es/cv/" },
   contact: { en: "/contact/", es: "/es/contact/" },
@@ -29,8 +15,18 @@ export const staticRoutePairs: Record<string, { en: string; es: string }> = {
   accessibility: { en: "/accessibility/", es: "/es/accessibility/" }
 };
 
-/** Prepend /es to a dynamic route only for es-language or translated pieces. */
-export function localizeDynamicRoute(basePath: string, language: "en" | "es"): string {
-  if (language === "es") return `/es${basePath}`;
-  return basePath;
+export function languageAlternative(path: string, language: Language): string {
+  const pair = Object.values(staticRoutePairs).find((candidate) => candidate[language] === path);
+  if (!pair) return language === "en" ? "/es/" : "/";
+  return language === "en" ? pair.es : pair.en;
+}
+
+export function reciprocalLanguageAlternative(path: string, language: Language): string | undefined {
+  const pair = Object.values(staticRoutePairs).find((candidate) => candidate[language] === path);
+  if (!pair) return undefined;
+  return language === "en" ? pair.es : pair.en;
+}
+
+export function localizeDynamicRoute(basePath: string, language: Language): string {
+  return language === "es" ? `/es${basePath}` : basePath;
 }

@@ -2,20 +2,12 @@
 import LegacyRedirect from "../../components/navigation/LegacyRedirect.astro";
 export function getStaticPaths() {
   const mappings = {
-    work: "/daas-platform/",
-    research: "/impact-products/",
-    notes: "/impact-products/",
-    teaching: "/teaching/",
-    about: "/about/",
-    cv: "/cv/",
-    contact: "/contact/",
-    resources: "/resources/",
-    search: "/search/",
-    licenses: "/licenses/",
-    accessibility: "/accessibility/"
+    work: "/es/daas-platform/",
+    research: "/es/impact-products/",
+    notes: "/es/impact-products/"
   } as const;
   return Object.entries(mappings).map(([legacy, to]) => ({ params: { legacy }, props: { from: `/es/${legacy}/`, to } }));
 }
 const { from, to } = Astro.props;
 ---
-<LegacyRedirect from={from} to={to} />
+<LegacyRedirect from={from} to={to} language="es" />

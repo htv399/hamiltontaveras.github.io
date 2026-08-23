@@ -19,7 +19,7 @@ type WeekEntry = CollectionEntry<"weeks">;
 type MaterialEntry = CollectionEntry<"materials">;
 
 export async function getStaticPaths() {
-  const courses = (await getCollection("courses")).filter((c) => isEligible(c.data, siteConfig.env));
+  const courses = (await getCollection("courses")).filter((c) => isEligible(c.data, siteConfig.env) && c.data.slug !== "econometrics-i");
   const weeksAll = (await getCollection("weeks")).filter((w) => isEligible(w.data, siteConfig.env));
   const materialsAll = await getCollection("materials");
 

@@ -4,16 +4,16 @@ contract:
   status: required_v1
 
 primary_navigation:
-  - { id: IA-NAV-001, key: home, label_en: Home, route_en: "/" }
-  - { id: IA-NAV-002, key: daas_platform, label_en: DaaS Platform, route_en: "/daas-platform/" }
-  - { id: IA-NAV-003, key: impact_products, label_en: Impact Products, route_en: "/impact-products/" }
-  - { id: IA-NAV-004, key: teaching, label_en: Teaching, route_en: "/teaching/" }
-  - { id: IA-NAV-005, key: about, label_en: About Me, route_en: "/about/" }
+  - { id: IA-NAV-001, key: home, label_en: Home, label_es: Inicio, route_en: "/", route_es: "/es/" }
+  - { id: IA-NAV-002, key: daas_platform, label_en: DaaS Platform, label_es: Plataforma DaaS, route_en: "/daas-platform/", route_es: "/es/daas-platform/" }
+  - { id: IA-NAV-003, key: impact_products, label_en: Impact Products, label_es: Productos de impacto, route_en: "/impact-products/", route_es: "/es/impact-products/" }
+  - { id: IA-NAV-004, key: teaching, label_en: Teaching, label_es: Docencia, route_en: "/teaching/", route_es: "/es/teaching/" }
+  - { id: IA-NAV-005, key: about, label_en: About Me, label_es: Sobre mí, route_en: "/about/", route_es: "/es/about/" }
+  - { id: IA-NAV-006, key: search, label_en: Search, label_es: Buscar, route_en: "/search/", route_es: "/es/search/" }
 
 utilities:
-  - { id: IA-UTIL-001, key: cv, label_en: CV, route_en: "/cv/" }
-  - { id: IA-UTIL-002, key: search, label_en: Search, route_en: "/search/" }
-  - { id: IA-UTIL-003, key: language, behavior: "Temporarily hidden until complete, authored and reciprocal translations exist." }
+  - { id: IA-UTIL-001, key: cv, behavior: "Contextual link inside About; never a primary navigation entry.", route_en: "/cv/", route_es: "/es/cv/" }
+  - { id: IA-UTIL-003, key: language, behavior: "Compact ES/EN switch at the right; use the reciprocal route or the target-language Home fallback and preserve the explicit choice for the session." }
 
 footer_navigation:
   required: ["contact", "resources", "licenses", "accessibility", "rss", "sitemap"]
@@ -22,22 +22,22 @@ footer_navigation:
 forbidden_primary_entries:
   id: IA-NAV-007
   status: required_v1
-  values: ["work", "research", "notes", "data", "economics", "finance", "valuation", "quantitative-finance", "projects", "blog"]
+  values: ["work", "research", "notes", "profile", "cv", "data", "economics", "finance", "valuation", "quantitative-finance", "projects", "blog"]
   reason: "These are taxonomies, formats or legacy labels."
 
 routes:
   static:
-    home: { en: "/" }
-    daas_platform: { en: "/daas-platform/" }
-    impact_products: { en: "/impact-products/" }
-    teaching: { en: "/teaching/" }
-    about: { en: "/about/" }
-    cv: { en: "/cv/" }
-    contact: { en: "/contact/" }
-    resources: { en: "/resources/" }
-    search: { en: "/search/" }
-    licenses: { en: "/licenses/" }
-    accessibility: { en: "/accessibility/" }
+    home: { en: "/", es: "/es/" }
+    daas_platform: { en: "/daas-platform/", es: "/es/daas-platform/" }
+    impact_products: { en: "/impact-products/", es: "/es/impact-products/" }
+    teaching: { en: "/teaching/", es: "/es/teaching/" }
+    about: { en: "/about/", es: "/es/about/" }
+    cv: { en: "/cv/", es: "/es/cv/" }
+    contact: { en: "/contact/", es: "/es/contact/" }
+    resources: { en: "/resources/", es: "/es/resources/" }
+    search: { en: "/search/", es: "/es/search/" }
+    licenses: { en: "/licenses/", es: "/es/licenses/" }
+    accessibility: { en: "/accessibility/", es: "/es/accessibility/" }
     not_found: { shared: "/404.html" }
   dynamic:
     analysis: "/analysis/{slug}/"
@@ -48,7 +48,7 @@ routes:
     week: "/teaching/{course_slug}/{week_slug}/"
     material: "/teaching/{course_slug}/{week_slug}/materials/{material_slug}/"
     thematic: "/topics/{taxonomy_slug}/"
-    content_language_rule: "Individual content declares en or es. Interface routes remain English; no automatic translation or hreflang is generated."
+    content_language_rule: "Interface routes exist in English and Spanish. Authored academic content keeps its source language and declares it explicitly."
 
 slug_rules:
   id: IA-SLUG-001
@@ -105,13 +105,14 @@ taxonomy_landings:
   v1_behavior: "Filters work inside Work, Research and Notes. Do not generate thin topic pages."
 
 bilingual:
-  model: "english_interface_with_multilingual_content"
+  model: "equivalent_english_and_spanish_interfaces"
   default_language: { status: required_v1, value: en }
-  interface_language: en
+  interface_languages: [en, es]
   content_languages: [en, es]
-  language_selector: hidden
-  fallback: "Never auto-translate. Preserve the authored language and optionally show a discreet EN or ES label."
-  hreflang: "Disabled unless a real reciprocal equivalent exists."
+  language_selector: "visible_compact_es_en"
+  preference: "Persist an explicit selector choice in sessionStorage."
+  fallback: "Never auto-translate. Use the target-language Home when no reciprocal page exists and preserve the authored content language."
+  hreflang: "Emit for every real reciprocal equivalent."
 
 redirects:
   source_file: "src/data/redirects.yml"

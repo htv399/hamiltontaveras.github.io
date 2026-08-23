@@ -201,14 +201,14 @@ const courses = defineCollection({
 });
 
 const weeks = defineCollection({
-  loader: glob({ pattern: "**/*.mdx", base: "./src/content/weeks" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/weeks" }),
   schema: z.object({
     ...commonFields,
     course_id: z.string(),
     week_number: z.number().int().min(1),
     question: z.string(),
     overview: z.string(),
-    resources: z.array(z.string()).min(1),
+    resources: z.array(z.string()).default([]),
     version: z.string(),
     license: z.string(),
     concepts: z.array(z.string()).optional(),

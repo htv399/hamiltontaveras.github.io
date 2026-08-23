@@ -4,6 +4,8 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 // APP-003 (approval_required): SITE_URL is a preview placeholder until the
 // canonical domain is approved. Production builds fail separately if this
@@ -62,9 +64,11 @@ export default defineConfig({
     mdx(),
     react(),
     basePathHtml,
-    sitemap({ filter: (page) => !page.includes("/fixtures/") && !page.includes("/es/") })
+    sitemap({ filter: (page) => !page.includes("/fixtures/") })
   ],
   markdown: {
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [rehypeKatex],
     shikiConfig: {
       theme: "github-light"
     }

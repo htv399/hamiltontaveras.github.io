@@ -7,6 +7,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { walkFiles } from "./lib/frontmatter.mjs";
 
 const DIST_DIR = path.resolve(process.cwd(), "dist");
+const configuredBase = (process.env.BASE_PATH || "").replace(/^\/+|\/+$/g, "");
 if (!existsSync(DIST_DIR)) {
   console.error("[seo:check] FAIL — dist/ does not exist. Run `npm run build` first.");
   process.exit(1);
@@ -40,7 +41,10 @@ for (const file of htmlFiles) {
   // itself declare a hreflang back to this page's canonical.
   const hreflangLinks = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)];
   for (const [, , href] of hreflangLinks) {
-    const targetPath = new URL(href, "https://x.invalid").pathname;
+    let targetPath = new URL(href, "https://x.invalid").pathname;
+    if (configuredBase && (targetPath === `/${configuredBase}` || targetPath.startsWith(`/${configuredBase}/`))) {
+      targetPath = targetPath.slice(configuredBase.length + 1) || "/";
+    }
     const targetFile = path.join(DIST_DIR, targetPath, targetPath.endsWith("/") ? "index.html" : "");
     if (!existsSync(targetFile) && !existsSync(targetFile + ".html")) {
       errors.push(`${rel}: hreflang target "${href}" does not exist in the build`);

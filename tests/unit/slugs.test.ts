@@ -15,7 +15,7 @@ function walk(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) return walk(full);
-    return full.endsWith(".mdx") || full.endsWith(".yml") ? [full] : [];
+    return full.endsWith(".md") || full.endsWith(".mdx") || full.endsWith(".yml") ? [full] : [];
   });
 }
 

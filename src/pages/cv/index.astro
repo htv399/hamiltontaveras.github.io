@@ -1,13 +1,4 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig } from "../../config/site";
-const language = "en" as const;
+import CvPage from "../../components/pages/CvPage.astro";
 ---
-<BaseLayout title={`CV — ${siteConfig.name}`} description="Professional profile and curriculum vitae of Hamilton Taveras." path="/cv/" language={language}>
-  <section class="shell section-standard reading-column" style="margin-inline:auto;">
-    <p class="text-micro">Curriculum vitae</p>
-    <h1>Hamilton Taveras</h1>
-    <p class="text-body-l">{siteConfig.descriptor}</p>
-    <p>This page intentionally omits unverified dates, affiliations and credentials. The concise approved profile is available on <a href="/about/">About Me</a>.</p>
-  </section>
-</BaseLayout>
+<CvPage language="en" />

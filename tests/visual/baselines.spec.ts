@@ -1,4 +1,4 @@
-// REP-TEST-003 / QA-VIS-003. Screenshot baselines for the five primary
+// REP-TEST-003 / QA-VIS-003. Screenshot baselines for the seven modified
 // destinations on desktop and mobile. First run creates the
 // baseline; subsequent runs diff against it.
 import { test, expect } from "@playwright/test";
@@ -9,7 +9,9 @@ const pages = [
   { name: "daas-platform", route: "/daas-platform/" },
   { name: "impact-products", route: "/impact-products/" },
   { name: "teaching", route: "/teaching/" },
-  { name: "about", route: "/about/" }
+  { name: "econometrics-i", route: "/teaching/econometrics-i/" },
+  { name: "about", route: "/about/" },
+  { name: "cv", route: "/cv/" }
 ];
 const viewports = [
   { name: "1440", width: 1440, height: 1000 },

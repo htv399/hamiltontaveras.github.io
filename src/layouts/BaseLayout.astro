@@ -12,6 +12,8 @@ import "../styles/typography.css";
 import "../styles/base.css";
 import "../styles/data.css";
 import "../styles/utilities.css";
+import "katex/dist/katex.min.css";
+import { reciprocalLanguageAlternative } from "../i18n/routes";
 
 interface Props {
   title: string;
@@ -38,6 +40,8 @@ const {
   bodyClass
 } = Astro.props;
 const strings = t(language);
+const alternateLanguage = language === "en" ? "es" : "en";
+const alternatePath = reciprocalLanguageAlternative(path, language);
 ---
 <!doctype html>
 <html lang={language}>
@@ -46,6 +50,7 @@ const strings = t(language);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <MetaTags title={title} description={description} path={path} canonicalPath={canonicalPath} language={language} ogImage={ogImage} noindex={noindex} />
+    {alternatePath && <link rel="alternate" hreflang={alternateLanguage} href={`${import.meta.env.SITE}${alternatePath}`} />}
     {jsonLd && <JsonLd data={jsonLd} />}
     <slot name="head" />
   </head>

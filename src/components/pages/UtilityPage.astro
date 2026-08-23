@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { siteConfig, type Language } from "../../config/site";
+interface Props { language: Language; kind: "contact"|"resources"|"licenses"|"accessibility" }
+const { language, kind } = Astro.props;
+const es = language === "es";
+const prefix = es ? "/es" : "";
+const pages = {
+  contact: es ? {title:"Contacto",description:"Canales para consultas profesionales sobre CaribbeanQuant.",lead:"Consultas profesionales",body:"La información de contacto vigente se encuentra en el CV descargable.",link:"Ver CV"} : {title:"Contact",description:"Professional inquiry channels for CaribbeanQuant.",lead:"Professional inquiries",body:"Current contact information is available in the downloadable CV.",link:"View CV"},
+  resources: es ? {title:"Recursos",description:"Recursos públicos de CaribbeanQuant.",lead:"Recursos publicados",body:"Los recursos de la Plataforma DaaS, Productos de impacto y Docencia se reunirán aquí con formato, versión, licencia y condiciones de acceso.",link:"Licencias y reutilización"} : {title:"Resources",description:"Public resources from CaribbeanQuant.",lead:"Published resources",body:"Resources from DaaS Platform, Impact Products and Teaching are gathered here with format, version, license and access conditions.",link:"Licenses and reuse"},
+  licenses: es ? {title:"Licencias y reutilización",description:"Condiciones de licencia y reutilización.",lead:"Licencias y reutilización",body:"Salvo indicación expresa en una página o archivo, todos los derechos están reservados. La ausencia de una licencia no constituye permiso de reutilización.",link:"Recursos"} : {title:"Licenses and reuse",description:"Licensing and reuse terms.",lead:"Licenses and reuse",body:"Unless a page or file states otherwise, all rights are reserved. A missing license is not permission to reuse the material.",link:"Resources"},
+  accessibility: es ? {title:"Accesibilidad",description:"Compromiso de accesibilidad de CaribbeanQuant.",lead:"Accesibilidad",body:"CaribbeanQuant tiene como objetivo WCAG 2.2 nivel AA mediante navegación por teclado, foco visible, contraste suficiente, estructura semántica, alternativas textuales y reducción de movimiento.",link:"Volver al inicio"} : {title:"Accessibility",description:"CaribbeanQuant accessibility commitment.",lead:"Accessibility",body:"CaribbeanQuant targets WCAG 2.2 level AA through keyboard operation, visible focus, sufficient contrast, semantic structure, text alternatives and reduced-motion support.",link:"Back to Home"}
+} as const;
+const page = pages[kind];
+const target = kind==="contact"?`${prefix}/cv/`:kind==="resources"?`${prefix}/licenses/`:kind==="licenses"?`${prefix}/resources/`:`${prefix}/`;
+---
+<BaseLayout title={`${page.title} — ${siteConfig.name}`} description={page.description} path={`${prefix}/${kind}/`} language={language} noindex={kind==="contact"}>
+  <section class="shell section-standard reading-column" style="margin-inline:auto"><p class="text-micro">CaribbeanQuant</p><h1>{page.lead}</h1><p class="text-body-l" style="margin-top:var(--space-4)">{page.body}</p><p style="margin-top:var(--space-5)"><a href={target}>{page.link} →</a></p></section>
+</BaseLayout>

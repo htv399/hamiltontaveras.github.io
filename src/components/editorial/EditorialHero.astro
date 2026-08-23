@@ -4,14 +4,15 @@ interface Props {
   brand: string;
   descriptor: string;
   introduction: string;
+  eyebrow: string;
   primaryCta: HeroLink;
   secondaryCta: HeroLink;
 }
-const { brand, descriptor, introduction, primaryCta, secondaryCta } = Astro.props;
+const { brand, descriptor, introduction, eyebrow, primaryCta, secondaryCta } = Astro.props;
 ---
 <section class="platform-hero surface-navy">
   <div class="shell platform-hero__inner">
-    <p class="text-micro platform-hero__eyebrow">Data · Quantitative products · Teaching</p>
+    <p class="text-micro platform-hero__eyebrow">{eyebrow}</p>
     <h1>{brand}</h1>
     <p class="platform-hero__descriptor">{descriptor}</p>
     <p class="platform-hero__intro">{introduction}</p>

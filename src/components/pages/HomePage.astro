@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EditorialHero from "../editorial/EditorialHero.astro";
+import { siteConfig, spanishDescriptor, spanishIntroduction, canonicalBase, type Language } from "../../config/site";
+interface Props { language: Language }
+const { language } = Astro.props;
+const es = language === "es";
+const path = es ? "/es/" : "/";
+const copy = es ? {
+  title: "CaribbeanQuant — Plataformas de datos, productos cuantitativos y docencia",
+  descriptor: spanishDescriptor,
+  introduction: spanishIntroduction,
+  eyebrow: "Datos · Productos cuantitativos · Docencia",
+  primary: "Explorar la Plataforma DaaS",
+  about: "Sobre mí",
+  platform: "Plataforma",
+  platformTitle: "Plataforma DaaS",
+  daas: "Contenido bajo demanda.",
+  daasText: "Datos documentados, dashboards y recursos analíticos para facilitar el uso de información económica, financiera y sectorial.",
+  daasLink: "Explorar la plataforma",
+  products: "Productos",
+  impact: "Productos de impacto",
+  impactText: "Productos cuantitativos que convierten datos documentados en evidencia útil.",
+  impactLink: "Explorar productos de impacto",
+  academic: "Publicación académica",
+  teaching: "Docencia",
+  teachingText: "Cursos y materiales académicos publicados como recursos duraderos y accesibles.",
+  teachingLink: "Explorar docencia",
+  stats: [["01", "unidad académica publicada"], ["02", "idiomas de interfaz"], ["04", "áreas editoriales"]]
+} : {
+  title: "CaribbeanQuant — Data platforms, quantitative products and teaching",
+  descriptor: siteConfig.descriptor,
+  introduction: siteConfig.introduction,
+  eyebrow: "Data · Quantitative products · Teaching",
+  primary: "Explore DaaS Platform",
+  about: "About Me",
+  platform: "Platform",
+  platformTitle: "DaaS Platform",
+  daas: "Content on demand.",
+  daasText: "Documented datasets, dashboards and analytical resources designed to make economic, financial and sectoral data easier to use.",
+  daasLink: "Explore the platform",
+  products: "Products",
+  impact: "Impact Products",
+  impactText: "Quantitative products designed to transform documented data into useful evidence.",
+  impactLink: "Explore impact products",
+  academic: "Academic publication",
+  teaching: "Teaching",
+  teachingText: "Courses and academic materials published as durable, accessible resources.",
+  teachingLink: "Explore teaching",
+  stats: [["01", "published academic unit"], ["02", "interface languages"], ["04", "editorial areas"]]
+};
+const prefix = es ? "/es" : "";
+const jsonLd = [
+  { "@context": "https://schema.org", "@type": "WebSite", name: siteConfig.name, description: copy.descriptor, url: `${canonicalBase.value.replace(/\/$/, "")}${path}` },
+  { "@context": "https://schema.org", "@type": "Person", name: siteConfig.personName, description: copy.descriptor, url: `${canonicalBase.value.replace(/\/$/, "")}${prefix}/about/` }
+];
+---
+<BaseLayout title={copy.title} description={copy.descriptor} path={path} language={language} headerVariant="transparent_on_navy_hero" jsonLd={jsonLd}>
+  <EditorialHero brand={siteConfig.name} descriptor={copy.descriptor} introduction={copy.introduction} eyebrow={copy.eyebrow} primaryCta={{ label: copy.primary, href: `${prefix}/daas-platform/` }} secondaryCta={{ label: copy.about, href: `${prefix}/about/` }} />
+  <section class="home-entry surface-white"><div class="shell entry-grid"><div><p class="text-micro">{copy.platform}</p><h2>{copy.platformTitle}</h2></div><div><p class="entry-lead">{copy.daas}</p><p>{copy.daasText}</p><a href={`${prefix}/daas-platform/`}>{copy.daasLink} →</a></div></div></section>
+  <section class="home-entry surface-paper"><div class="shell entry-grid"><div><p class="text-micro">{copy.products}</p><h2>{copy.impact}</h2></div><div><p>{copy.impactText}</p><a href={`${prefix}/impact-products/`}>{copy.impactLink} →</a></div></div></section>
+  <section class="home-entry surface-white"><div class="shell entry-grid"><div><p class="text-micro">{copy.academic}</p><h2>{copy.teaching}</h2></div><div><p>{copy.teachingText}</p><a href={`${prefix}/teaching/`}>{copy.teachingLink} →</a></div></div></section>
+  <section class="home-stats surface-mist" aria-label={es ? "Indicadores del portal" : "Portal indicators"}><div class="shell stats-grid">{copy.stats.map(([value, label]) => <div><strong>{value}</strong><span>{label}</span></div>)}</div></section>
+</BaseLayout>
+<style>
+  .home-entry { padding-block: var(--space-8); }
+  .entry-grid { display:grid; grid-template-columns:minmax(220px,4fr) minmax(0,8fr); gap:var(--space-8); }
+  .entry-grid h2 { margin-top:var(--space-2); font-size:var(--size-section-title); }
+  .entry-grid > div:last-child { display:grid; gap:var(--space-3); }
+  .entry-grid a { min-height:44px; display:inline-flex; align-items:center; width:max-content; font-weight:600; }
+  .entry-lead { font:600 var(--size-body-l)/var(--line-body-l) var(--font-ui); color:var(--color-navy-900); }
+  .home-stats { padding-block:var(--space-6); }
+  .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); border-block:var(--border-strong); }
+  .stats-grid div { padding:var(--space-5); display:flex; flex-direction:column; gap:var(--space-2); border-right:var(--border-hairline); }
+  .stats-grid div:last-child { border-right:0; }
+  .stats-grid strong { font:500 var(--size-feature-title)/1 var(--font-mono); color:var(--color-navy-900); }
+  .stats-grid span { font-size:var(--size-small); }
+  @media(max-width:768px){.entry-grid{grid-template-columns:1fr;gap:var(--space-4)}.stats-grid{display:flex;overflow-x:auto}.stats-grid div{min-width:190px}}
+</style>

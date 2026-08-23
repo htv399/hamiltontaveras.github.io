@@ -7,7 +7,9 @@ import { AxeBuilder } from "@axe-core/playwright";
 const templates = [
   "/", "/daas-platform/", "/impact-products/", "/teaching/", "/teaching/econometrics-i/",
   "/work/", "/research/", "/notes/",
-  "/about/", "/cv/", "/contact/", "/resources/", "/search/", "/404-check-page-that-does-not-exist/"
+  "/about/", "/cv/", "/contact/", "/resources/", "/search/",
+  "/es/", "/es/daas-platform/", "/es/impact-products/", "/es/teaching/", "/es/teaching/econometrics-i/", "/es/about/", "/es/cv/",
+  "/404-check-page-that-does-not-exist/"
 ];
 
 for (const route of templates) {

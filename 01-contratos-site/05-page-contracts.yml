@@ -12,7 +12,7 @@ contract:
 pages:
   Home:
     id: PG-HOME
-    routes: ["/"]
+    routes: ["/", "/es/"]
     objective: "Explicar CaribbeanQuant y conducir a DaaS Platform, Impact Products, Teaching y About Me."
     data: ["site_config", "Indicator[]", "CatalogEntry[]", "ImpactProduct[]", "Course[]", "Profile"]
     sections:
@@ -29,7 +29,7 @@ pages:
 
   DaaSPlatform:
     id: PG-DAAS
-    routes: ["/daas-platform/"]
+    routes: ["/daas-platform/", "/es/daas-platform/"]
     objective: "Documentar progresivamente la plataforma de datos, su catálogo, cobertura, recursos y condiciones de acceso."
     sections: ["Platform overview", "Data catalog", "Dashboards and monitors", "Business Data Explorer", "Resources", "Meeting CTA"]
     minimum: ["intro", "content_driven_module_structure"]
@@ -38,7 +38,7 @@ pages:
 
   ImpactProducts:
     id: PG-IMPACT
-    routes: ["/impact-products/"]
+    routes: ["/impact-products/", "/es/impact-products/"]
     objective: "Publicar productos analíticos reales construidos con datos, modelos y métodos cuantitativos."
     sections: ["Editorial intro", "Featured products when real", "Product listing"]
     minimum: ["intro"]
@@ -47,7 +47,7 @@ pages:
 
   Teaching:
     id: PG-TEACHING
-    routes: ["/teaching/"]
+    routes: ["/teaching/", "/es/teaching/"]
     objective: "Presentar cursos y archivo académico como publicación, no como LMS."
     sections: ["Teaching intro", "Featured course", "Active courses", "Archive"]
     minimum: ["intro", "one_seed_course_or_honest_empty_state"]
@@ -60,7 +60,7 @@ pages:
     model: CM-COURSE
     objective: "Dar contexto, objetivos, calendario y acceso a semanas."
     sections: ["Breadcrumbs", "Course header", "Description", "Objectives", "Syllabus resource", "Week navigation", "Archive status"]
-    minimum: ["title", "period", "description", "objectives", "syllabus", "one_week"]
+    minimum: ["title", "period", "description", "objectives", "one_published_unit"]
     empty_state: "If no published week exists, keep the course in draft and exclude it from production."
     mobile: "Week navigation is a vertical indexed list."
 
@@ -69,8 +69,8 @@ pages:
     route_pattern: "/teaching/{course_slug}/{week_slug}/"
     model: CM-WEEK
     objective: "Organizar una pregunta semanal y sus materiales."
-    sections: ["Breadcrumbs", "Week header", "Question", "Overview", "Objectives", "Concepts", "Material groups", "License and version", "Previous and next"]
-    minimum: ["title", "question", "overview", "one_material", "version", "license"]
+    sections: ["Breadcrumbs", "Week header", "Question", "Overview", "Objectives", "Concepts", "Academic body", "Optional material groups", "License and version", "Previous and next"]
+    minimum: ["title", "question", "overview", "academic_body_or_one_material", "version", "license"]
     empty_state: "Material groups with zero eligible items are omitted."
     mobile: "Resources remain grouped by function. Previous and next controls are full width."
 
@@ -86,7 +86,7 @@ pages:
 
   About:
     id: PG-ABOUT
-    routes: ["/about/"]
+    routes: ["/about/", "/es/about/"]
     objective: "Presentar a Hamilton Taveras como la persona detrás de CaribbeanQuant sin convertir la página en otra Home."
     sections: ["Professional profile", "Areas of work", "Education and credentials when verified", "Teaching", "CV", "Contact"]
     minimum: ["approved_professional_description", "person_behind_brand", "cv_link"]
@@ -97,7 +97,7 @@ pages:
     id: PG-CV
     routes: ["/cv/", "/es/cv/"]
     objective: "Proveer detalle verificable y PDF descargable."
-    sections: ["Short introduction", "Verified structured CV", "PDF download"]
+    sections: ["Short introduction", "Verified structured CV", "Desktop index", "Mobile collapsible index", "PDF download", "Print action", "Back to About"]
     minimum: ["verified_entries", "pdf_or_explicitly_disabled_download"]
     empty_state: "Production is blocked if neither structured CV nor approved PDF exists."
     mobile: "Chronology becomes stacked. Dates remain visible."
@@ -195,5 +195,5 @@ pages:
 spanish_rules:
   id: PG-ES-001
   status: required_v1
-  rule: "The public interface remains English. Individual content may be authored in Spanish and declares language=es. Do not auto-translate or emit hreflang without a real equivalent."
+  rule: "The public interface has equivalent English and Spanish routes. Academic content remains in its authored language; reciprocal interface pages emit hreflang."
 

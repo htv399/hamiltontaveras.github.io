@@ -1,0 +1,16 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { siteConfig, type Language } from "../../config/site";
+interface Props { language: Language }
+const { language } = Astro.props;
+const es = language === "es";
+const prefix = es ? "/es" : "";
+const copy = es ? {title:"Docencia",descriptor:"Cursos como publicaciones académicas inspeccionables.",intro:"Cursos y materiales que conectan razonamiento formal, práctica empírica e interpretación clara.",period:"Publicación académica continua",summary:"Introducción aplicada a la causalidad, los tipos de datos y el razonamiento econométrico.",weeks:"1 unidad disponible",resources:"Lectura · ecuaciones · tablas",language:"Español",status:"En desarrollo",open:"Abrir curso"} : {title:"Teaching",descriptor:"Courses as inspectable publications.",intro:"Courses and materials connecting formal reasoning, empirical practice and clear interpretation.",period:"Continuous academic publication",summary:"An applied introduction to causality, data structures and econometric reasoning.",weeks:"1 unit available",resources:"Reading · equations · tables",language:"Course materials available in Spanish",status:"In development",open:"Open course"};
+---
+<BaseLayout title={`${copy.title} — ${siteConfig.name}`} description={copy.intro} path={`${prefix}/teaching/`} language={language}>
+  <header class="teaching-head shell section-standard"><p class="text-micro">{copy.title}</p><h1>{copy.title}</h1><p class="teaching-descriptor">{copy.descriptor}</p><p class="teaching-intro">{copy.intro}</p></header>
+  <section class="shell course-row" aria-labelledby="econometrics-title"><div class="course-meta"><p>{copy.period}</p><p>{copy.weeks}</p><p>{copy.language}</p><p>{copy.status}</p></div><div><h2 id="econometrics-title" class="font-editorial">Econometrics I</h2><p>{copy.summary}</p><p class="resource-types">{copy.resources}</p></div><a href={`${prefix}/teaching/econometrics-i/`} aria-label={`${copy.open}: Econometrics I`}>{copy.open} →</a></section>
+</BaseLayout>
+<style>
+  .teaching-head h1{margin-top:var(--space-3)}.teaching-descriptor{margin-top:var(--space-4);font:500 clamp(1rem,1.4vw,1.2rem)/1.5 var(--font-ui);color:var(--color-blue-600);max-width:62ch}.teaching-intro{margin-top:var(--space-3);font-size:var(--size-body-l);max-width:64ch}.course-row{display:grid;grid-template-columns:3fr 6fr 2fr;gap:var(--space-6);padding-block:var(--space-6);border-block:var(--border-strong);align-items:start}.course-meta{font:400 var(--size-small)/1.6 var(--font-ui);color:var(--color-slate-500)}.course-row h2{font-size:var(--size-h2)}.course-row h2+p{margin-top:var(--space-3)}.resource-types{margin-top:var(--space-3);font:500 var(--size-micro)/1.5 var(--font-mono);text-transform:uppercase}.course-row>a{display:inline-flex;min-height:44px;align-items:center;font-weight:600}@media(max-width:768px){.course-row{grid-template-columns:1fr;gap:var(--space-4)}.teaching-descriptor{font-size:1rem}}
+</style>

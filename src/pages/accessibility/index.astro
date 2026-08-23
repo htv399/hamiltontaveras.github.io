@@ -1,12 +1,4 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig } from "../../config/site";
-const language = "en" as const;
+import UtilityPage from "../../components/pages/UtilityPage.astro";
 ---
-<BaseLayout title={`Accessibility — ${siteConfig.name}`} description="Accessibility commitment and conformance target for CaribbeanQuant." path="/accessibility/" language={language}>
-  <section class="shell section-standard reading-column" style="margin-inline:auto;">
-    <h1>Accessibility</h1>
-    <p class="text-body-l">CaribbeanQuant targets WCAG 2.2 level AA through keyboard operation, visible focus, sufficient contrast, semantic headings and tables, text alternatives and reduced-motion support.</p>
-    <p>This is a conformance target rather than a third-party audit certificate. Every published dataset, exhibit, embed and teaching resource must carry an accessible alternative appropriate to its format.</p>
-  </section>
-</BaseLayout>
+<UtilityPage language="en" kind="accessibility" />

@@ -1,18 +1,22 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig } from "../../config/site";
-interface Props { from: string; to: string; label?: string }
-const { from, to, label = "Continue to the current page" } = Astro.props;
+import { siteConfig, type Language } from "../../config/site";
+interface Props { from: string; to: string; language?: Language; label?: string }
+const { from, to, language = "en", label } = Astro.props;
+const es = language === "es";
+const copy = es
+  ? { title: "Página trasladada", description: "Esta ruta se trasladó dentro de CaribbeanQuant.", status: "Ruta actualizada", body: "CaribbeanQuant ahora organiza este contenido dentro de la estructura vigente de la plataforma.", action: "Continuar a la página actual" }
+  : { title: "Page moved", description: "This route has moved within CaribbeanQuant.", status: "Route updated", body: "CaribbeanQuant now organizes this material under its current platform structure.", action: "Continue to the current page" };
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const target = `${base}${to}`;
 ---
-<BaseLayout title={`Page moved: ${from} — ${siteConfig.name}`} description="This route has moved within CaribbeanQuant." path={from} canonicalPath={to} language="en" noindex={true}>
+<BaseLayout title={`${copy.title}: ${from} — ${siteConfig.name}`} description={copy.description} path={from} canonicalPath={to} language={language} noindex={true}>
   <meta slot="head" http-equiv="refresh" content={`0;url=${target}`} />
   <section class="shell section-standard reading-column" style="margin-inline:auto;" data-pagefind-ignore>
-    <p class="text-micro">Route updated</p>
-    <h1>This page has moved</h1>
-    <p class="text-body-l">CaribbeanQuant now organizes this material under its current platform structure.</p>
-    <p><a href={to}>{label} →</a></p>
+    <p class="text-micro">{copy.status}</p>
+    <h1>{copy.title}</h1>
+    <p class="text-body-l">{copy.body}</p>
+    <p><a href={to}>{label ?? copy.action} →</a></p>
   </section>
   <script is:inline define:vars={{ target }}>window.location.replace(target);</script>
 </BaseLayout>

@@ -28,3 +28,22 @@ test("Teaching exposes the approved Econometrics I course", async ({ page }) => 
   await page.goto(withBase("/teaching/"));
   await expect(page.getByRole("link", { name: /Econometrics I/i })).toBeVisible();
 });
+
+test("Econometrics I renders source content, mathematics and responsive navigation", async ({ page }) => {
+  await page.goto(withBase("/teaching/econometrics-i/"));
+  await expect(page.getByRole("heading", { level: 2, name: /Introducción a la econometría/i })).toBeVisible();
+  await expect(page.locator(".katex-display").first()).toBeVisible();
+  await expect(page.locator(".toc-desktop nav")).toBeVisible();
+  await page.setViewportSize({ width: 480, height: 900 });
+  await expect(page.locator(".toc-desktop")).toBeHidden();
+  await expect(page.locator(".toc-mobile")).toBeVisible();
+});
+
+test("CV is structured HTML with download, print and responsive index", async ({ page }) => {
+  await page.goto(withBase("/cv/"));
+  await expect(page.getByRole("heading", { level: 2, name: "Professional experience" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Download PDF" })).toHaveAttribute("href", /hamilton-taveras-cv\.pdf$/);
+  await page.emulateMedia({ media: "print" });
+  await expect(page.getByRole("button", { name: "Print" })).toBeHidden();
+  await expect(page.locator(".cv-content")).toBeVisible();
+});

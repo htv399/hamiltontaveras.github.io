@@ -74,6 +74,9 @@ export const analyticsMode: Decision<"off" | "on"> = {
 export const brandName = "CaribbeanQuant";
 export const siteIntroduction =
   "Data platforms, quantitative products and teaching resources focused on economics, finance and the Caribbean.";
+export const spanishDescriptor = "Sitio profesional de Hamilton Taveras, M.A. en Economía, CDO.";
+export const spanishIntroduction =
+  "Plataformas de datos, productos cuantitativos y recursos docentes centrados en economía, finanzas y el Caribe.";
 
 export const siteConfig = {
   env: SITE_ENV,

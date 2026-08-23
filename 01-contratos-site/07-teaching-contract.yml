@@ -33,7 +33,7 @@ course_rules:
     rule: "Teaching behaves as a publication. It does not expose grades, announcements or student administration."
   - id: TCH-COURSE-005
     status: required_v1
-    rule: "Functional interface labels remain English while an individual course or material may be authored entirely in Spanish or English and declares its language."
+    rule: "Functional interface labels follow the English or Spanish route while an individual course or material preserves its authored language and declares it."
 
 video_resources:
   model: VideoResource
@@ -44,7 +44,7 @@ video_resources:
 week_rules:
   - id: TCH-WEEK-001
     status: required_v1
-    rule: "Every week includes title, question, overview, resource, version, license and publication status."
+    rule: "Every week includes title, question, overview, an academic body or eligible resource, version, license and publication status."
   - id: TCH-WEEK-002
     status: required_v1
     rule: "Weeks order by week_number. Previous and next links derive from the published sequence."

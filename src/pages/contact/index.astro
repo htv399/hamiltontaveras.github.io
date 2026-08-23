@@ -1,13 +1,4 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig } from "../../config/site";
-const language = "en" as const;
+import UtilityPage from "../../components/pages/UtilityPage.astro";
 ---
-<BaseLayout title={`Contact — ${siteConfig.name}`} description="Professional contact information for CaribbeanQuant." path="/contact/" language={language} noindex={true}>
-  <section class="shell section-standard reading-column" style="margin-inline:auto;">
-    <p class="text-micro">Contact</p>
-    <h1>Professional inquiries</h1>
-    <p class="text-body-l">No public contact endpoint or meeting service is configured on this static site.</p>
-    <p>When an approved channel is available, it can be enabled centrally without adding an unverified address or link to individual pages.</p>
-  </section>
-</BaseLayout>
+<UtilityPage language="en" kind="contact" />

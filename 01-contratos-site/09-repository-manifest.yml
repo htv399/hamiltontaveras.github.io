@@ -27,6 +27,7 @@ entries:
   - { id: REP-CONFIG-007, path: "src/content.config.ts", kind: file, purpose: "Colecciones y esquemas.", origin: ["CM-001"], action: create, depends_on: ["src/config/taxonomies.ts"] }
   - { id: REP-CONFIG-008, path: "src/data/redirects.yml", kind: file, purpose: "Redirecciones sin cadenas.", origin: ["IA-SLUG-001"], action: create_or_merge, depends_on: [] }
   - { id: REP-CONFIG-009, path: "src/config/platform.ts", kind: file, purpose: "Configuración publicable de DaaS, Impact Products e indicadores.", origin: ["PG-DAAS", "PG-IMPACT", "CMP-INDICATOR-STRIP"], action: create, depends_on: ["src/config/site.ts"] }
+  - { id: REP-CONFIG-010, path: "src/data/cv.ts", kind: file, purpose: "Datos bilingües verificados del CV HTML.", origin: ["PG-CV"], action: create, depends_on: [] }
 
   - { id: REP-STYLE-001, path: "src/styles/tokens.css", kind: file, purpose: "Tokens Blue Finance.", origin: ["VIS-001"], action: create, depends_on: [] }
   - { id: REP-STYLE-002, path: "src/styles/reset.css", kind: file, purpose: "Normalización controlada.", origin: ["VIS-001"], action: create, depends_on: ["src/styles/tokens.css"] }
@@ -52,6 +53,7 @@ entries:
   - { id: REP-CMP-008, path: "src/components/search/*", kind: pattern, purpose: "Búsqueda Pagefind.", origin: ["CMP-SEARCH", "TECH-SEARCH-001"], action: create, depends_on: ["pagefind_index"] }
   - { id: REP-CMP-009, path: "src/components/teaching/*", kind: pattern, purpose: "Cursos, semanas y materiales.", origin: ["CMP-COURSE-SHELF", "CMP-WEEK-NAV", "CMP-MATERIAL-GROUP"], action: create, depends_on: ["src/content.config.ts"] }
   - { id: REP-CMP-010, path: "src/components/seo/*", kind: pattern, purpose: "Meta, JSON-LD y social.", origin: ["TECH-SEO-001"], action: create, depends_on: ["src/config/site.ts"] }
+  - { id: REP-CMP-011, path: "src/components/pages/*", kind: pattern, purpose: "Composiciones compartidas para páginas equivalentes en inglés y español.", origin: ["PG-HOME", "PG-DAAS", "PG-IMPACT", "PG-TEACHING", "PG-ABOUT", "PG-CV"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
 
   - { id: REP-PAGE-001, path: "src/pages/index.astro", kind: file, purpose: "Home raíz.", origin: ["PG-HOME"], action: create_or_merge, depends_on: ["src/components/editorial/*"] }
   - { id: REP-PAGE-002, path: "src/pages/es/index.astro", kind: file, purpose: "Home español.", origin: ["PG-HOME", "PG-ES-001"], action: create_or_merge, depends_on: ["src/pages/index.astro"] }
@@ -65,13 +67,15 @@ entries:
   - { id: REP-PAGE-010, path: "src/pages/404.astro", kind: file, purpose: "404 estático.", origin: ["PG-404"], action: create_or_merge, depends_on: ["src/layouts/BaseLayout.astro"] }
   - { id: REP-PAGE-013, path: "src/pages/[...legacy].astro", kind: file, purpose: "Redirects estáticos de rutas públicas anteriores.", origin: ["IA-SLUG-001"], action: create, depends_on: ["src/data/redirects.yml"] }
   - { id: REP-PAGE-014, path: "src/pages/{work,research,notes}/index.astro", kind: pattern, purpose: "Redirects de landings públicas anteriores.", origin: ["IA-SLUG-001"], action: create, depends_on: ["src/components/navigation/LegacyRedirect.astro"] }
+  - { id: REP-PAGE-015, path: "src/pages/es/{daas-platform,impact-products,teaching,about,cv,contact,resources,search,licenses,accessibility}/index.astro", kind: pattern, purpose: "Páginas públicas equivalentes en español.", origin: ["PG-ES-001"], action: create, depends_on: ["src/i18n/routes.ts"] }
+  - { id: REP-PAGE-016, path: "src/pages/{teaching,es/teaching}/econometrics-i/index.astro", kind: pattern, purpose: "Unidad académica publicada de Econometrics I con interfaz bilingüe.", origin: ["PG-COURSE", "TCH-001"], action: create, depends_on: ["src/content/weeks/*/*.{md,mdx}"] }
 
   - { id: REP-CONTENT-001, path: "src/content/analysis/*/index.mdx", kind: pattern, purpose: "Analysis.", origin: ["CM-ANALYSIS"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
   - { id: REP-CONTENT-002, path: "src/content/work/*/index.mdx", kind: pattern, purpose: "Project, DataProduct y Valuation.", origin: ["CM-PROJECT", "CM-DATA-PRODUCT", "CM-VALUATION"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
   - { id: REP-CONTENT-003, path: "src/content/research/*/index.mdx", kind: pattern, purpose: "Research.", origin: ["CM-RESEARCH"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
   - { id: REP-CONTENT-004, path: "src/content/notes/*/index.mdx", kind: pattern, purpose: "Notes.", origin: ["CM-NOTE"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
   - { id: REP-CONTENT-005, path: "src/content/courses/*.mdx", kind: pattern, purpose: "Courses.", origin: ["CM-COURSE"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
-  - { id: REP-CONTENT-006, path: "src/content/weeks/*/*.mdx", kind: pattern, purpose: "Weeks.", origin: ["CM-WEEK"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-006, path: "src/content/weeks/*/*.{md,mdx}", kind: pattern, purpose: "Weeks en Markdown o MDX; Markdown preserva la notación académica extensa.", origin: ["CM-WEEK"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
   - { id: REP-CONTENT-007, path: "src/content/materials/*/*.yml", kind: pattern, purpose: "Material metadata.", origin: ["CM-MATERIAL"], action: migrate_then_conserve, depends_on: ["academic/materials-manifest.yml"] }
   - { id: REP-CONTENT-008, path: "src/content/profiles/*.yml", kind: pattern, purpose: "Author profiles.", origin: ["CM-PROFILE"], action: create_or_merge, depends_on: [] }
   - { id: REP-CONTENT-009, path: "src/content/catalog-entries/**/*", kind: pattern, purpose: "Catálogo de DaaS Platform.", origin: ["CM-CATALOG-ENTRY"], action: create_or_merge, depends_on: ["src/content.config.ts"] }
@@ -85,6 +89,7 @@ entries:
   - { id: REP-PUBLIC-002, path: "public/robots.txt", kind: file, purpose: "Indexación.", origin: ["TECH-SEO-001"], action: create, depends_on: ["SITE_URL"] }
   - { id: REP-PUBLIC-003, path: "public/downloads/**/*", kind: pattern, purpose: "Recursos editoriales permanentes.", origin: ["CM-RESOURCE"], action: migrate_then_conserve, depends_on: ["src/config/licenses.ts"] }
   - { id: REP-PUBLIC-004, path: "public/materials/**/*", kind: pattern, purpose: "Salidas académicas generadas.", origin: ["TCH-001"], action: create_or_merge, depends_on: ["academic/materials-manifest.yml"] }
+  - { id: REP-PUBLIC-005, path: "public/documents/*", kind: pattern, purpose: "Documentos públicos verificados, incluido el CV descargable.", origin: ["PG-CV"], action: create_or_merge, depends_on: [] }
 
   - { id: REP-ACADEMIC-001, path: "academic/", kind: directory, purpose: "Pipeline Quarto y R Markdown.", origin: ["TCH-001"], action: create_or_merge, depends_on: [] }
   - { id: REP-ACADEMIC-002, path: "academic/materials-manifest.yml", kind: file, purpose: "Puente entre fuentes y outputs.", origin: ["TCH-001"], action: create, depends_on: [] }

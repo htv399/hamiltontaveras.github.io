@@ -1,0 +1,19 @@
+---
+import type { Language } from "../../config/site";
+import { languageAlternative } from "../../i18n/routes";
+interface Props { language: Language; currentPath: string }
+const { language, currentPath } = Astro.props;
+const href = languageAlternative(currentPath, language);
+const label = language === "en" ? "ES" : "EN";
+const accessibleLabel = language === "en" ? "Ver sitio en español" : "View site in English";
+---
+<a class="language-switch" href={href} hreflang={language === "en" ? "es" : "en"} lang={language === "en" ? "es" : "en"} aria-label={accessibleLabel} data-language-choice={language === "en" ? "es" : "en"}>{label}</a>
+<script>
+  document.querySelectorAll<HTMLAnchorElement>("[data-language-choice]").forEach((link) => {
+    link.addEventListener("click", () => sessionStorage.setItem("caribbeanquant-language", link.dataset.languageChoice ?? "en"));
+  });
+</script>
+<style>
+  .language-switch { display: inline-flex; align-items: center; justify-content: center; min-width: 38px; min-height: 38px; border: var(--border-hairline); border-color: currentColor; color: var(--header-fg, var(--color-navy-900)); font: 600 var(--size-micro)/1 var(--font-ui); letter-spacing: .08em; }
+  .language-switch:hover { background: var(--color-mist-100); color: var(--color-navy-900); }
+</style>
