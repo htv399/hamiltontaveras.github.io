@@ -3,7 +3,7 @@ title: "PDF demonstration"
 slug: demo-pdf
 language: en
 material_type: pdf
-access: public
+access: private
 status: draft
 version: "0.0.0-demo"
 license: "INTERNAL-DEMO-ONLY"

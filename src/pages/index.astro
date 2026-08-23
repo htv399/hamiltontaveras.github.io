@@ -1,53 +1,67 @@
 ---
-// PG-HOME. Spanish is the primary preview language. Optional publication
-// modules remain available on their own routes and are intentionally omitted
-// here so the landing page works as a concise professional portfolio.
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EditorialHero from "../components/editorial/EditorialHero.astro";
-import FeaturedAnalysisGrid from "../components/editorial/FeaturedAnalysisGrid.astro";
-import BackgroundContact from "../components/editorial/BackgroundContact.astro";
 import IndicatorStrip from "../components/data/IndicatorStrip.astro";
-import { buildHomeViewModel } from "../lib/homeData";
-import { siteConfig, descriptorEs } from "../config/site";
+import { siteConfig, canonicalBase } from "../config/site";
+import { platformContent } from "../config/platform";
+import { isEligible } from "../lib/contentGate";
 
-const language = "es" as const;
-const vm = await buildHomeViewModel(language, siteConfig.env);
-const thesis = "Información, modelos, juicio y valor: un método para convertir datos en evidencia económica y financiera clara.";
-const indicators = [
-  { label: "Actividad sintética", value: "104.8", unit: "índice", change: { direction: "up" as const, label: "+1.6 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" },
-  { label: "Dispersión del modelo", value: "7.2", unit: "rango", change: { direction: "down" as const, label: "−0.8 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" },
-  { label: "Cobertura de datos", value: "88", unit: "% sintético", change: { direction: "up" as const, label: "+4 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" },
-  { label: "Balance de escenarios", value: "52", unit: "índice", change: { direction: "flat" as const, label: "0.0 pts sintéticos" }, data_vintage: "23 ago 2026", source: "Serie sintética de preview" }
+const language = "en" as const;
+const courses = (await getCollection("courses")).filter((entry) => isEligible(entry.data, siteConfig.env));
+const catalogEntries = (await getCollection("catalogEntries")).filter((entry) => isEligible({ status: entry.data.status, access: entry.data.access_level }, siteConfig.env));
+const products = (await getCollection("impactProducts")).filter((entry) => isEligible({ status: entry.data.status, access: entry.data.access_level }, siteConfig.env));
+const featuredCourse = courses.find((entry) => entry.data.featured) ?? courses[0];
+const jsonLd = [
+  { "@context": "https://schema.org", "@type": "WebSite", name: siteConfig.name, description: siteConfig.descriptor, url: canonicalBase.value },
+  { "@context": "https://schema.org", "@type": "Person", name: siteConfig.personName, description: siteConfig.descriptor, url: `${canonicalBase.value.replace(/\/$/, "")}/about/` }
 ];
-const order = ["project", "data-product", "valuation"];
-const selectedWork = [...vm.workRows].sort((a, b) => order.indexOf(a.tags[0]) - order.indexOf(b.tags[0])).slice(0, 3);
 ---
-<BaseLayout title={`${siteConfig.name} — ${descriptorEs}`} description={descriptorEs} path="/" language={language} headerVariant="transparent_on_navy_hero">
-  {vm.hasLead && vm.lead && (
-    <EditorialHero name={siteConfig.name} descriptor={descriptorEs} thesis={thesis} lead={{ title: vm.lead.data.title, slug: vm.lead.data.slug, key_finding: vm.lead.data.key_finding, published_at: vm.lead.data.published_at, domains: vm.lead.data.domains, evidence: vm.lead.data.evidence }} language={language} />
+<BaseLayout title={`${siteConfig.name} — Data platforms, quantitative products and teaching`} description={siteConfig.descriptor} path="/" language={language} headerVariant="transparent_on_navy_hero" jsonLd={jsonLd}>
+  <EditorialHero brand={siteConfig.name} descriptor={siteConfig.descriptor} introduction={siteConfig.introduction} primaryCta={{ label: "Explore DaaS Platform", href: "/daas-platform/" }} secondaryCta={{ label: "About Me", href: "/about/" }} />
+
+  {platformContent.indicators.length > 0 && (
+    <section class="home-indicators surface-paper" aria-label="Platform indicators"><div class="shell"><IndicatorStrip indicators={[...platformContent.indicators]} /></div></section>
   )}
-  <section class="home-indicators surface-paper">
-    <div class="shell">
-      <div class="home-indicators__intro"><p class="text-micro">Indicadores de preview</p><p class="text-small">Señales sintéticas para mostrar el sistema; no representan datos reales.</p></div>
-      <IndicatorStrip indicators={indicators} language={language} />
+
+  <section class="home-preview section-standard surface-white">
+    <div class="shell preview-grid">
+      <div><p class="text-micro">Platform</p><h2>{platformContent.daas.title}</h2></div>
+      <div><p class="text-body-l">{platformContent.daas.summary}</p>{catalogEntries.length > 0 && <p class="text-small">{catalogEntries.length} documented catalog {catalogEntries.length === 1 ? "entry" : "entries"}.</p>}<a class="section-link" href="/daas-platform/">Explore the platform <span aria-hidden="true">→</span></a></div>
     </div>
   </section>
-  {selectedWork.length === 3 && (
-    <section class="home-work section-standard surface-white">
-      <div class="shell">
-        <header class="home-section-head"><p class="text-micro">Trabajo seleccionado · contenido demostrativo</p><h2>Evidencia para decisiones económicas y financieras</h2><p>Una muestra visual de cómo se documentan preguntas, arquitectura de datos y supuestos de valoración.</p></header>
-        <FeaturedAnalysisGrid primary={selectedWork[0]} secondary={[selectedWork[1], selectedWork[2]]} language={language} />
-      </div>
-    </section>
-  )}
-  <BackgroundContact bioShort="Economista enfocado en sistemas de datos, análisis cuantitativo y valoración, con énfasis en evidencia clara y decisiones trazables." aboutHref="/es/about/" cvHref="/es/cv/" contactHref="/es/contact/" contact={{ mode: siteConfig.contactMode }} language={language} />
+
+  <section class="home-preview section-standard surface-paper">
+    <div class="shell preview-grid">
+      <div><p class="text-micro">Products</p><h2>{platformContent.impact.title}</h2></div>
+      <div><p class="text-body-l">{platformContent.impact.summary}</p>{products.slice(0, 2).map((product) => <article class="compact-item"><p class="text-micro">{product.data.language.toUpperCase()} · {product.data.status}</p><h3 class="font-editorial">{product.data.title}</h3><p>{product.data.summary}</p></article>)}<a class="section-link" href="/impact-products/">Explore impact products <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <section class="home-preview section-standard surface-white">
+    <div class="shell preview-grid">
+      <div><p class="text-micro">Academic publication</p><h2>{platformContent.teaching.title}</h2></div>
+      <div><p class="text-body-l">{platformContent.teaching.summary}</p>{featuredCourse && <article class="compact-item"><p class="text-micro">{featuredCourse.data.language.toUpperCase()} · {featuredCourse.data.period}</p><h3 class="font-editorial"><a href={`/teaching/${featuredCourse.data.slug}/`}>{featuredCourse.data.title}</a></h3><p>{featuredCourse.data.summary}</p></article>}<a class="section-link" href="/teaching/">Explore teaching <span aria-hidden="true">→</span></a></div>
+    </div>
+  </section>
+
+  <section class="home-preview section-standard surface-mist">
+    <div class="shell preview-grid">
+      <div><p class="text-micro">About</p><h2>Hamilton Taveras</h2></div>
+      <div><p class="text-body-l">Hamilton Taveras is the person behind CaribbeanQuant.</p><p>{siteConfig.descriptor}</p><div class="home-actions"><a class="section-link" href="/about/">About Me →</a><a class="section-link" href="/cv/">CV →</a></div></div>
+    </div>
+  </section>
 </BaseLayout>
+
 <style>
-  .home-indicators { padding-block: var(--space-5); }
-  .home-indicators__intro { display: flex; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-4); }
-  .home-section-head { margin-bottom: var(--space-7); max-width: 800px; }
-  .home-section-head > * + * { margin-top: var(--space-2); }
-  .home-section-head h2 { font-size: var(--size-section-title); line-height: 1.15; }
-  .home-section-head > p:last-child { font-size: var(--size-body); }
-  @media (max-width: 768px) { .home-indicators__intro { flex-direction: column; gap: var(--space-1); } .home-section-head { margin-bottom: var(--space-5); } }
+  .home-indicators { padding-block: var(--space-6); }
+  .preview-grid { display: grid; grid-template-columns: minmax(220px, 4fr) minmax(0, 8fr); gap: var(--space-8); }
+  .preview-grid h2 { margin-top: var(--space-2); font-size: var(--size-section-title); }
+  .preview-grid > div:last-child > * + * { margin-top: var(--space-4); }
+  .section-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+  .compact-item { border-top: var(--border-strong); padding-top: var(--space-4); }
+  .compact-item > * + * { margin-top: var(--space-2); }
+  .compact-item h3 { font-size: var(--size-h3); }
+  .home-actions { display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  @media (max-width: 768px) { .preview-grid { grid-template-columns: 1fr; gap: var(--space-5); } }
 </style>

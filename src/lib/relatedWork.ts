@@ -11,7 +11,7 @@ export interface RelatableItem {
   methods?: string[];
   objects?: string[];
   language: "en" | "es";
-  access: "public" | "summary-only" | "private";
+  access: "public" | "preview" | "restricted" | "available-on-request" | "summary-only" | "private";
   status: string;
   placeholder?: boolean;
   relatedIds?: string[];

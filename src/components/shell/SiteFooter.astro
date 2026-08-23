@@ -8,14 +8,16 @@ import { siteConfig } from "../../config/site";
 interface Props {
   language: "en" | "es";
 }
-const { language } = Astro.props;
+const { language: _language } = Astro.props;
+const language = "en" as const;
 const year = new Date().getFullYear();
+const links = footerRequiredLinks.filter((link) => link.key !== "contact" || siteConfig.contactMode !== "pending");
 ---
 <footer class="site-footer surface-navy">
   <div class="shell site-footer__inner">
     <p class="site-footer__copy text-small">© {year} {siteConfig.name}</p>
     <ul class="site-footer__links">
-      {footerRequiredLinks.map((link) => (
+      {links.map((link) => (
         <li><a href={link.route[language]}>{link.label[language]}</a></li>
       ))}
     </ul>

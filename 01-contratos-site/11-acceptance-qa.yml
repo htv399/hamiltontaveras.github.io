@@ -25,13 +25,13 @@ suites:
       status: required_v1
       maps_to: ["PRD-005", "PG-HOME"]
       method: moderated_observation
-      assertion: "At least 3 of 4 representative reviewers identify name, economist identity, central thesis and lead evidence within ten seconds."
+      assertion: "At least 3 of 4 representative reviewers identify CaribbeanQuant, Hamilton Taveras and DaaS Platform, Impact Products and Teaching within ten seconds."
       evidence: ["session_notes", "reviewer_answers"]
     - id: QA-PRD-002
       status: required_v1
       maps_to: ["PRD-010", "CMP-HERO-EDITORIAL"]
       method: e2e
-      assertion: "The primary hero link reaches the lead detail in one activation."
+      assertion: "The primary hero link reaches DaaS Platform in one activation."
     - id: QA-PRD-003
       status: required_v1
       maps_to: ["PRD-001", "PRD-017"]
@@ -63,7 +63,7 @@ suites:
       status: required_v1
       maps_to: ["VIS-001"]
       method: screenshot_diff
-      pages: ["PG-HOME", "PG-RESEARCH", "PG-PROJECT", "PG-WEEK"]
+      pages: ["PG-HOME", "PG-DAAS", "PG-IMPACT", "PG-TEACHING", "PG-ABOUT"]
       assertion: "No clipping, overlap, horizontal page overflow or unreadable text at any required viewport."
     - id: QA-VIS-004
       status: required_v1
@@ -96,7 +96,7 @@ suites:
       status: required_v1
       maps_to: ["IA-NAV-007"]
       method: dom_assertion
-      assertion: "Primary navigation contains exactly Home, Work, Research, Notes, Teaching and About. CV and Search appear as utilities."
+      assertion: "Primary navigation contains exactly Home, DaaS Platform, Impact Products, Teaching and About Me. CV and Search appear as utilities; no language selector is shown."
     - id: QA-IA-003
       status: required_v1
       maps_to: ["IA-SLUG-001"]
@@ -152,9 +152,9 @@ suites:
       assertion: "Section order remains valid and every insufficient module is omitted or uses its declared fallback."
     - id: QA-PG-LANDING-001
       status: required_v1
-      maps_to: ["PG-WORK", "PG-RESEARCH", "PG-NOTES", "PG-TEACHING"]
+      maps_to: ["PG-DAAS", "PG-IMPACT", "PG-TEACHING"]
       method: fixture_matrix
-      assertion: "Each landing works with zero, one and many eligible items without empty filters or artificial cards."
+      assertion: "Each landing works with zero, one and many eligible items without empty filters, placeholders or artificial cards."
     - id: QA-DETAIL-001
       status: required_v1
       maps_to: ["PG-ANALYSIS", "PG-PROJECT", "PG-RESEARCH-DETAIL", "PG-NOTE-DETAIL", "PG-VALUATION", "PG-DATA-PRODUCT"]
@@ -304,7 +304,7 @@ suites:
       status: required_v1
       maps_to: ["TECH-PERF-001"]
       method: lighthouse_ci
-      assertion: "All stated Lighthouse minimums pass for Home, Research, Project and Week."
+      assertion: "All stated Lighthouse minimums pass for Home, DaaS Platform, Impact Products, Teaching and About Me."
     - id: QA-PERF-002
       status: required_v1
       maps_to: ["TECH-PERF-001"]

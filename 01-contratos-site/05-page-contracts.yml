@@ -12,58 +12,42 @@ contract:
 pages:
   Home:
     id: PG-HOME
-    routes: ["/", "/es/"]
-    objective: "Orientar al visitante y conducirlo a evidencia en un clic."
-    data: ["site_config", "Analysis[]", "Project[]", "Research[]", "Note[]", "Course[]"]
+    routes: ["/"]
+    objective: "Explicar CaribbeanQuant y conducir a DaaS Platform, Impact Products, Teaching y About Me."
+    data: ["site_config", "Indicator[]", "CatalogEntry[]", "ImpactProduct[]", "Course[]", "Profile"]
     sections:
-      - { order: 1, component: CMP-HERO-EDITORIAL, required: true, data: ["name", "descriptor", "thesis", "lead_analysis"] }
-      - { order: 2, component: CMP-FEATURED-2-1, required_when: "eligible_featured_count >= 3", fallback: CMP-EDITORIAL-ROW }
-      - { order: 3, component: CMP-INDICATOR-STRIP, required_when: "verified_indicator_count >= 4", fallback: omit }
-      - { order: 4, component: CMP-QUESTIONS, required_when: "authored_question_count >= 2", fallback: omit }
-      - { order: 5, component: CMP-WORK-SPLIT, required_when: "published_work_count >= 2", fallback: CMP-EDITORIAL-ROW }
-      - { order: 6, component: CMP-RESEARCH-FEATURE, required_when: "published_research_count >= 1", fallback: omit }
-      - { order: 7, component: CMP-NOTES-ROW, required_when: "published_note_count >= 1", fallback: omit }
-      - { order: 8, component: CMP-COURSE-SHELF, required_when: "published_course_count >= 1", fallback: omit }
-      - { order: 9, component: CMP-BACKGROUND-CONTACT, required: true }
-    minimum: ["identity", "thesis", "one_real_or_demo_lead", "about_link", "contact_or_pending_contact"]
-    empty_state: "Never show an empty section. With seed content, render only Hero, one editorial row and Background."
-    mobile: "Text first. Lead visual follows thesis. Indicator strip scrolls. Featured layout becomes one lead plus stacked rows."
+      - { order: 1, component: CMP-HERO-EDITORIAL, required: true, data: ["brand", "descriptor", "introduction", "primary_cta", "secondary_cta"] }
+      - { order: 2, component: CMP-INDICATOR-STRIP, required_when: "publishable_indicator_count > 0", fallback: omit }
+      - { order: 3, component: CMP-EDITORIAL-ROW, required: true, data: ["daas_platform_preview"] }
+      - { order: 4, component: CMP-EDITORIAL-ROW, required: true, data: ["impact_products_preview"] }
+      - { order: 5, component: CMP-COURSE-SHELF, required_when: "published_course_count >= 1", fallback: "teaching_intro" }
+      - { order: 6, component: CMP-BACKGROUND-CONTACT, required: true }
+    minimum: ["CaribbeanQuant_identity", "approved_descriptor", "three_area_introduction", "daas_cta", "about_link"]
+    empty_state: "Never show an empty collection, synthetic chart, demonstration card or placeholder module."
+    mobile: "Compact hero first. Sections stack in source order. Indicator strip scrolls only when populated."
     acceptance: ["QA-PG-HOME-001", "QA-VIS-004", "QA-PRD-001"]
 
-  Work:
-    id: PG-WORK
-    routes: ["/work/", "/es/work/"]
-    objective: "Demostrar trabajo mediante preguntas, evidencia y resultados."
-    sections:
-      - "Editorial intro"
-      - "Optional featured work"
-      - "Filters for domain, kind and method"
-      - "Mixed editorial listing"
-    minimum: ["intro", "listing_or_honest_empty_state"]
-    empty_state: "Show a short editorial explanation and links to Research or Teaching. Do not show empty filters."
-    mobile: "Filters use CMP-FILTER-DRAWER. Listing remains rows, not a two-column card grid."
+  DaaSPlatform:
+    id: PG-DAAS
+    routes: ["/daas-platform/"]
+    objective: "Documentar progresivamente la plataforma de datos, su catálogo, cobertura, recursos y condiciones de acceso."
+    sections: ["Platform overview", "Data catalog", "Dashboards and monitors", "Business Data Explorer", "Resources", "Meeting CTA"]
+    minimum: ["intro", "content_driven_module_structure"]
+    empty_state: "Hide every empty module and any unapproved CTA. Never expose private, confidential or restrictively licensed data."
+    mobile: "Catalog tables use responsive summaries or horizontal scroll; no complex filter dependency."
 
-  Research:
-    id: PG-RESEARCH
-    routes: ["/research/", "/es/research/"]
-    objective: "Combinar biblioteca filtrable y publicación editorial."
-    sections: ["Research lead", "Recent perspectives", "Format filters", "Research listing"]
-    minimum: ["intro", "listing_or_honest_empty_state"]
-    empty_state: "Omit lead and filters. Explain the scope in one paragraph and link to Notes or Work."
-    mobile: "Lead becomes text, finding, image and resources. Filters collapse."
-
-  Notes:
-    id: PG-NOTES
-    routes: ["/notes/", "/es/notes/"]
-    objective: "Organizar notas breves sin simular una frecuencia."
-    sections: ["Editorial intro", "Persistent selection when available", "Chronological listing", "Filters"]
-    minimum: ["intro", "listing_or_honest_empty_state"]
-    empty_state: "No monthly archive, no coming-soon statement and no empty tag cloud."
-    mobile: "Single editorial column with compact metadata."
+  ImpactProducts:
+    id: PG-IMPACT
+    routes: ["/impact-products/"]
+    objective: "Publicar productos analíticos reales construidos con datos, modelos y métodos cuantitativos."
+    sections: ["Editorial intro", "Featured products when real", "Product listing"]
+    minimum: ["intro"]
+    empty_state: "Show only the editorial introduction. Never publish demonstration products or empty cards."
+    mobile: "Products use an editorial list with compact metadata."
 
   Teaching:
     id: PG-TEACHING
-    routes: ["/teaching/", "/es/teaching/"]
+    routes: ["/teaching/"]
     objective: "Presentar cursos y archivo académico como publicación, no como LMS."
     sections: ["Teaching intro", "Featured course", "Active courses", "Archive"]
     minimum: ["intro", "one_seed_course_or_honest_empty_state"]
@@ -102,11 +86,11 @@ pages:
 
   About:
     id: PG-ABOUT
-    routes: ["/about/", "/es/about/"]
-    objective: "Explicar la identidad, enfoque y trayectoria selectiva sin convertir la página en un CV."
-    sections: ["Identity", "Professional thesis", "Information Models Judgment Value", "Selected trajectory", "Teaching and research context", "Contact"]
-    minimum: ["approved_bio_or_content_pending_marker_in_preview", "cv_link", "contact_path"]
-    empty_state: "Production is blocked until approved biography exists."
+    routes: ["/about/"]
+    objective: "Presentar a Hamilton Taveras como la persona detrás de CaribbeanQuant sin convertir la página en otra Home."
+    sections: ["Professional profile", "Areas of work", "Education and credentials when verified", "Teaching", "CV", "Contact"]
+    minimum: ["approved_professional_description", "person_behind_brand", "cv_link"]
+    empty_state: "Omit unverified chronology, institutions and contact links instead of publishing placeholders."
     mobile: "No dominant portrait. If APP-007 is approved, image follows the opening text."
 
   CV:
@@ -211,5 +195,5 @@ pages:
 spanish_rules:
   id: PG-ES-001
   status: required_v1
-  rule: "Spanish equivalents reuse the same component contract and localized UI strings. They do not require duplicated editorial pieces."
+  rule: "The public interface remains English. Individual content may be authored in Spanish and declares language=es. Do not auto-translate or emit hreflang without a real equivalent."
 

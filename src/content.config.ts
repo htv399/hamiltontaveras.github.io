@@ -261,4 +261,107 @@ const profiles = defineCollection({
   })
 });
 
-export const collections = { analysis, research, work, notes, courses, weeks, materials, profiles };
+const catalogEntries = defineCollection({
+  loader: glob({ pattern: "**/*.yml", base: "./src/content/catalog-entries" }),
+  schema: z.object({
+    name: z.string().min(3),
+    slug: z.string().regex(slugPattern),
+    provider: z.string(),
+    geography: z.array(z.string()).min(1),
+    topic: z.array(z.string()).min(1),
+    frequency: z.string(),
+    time_coverage: z.string(),
+    update_status: z.string(),
+    last_update: z.coerce.date().optional(),
+    access_level: accessEnum,
+    description: z.string().min(80).max(400),
+    available_formats: z.array(z.string()).min(1),
+    methodological_note: z.string().optional(),
+    source_link: z.string().url().optional(),
+    request_access_action: z.string().url().optional(),
+    language: languageEnum,
+    status: statusEnum
+  })
+});
+
+const dashboards = defineCollection({
+  loader: glob({ pattern: "**/*.yml", base: "./src/content/dashboards" }),
+  schema: z.object({
+    kind: z.enum(["dashboard", "monitor"]),
+    title: z.string().min(3),
+    slug: z.string().regex(slugPattern),
+    summary: z.string().min(80).max(300),
+    topic: z.array(z.string()).min(1),
+    geography: z.array(z.string()).min(1),
+    data_sources: z.array(z.string()).min(1),
+    last_update: z.coerce.date().optional(),
+    access_level: accessEnum,
+    thumbnail: z.string().optional(),
+    embed_url: z.string().url().optional(),
+    external_url: z.string().url().optional(),
+    methodology: z.string().optional(),
+    status: statusEnum,
+    cta: z.string().optional(),
+    language: languageEnum
+  })
+});
+
+const impactProducts = defineCollection({
+  loader: glob({ pattern: "**/index.mdx", base: "./src/content/impact-products" }),
+  schema: z.object({
+    title: z.string().min(3),
+    slug: z.string().regex(slugPattern),
+    summary: z.string().min(80).max(300),
+    problem: z.string(),
+    geography: z.array(z.string()).min(1),
+    topic: z.array(z.string()).min(1),
+    method: z.array(z.string()).min(1),
+    data_sources: z.array(z.string()).min(1),
+    update_frequency: z.string().optional(),
+    status: statusEnum,
+    version: z.string(),
+    main_result: z.string().optional(),
+    exhibits: z.array(figureSchema).optional(),
+    methodology: z.string(),
+    limitations: z.string(),
+    downloads: z.array(resourceSchema).optional(),
+    repository: z.string().url().optional(),
+    license: z.string().optional(),
+    access_level: accessEnum,
+    featured: z.boolean().default(false),
+    language: languageEnum
+  })
+});
+
+const videoResources = defineCollection({
+  loader: glob({ pattern: "**/*.yml", base: "./src/content/video-resources" }),
+  schema: z.object({
+    title: z.string().min(3),
+    slug: z.string().regex(slugPattern),
+    language: languageEnum,
+    provider: z.literal("youtube"),
+    url: z.string().url(),
+    playlist_url: z.string().url().optional(),
+    access_level: accessEnum,
+    status: statusEnum,
+    course_id: z.string().optional(),
+    week_id: z.string().optional(),
+    description: z.string().optional(),
+    duration: z.string().optional()
+  })
+});
+
+export const collections = {
+  analysis,
+  research,
+  work,
+  notes,
+  courses,
+  weeks,
+  materials,
+  profiles,
+  catalogEntries,
+  dashboards,
+  impactProducts,
+  videoResources
+};

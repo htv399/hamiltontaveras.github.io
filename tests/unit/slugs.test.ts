@@ -28,7 +28,7 @@ function readSlug(file: string): string | undefined {
 }
 
 describe("content slugs", () => {
-  const collections = ["analysis", "research", "work", "notes", "courses", "weeks", "materials"];
+  const collections = ["analysis", "research", "work", "notes", "courses", "weeks", "materials", "catalog-entries", "dashboards", "impact-products", "video-resources"];
 
   for (const collection of collections) {
     const files = walk(path.join(CONTENT_DIR, collection));

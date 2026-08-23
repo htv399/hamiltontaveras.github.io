@@ -65,7 +65,7 @@ typography:
       source: "self_hosted_or_pinned_webfont"
   numeric_features: ["tabular-nums", "lining-nums"]
   scale:
-    display_xl: { min_rem: 2.75, preferred_vw: 5.2, max_rem: 5.25, line_height: 0.98, weight: 600 }
+    display_xl: { min_rem: 2.125, preferred_vw: 4.0, max_rem: 3.25, line_height: 1.02, weight: 600 }
     display_l: { min_rem: 2.25, preferred_vw: 4.0, max_rem: 4.0, line_height: 1.02, weight: 600 }
     h1: { min_rem: 2.0, preferred_vw: 3.2, max_rem: 3.25, line_height: 1.08, weight: 600 }
     h2: { min_rem: 1.55, preferred_vw: 2.2, max_rem: 2.25, line_height: 1.15, weight: 600 }
@@ -77,6 +77,8 @@ typography:
   usage:
     long_form: "editorial"
     ui_and_headings: "ui"
+    brand_and_functional_headings: "ui"
+    editorial_titles_only: "editorial"
     code_ids_and_dense_numbers: "mono"
     uppercase: "only_micro_labels"
 

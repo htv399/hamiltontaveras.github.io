@@ -18,15 +18,15 @@ function buildSvg({ name, descriptor }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#0B1F33"/>
   <rect x="80" y="500" width="120" height="6" fill="#C58A2A"/>
-  <text x="80" y="300" font-family="Georgia, 'Source Serif 4', serif" font-size="64" font-weight="600" fill="#FAFBFC">${escapeXml(name)}</text>
+  <text x="80" y="300" font-family="Arial, 'IBM Plex Sans', sans-serif" font-size="64" font-weight="600" fill="#FAFBFC">${escapeXml(name)}</text>
   <text x="80" y="360" font-family="Arial, 'IBM Plex Sans', sans-serif" font-size="30" fill="#E8EEF3">${escapeXml(descriptor)}</text>
 </svg>`;
 }
 
 async function main() {
   const svg = buildSvg({
-    name: "Hamilton Taveras",
-    descriptor: "Economist working across data systems, quantitative analysis, and valuation."
+    name: "CaribbeanQuant",
+    descriptor: "Professional website of Hamilton Taveras, M.A. in Economics, CDO."
   });
   const pngPath = path.join(OUT_DIR, "default.png");
   await sharp(Buffer.from(svg)).png().toFile(pngPath);

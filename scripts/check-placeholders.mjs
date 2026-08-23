@@ -21,7 +21,7 @@ let errors = [];
 
 // 1. Content frontmatter.
 const CONTENT_DIR = path.resolve(process.cwd(), "src/content");
-const collections = ["analysis", "research", "work", "notes", "courses", "weeks", "materials", "profiles"];
+const collections = ["analysis", "research", "work", "notes", "courses", "weeks", "materials", "profiles", "catalog-entries", "dashboards", "impact-products", "video-resources"];
 let activePlaceholders = 0;
 for (const collection of collections) {
   const dir = path.join(CONTENT_DIR, collection);

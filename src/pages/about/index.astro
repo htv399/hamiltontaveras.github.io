@@ -1,37 +1,51 @@
 ---
-// PG-ABOUT. APP-008 (real inventory/biography) is unresolved, so this page
-// renders a clearly labeled content_pending state in preview and is
-// excluded from production by scripts/check-placeholders.mjs. It still
-// meets the page's structural minimum: identity placeholder, thesis,
-// Information/Models/Judgment/Value framing, CV link and contact path.
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig, realInventoryApproved } from "../../config/site";
-import { assertNotBlockedInProduction } from "../../lib/productionGate";
-
-assertNotBlockedInProduction(realInventoryApproved, "About", "APP-008");
+import { siteConfig, canonicalBase } from "../../config/site";
 
 const language = "en" as const;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteConfig.personName,
+  description: siteConfig.descriptor,
+  url: `${canonicalBase.value.replace(/\/$/, "")}/about/`
+};
 ---
-<BaseLayout title={`About — ${siteConfig.name}`} description={siteConfig.descriptor} path="/about/" language={language}>
-  <section class="shell section-standard reading-column" style="margin-inline:auto;">
-    <p class="u-tag" data-placeholder="true">Content pending — APP-008</p>
-    <h1 class="text-h1 font-editorial">{siteConfig.name}</h1>
-    <p class="text-body-l">{siteConfig.descriptor}</p>
-
-    <h2 class="text-h3" style="margin-top: var(--space-8);">Information, Models, Judgment, Value</h2>
-    <p class="text-body">
-      {siteConfig.thesis}
-    </p>
-
-    <p class="text-body" style="margin-top: var(--space-6);">
-      A verified biography, selected trajectory and teaching and research context will appear here once approved
-      (decision APP-008). This page does not publish invented experience, credentials or institutional affiliation in
-      the meantime.
-    </p>
-
-    <div class="cluster" style="margin-top: var(--space-8);">
-      <a href="/cv/">View CV</a>
-      <a href="/contact/">Contact</a>
+<BaseLayout title={`About Me — ${siteConfig.name}`} description={siteConfig.descriptor} path="/about/" language={language} jsonLd={jsonLd}>
+  <section class="shell section-standard about-grid">
+    <div>
+      <p class="text-micro">About Me</p>
+      <h1>Hamilton Taveras</h1>
+      <p class="text-body-l">The person behind CaribbeanQuant.</p>
+    </div>
+    <div class="about-copy">
+      <p class="text-body-l">{siteConfig.descriptor}</p>
+      <p>CaribbeanQuant provides a durable structure for publishing data platforms, quantitative products and teaching resources with clear documentation and access conditions.</p>
+      <section>
+        <h2>Areas of work</h2>
+        <ul>
+          <li>Economics and quantitative analysis</li>
+          <li>Data platforms and documented data products</li>
+          <li>Finance and valuation</li>
+          <li>Teaching and academic resources</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Profile</h2>
+        <p>Hamilton Taveras holds an M.A. in Economics and serves as a CDO. The title is presented independently of any employer or institution so this profile remains durable.</p>
+      </section>
+      <div class="about-actions"><a href="/cv/">View CV →</a></div>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .about-grid { display: grid; grid-template-columns: minmax(240px, 4fr) minmax(0, 8fr); gap: var(--space-8); }
+  .about-grid h1 { margin-top: var(--space-3); }
+  .about-grid > div:first-child .text-body-l { margin-top: var(--space-4); }
+  .about-copy > * + * { margin-top: var(--space-6); }
+  .about-copy section { padding-top: var(--space-5); border-top: var(--border-hairline); }
+  .about-copy section > * + * { margin-top: var(--space-3); }
+  .about-actions a { display: inline-flex; min-height: 44px; align-items: center; font-weight: 600; }
+  @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; gap: var(--space-6); } }
+</style>

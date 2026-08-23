@@ -10,7 +10,7 @@ const viewports = [
   { name: "480", width: 480, height: 900 },
   { name: "360", width: 360, height: 800 }
 ];
-const pages = ["/", "/research/", "/work/demo-project/", "/teaching/econometrics-i-demo/week-01-demo/"];
+const pages = ["/", "/daas-platform/", "/impact-products/", "/teaching/", "/about/"];
 
 for (const vp of viewports) {
   for (const route of pages) {

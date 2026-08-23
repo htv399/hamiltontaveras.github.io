@@ -16,7 +16,7 @@ components:
       language: { type: Language, required: true }
       translations: { type: array, required: false }
     variants: ["transparent_on_navy_hero", "solid_paper", "compact"]
-    rules: ["Desktop shows primary navigation and utilities.", "Mobile shows name, search and menu with at most two levels.", "Active state cannot depend only on color."]
+    rules: ["Visible brand is CaribbeanQuant.", "Desktop shows Home, DaaS Platform, Impact Products, Teaching and About Me plus CV and Search utilities.", "Mobile shows brand, search and menu with at most two levels.", "Active state cannot depend only on color.", "Language selector remains hidden."]
 
   - id: CMP-NAV
     file: "src/components/shell/PrimaryNav.astro"
@@ -46,9 +46,10 @@ components:
       name: { type: string, required: true }
       descriptor: { type: string, required: true }
       thesis: { type: string, required: true }
-      lead: { type: Analysis, required: true }
+      primary_cta: { type: Link, required: true }
+      secondary_cta: { type: Link, required: true }
     variants: ["navy", "paper"]
-    rules: ["Desktop composition 7+5 or 8+4.", "Show finding, date and one evidence visual.", "Lead link is one click.", "Mobile renders identity and thesis before visual."]
+    rules: ["Compact single-purpose composition.", "H1 is CaribbeanQuant at 44–52px desktop and 34–40px mobile.", "Use the approved professional description and centralized introduction.", "No synthetic chart or invented evidence."]
 
   - id: CMP-LEAD-ANALYSIS
     file: "src/components/editorial/LeadAnalysis.astro"
@@ -57,9 +58,9 @@ components:
 
   - id: CMP-INDICATOR-STRIP
     file: "src/components/data/IndicatorStrip.astro"
-    props: { indicators: { type: "Indicator[]", min: 4, max: 6, required: true } }
-    item_required: ["label", "value", "unit", "change", "data_vintage", "source"]
-    rules: ["Render only verified indicators.", "Mobile uses horizontal scroll and accessible labels.", "No live-data implication when values are static."]
+    props: { indicators: { type: "Indicator[]", max: 6, required: true } }
+    item_required: ["label", "value", "unit", "context", "cut_off_date", "source", "status", "demonstration"]
+    rules: ["Return null when no publishable metrics exist.", "Use one centralized data source.", "Mobile uses horizontal scroll and accessible labels.", "No live-data implication when values are static."]
 
   - id: CMP-FEATURED-2-1
     file: "src/components/editorial/FeaturedAnalysisGrid.astro"

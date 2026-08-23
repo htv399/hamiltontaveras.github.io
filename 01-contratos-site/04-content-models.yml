@@ -8,7 +8,7 @@ enums:
   requirement_state: ["required_v1", "future", "content_pending", "approval_required"]
   language: ["en", "es"]
   editorial_status: ["draft", "review", "scheduled", "published", "working", "ongoing", "archived"]
-  access: ["public", "summary-only", "private"]
+  access: ["public", "preview", "restricted", "available-on-request", "summary-only", "private"]
   domain: ["data-systems", "economics", "corporate-finance", "valuation", "quant-finance", "risk", "ai"]
   method: ["econometrics", "time-series", "causal-inference", "ml", "simulation", "optimization", "financial-modeling", "data-engineering", "data-governance"]
   object: ["firm", "asset", "sector", "market", "public-policy", "institution"]
@@ -262,6 +262,52 @@ models:
       checksum_sha256: { type: string }
       version: { type: semver_or_label }
       description: { type: string }
+
+  CatalogEntry:
+    id: CM-CATALOG-ENTRY
+    collection: catalogEntries
+    required:
+      name: { type: string }
+      slug: { type: string }
+      provider: { type: string }
+      geography: { type: array }
+      topic: { type: array }
+      frequency: { type: string }
+      time_coverage: { type: string }
+      update_status: { type: string }
+      access_level: { type: enum, values_ref: access }
+      description: { type: string }
+      available_formats: { type: array }
+      language: { type: enum, values_ref: language }
+    optional: ["last_update", "methodological_note", "source_link", "request_access_action"]
+    prohibition: "Never include private, confidential, internal institutional or restrictively licensed data."
+
+  Dashboard:
+    id: CM-DASHBOARD
+    collection: dashboards
+    required: ["title", "slug", "summary", "topic", "geography", "data_sources", "access_level", "status", "language"]
+    optional: ["last_update", "thumbnail", "embed_url", "external_url", "methodology", "cta"]
+    render_rule: "The complete module is omitted when no eligible dashboard exists."
+
+  Monitor:
+    id: CM-MONITOR
+    collection: dashboards
+    extends: CM-DASHBOARD
+    discriminator: "kind=monitor"
+
+  ImpactProduct:
+    id: CM-IMPACT-PRODUCT
+    collection: impactProducts
+    required: ["title", "slug", "summary", "problem", "geography", "topic", "method", "data_sources", "status", "version", "methodology", "limitations", "access_level", "featured", "language"]
+    optional: ["update_frequency", "main_result", "exhibits", "downloads", "repository", "license"]
+    prohibition: "Do not present an undocumented or demonstration product as real; methodology references never imply third-party affiliation."
+
+  VideoResource:
+    id: CM-VIDEO-RESOURCE
+    collection: videoResources
+    required: ["title", "slug", "language", "provider", "url", "access_level", "status"]
+    optional: ["course_id", "week_id", "playlist_url", "description", "duration"]
+    prohibition: "Use accessible YouTube links or authorized embeds. Never download video into the repository."
 
 verification:
   - { id: QA-CM-001, checks: ["schema_valid", "enum_valid", "required_fields"] }

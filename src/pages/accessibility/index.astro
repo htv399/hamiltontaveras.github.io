@@ -1,27 +1,12 @@
 ---
-// Footer utility page (IA-001 footer_navigation.required includes
-// "accessibility"). Documents the site's own conformance target
-// (TECH-A11Y-001, WCAG 2.2 AA) rather than a certified audit result.
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig, contactMode } from "../../config/site";
-import { t } from "../../i18n/ui";
-
+import { siteConfig } from "../../config/site";
 const language = "en" as const;
-const strings = t(language);
 ---
-<BaseLayout title={`Accessibility — ${siteConfig.name}`} description="Accessibility commitment and conformance target for this portal." path="/accessibility/" language={language}>
+<BaseLayout title={`Accessibility — ${siteConfig.name}`} description="Accessibility commitment and conformance target for CaribbeanQuant." path="/accessibility/" language={language}>
   <section class="shell section-standard reading-column" style="margin-inline:auto;">
-    <h1 class="text-h1 font-editorial">Accessibility</h1>
-    <p class="text-body-l">
-      This portal targets WCAG 2.2 level AA: keyboard operability, visible focus, sufficient color contrast, semantic
-      headings and tables, text alternatives for figures and equations, and support for reduced motion.
-    </p>
-    <p class="text-body">
-      This is a conformance target, not a third-party audit certificate. If any page, control or download is not
-      accessible to you, that is useful to know.
-    </p>
-    <p class="text-body" data-placeholder="true">
-      {contactMode.resolved ? "Report an accessibility issue through the contact page." : strings.contactPending}
-    </p>
+    <h1>Accessibility</h1>
+    <p class="text-body-l">CaribbeanQuant targets WCAG 2.2 level AA through keyboard operation, visible focus, sufficient contrast, semantic headings and tables, text alternatives and reduced-motion support.</p>
+    <p>This is a conformance target rather than a third-party audit certificate. Every published dataset, exhibit, embed and teaching resource must carry an accessible alternative appropriate to its format.</p>
   </section>
 </BaseLayout>

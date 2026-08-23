@@ -9,7 +9,7 @@ interface ResourceItem {
   label: string;
   kind: string;
   href: string;
-  access: "public" | "summary-only" | "private";
+  access: "public" | "preview" | "restricted" | "available-on-request" | "summary-only" | "private";
   license: string;
   format?: string;
   file_size_bytes?: number;
@@ -24,6 +24,7 @@ const { resources, variant = "inline", siteEnv = "preview" } = Astro.props;
 
 const visible = resources.filter((r) => {
   if (r.access === "private") return false;
+  if (["restricted", "available-on-request", "summary-only"].includes(r.access)) return false;
   if (siteEnv === "production" && !licenseIsPublishable(r.license)) return false;
   return true;
 });

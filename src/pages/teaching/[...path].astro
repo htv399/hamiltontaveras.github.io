@@ -27,9 +27,6 @@ export async function getStaticPaths() {
 
   for (const course of courses) {
     const weeks = weeksAll.filter((w) => w.data.course_id === course.data.id);
-    // TCH-COURSE-001: a public course needs at least one published week.
-    if (weeks.length === 0) continue;
-
     const syllabusMaterial = course.data.syllabus
       ? materialsAll.find((m) => m.data.id === course.data.syllabus && isEligible(m.data, siteConfig.env))
       : undefined;
@@ -80,7 +77,7 @@ const course = Astro.props.course as CourseEntry;
     <TeachingLayout title={`${course.data.title} — ${siteConfig.name}`} description={course.data.summary} path={path} language={language} jsonLd={jsonLd}>
       <Breadcrumbs items={breadcrumbItems} />
       {course.data.placeholder && <p class="u-tag" data-placeholder="true" style="margin-top: var(--space-4);">{strings.demoNotice}</p>}
-      <p class="u-tag" style="margin-top: var(--space-5);">{course.data.code} · {course.data.period}{course.data.archived ? " · Archived" : ""}</p>
+      <p class="u-tag" style="margin-top: var(--space-5);">{course.data.code} · {course.data.language.toUpperCase()} · {course.data.period}{course.data.archived ? " · Archived" : ""}</p>
       <h1 class="text-h1 font-editorial">{course.data.title}</h1>
       <p class="text-body-l reading-column" style="margin-top: var(--space-4);">{course.data.description}</p>
 
@@ -101,14 +98,16 @@ const course = Astro.props.course as CourseEntry;
         </div>
       )}
 
-      <div style="margin-top: var(--space-8);">
-        <h2 class="text-h3">Weeks</h2>
-        <div style="margin-top: var(--space-4);">
-          <WeekNavigation
-            weeks={weeks.map((w) => ({ weekNumber: w.data.week_number, title: w.data.title, href: `/teaching/${course.data.slug}/${w.data.slug}/`, status: w.data.status }))}
-          />
+      {weeks.length > 0 && (
+        <div style="margin-top: var(--space-8);">
+          <h2 class="text-h3">Weeks and modules</h2>
+          <div style="margin-top: var(--space-4);">
+            <WeekNavigation
+              weeks={weeks.map((w) => ({ weekNumber: w.data.week_number, title: w.data.title, href: `/teaching/${course.data.slug}/${w.data.slug}/`, status: w.data.status }))}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </TeachingLayout>
   );
 })()}

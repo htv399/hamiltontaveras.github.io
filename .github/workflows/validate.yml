@@ -17,7 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_ENV: preview
-      SITE_URL: https://example-preview.invalid
+      SITE_URL: https://htv399.github.io/hamiltontaveras.github.io
+      BASE_PATH: /hamiltontaveras.github.io
+      DEFAULT_LANGUAGE: en
     steps:
       - uses: actions/checkout@v4
 

@@ -17,7 +17,7 @@ const NORMALIZED_BASE_PATH = BASE_PATH === "/" ? "" : `/${BASE_PATH.replace(/^\/
 // rooted at the domain. Normalize both in final HTML so project-page builds
 // are deployable under BASE_PATH while root deployments remain unchanged.
 const basePathHtml = {
-  name: "hamilton-base-path-html",
+  name: "caribbeanquant-base-path-html",
   hooks: {
     "astro:build:done": async ({ dir, logger }) => {
       if (!NORMALIZED_BASE_PATH) return;
@@ -62,13 +62,7 @@ export default defineConfig({
     mdx(),
     react(),
     basePathHtml,
-    sitemap({
-      i18n: {
-        defaultLocale: "es",
-        locales: { en: "en", es: "es" }
-      },
-      filter: (page) => !page.includes("/fixtures/")
-    })
+    sitemap({ filter: (page) => !page.includes("/fixtures/") && !page.includes("/es/") })
   ],
   markdown: {
     shikiConfig: {

@@ -26,6 +26,7 @@ entries:
   - { id: REP-CONFIG-006, path: "src/i18n/routes.ts", kind: file, purpose: "Equivalencias reales y hreflang.", origin: ["IA-REL-003"], action: create, depends_on: ["src/i18n/ui.ts"] }
   - { id: REP-CONFIG-007, path: "src/content.config.ts", kind: file, purpose: "Colecciones y esquemas.", origin: ["CM-001"], action: create, depends_on: ["src/config/taxonomies.ts"] }
   - { id: REP-CONFIG-008, path: "src/data/redirects.yml", kind: file, purpose: "Redirecciones sin cadenas.", origin: ["IA-SLUG-001"], action: create_or_merge, depends_on: [] }
+  - { id: REP-CONFIG-009, path: "src/config/platform.ts", kind: file, purpose: "Configuración publicable de DaaS, Impact Products e indicadores.", origin: ["PG-DAAS", "PG-IMPACT", "CMP-INDICATOR-STRIP"], action: create, depends_on: ["src/config/site.ts"] }
 
   - { id: REP-STYLE-001, path: "src/styles/tokens.css", kind: file, purpose: "Tokens Blue Finance.", origin: ["VIS-001"], action: create, depends_on: [] }
   - { id: REP-STYLE-002, path: "src/styles/reset.css", kind: file, purpose: "Normalización controlada.", origin: ["VIS-001"], action: create, depends_on: ["src/styles/tokens.css"] }
@@ -54,16 +55,16 @@ entries:
 
   - { id: REP-PAGE-001, path: "src/pages/index.astro", kind: file, purpose: "Home raíz.", origin: ["PG-HOME"], action: create_or_merge, depends_on: ["src/components/editorial/*"] }
   - { id: REP-PAGE-002, path: "src/pages/es/index.astro", kind: file, purpose: "Home español.", origin: ["PG-HOME", "PG-ES-001"], action: create_or_merge, depends_on: ["src/pages/index.astro"] }
-  - { id: REP-PAGE-003, path: "src/pages/{work,research,notes,teaching,about,cv,contact,resources,search}/index.astro", kind: pattern, purpose: "Landings inglesas.", origin: ["PG-WORK", "PG-RESEARCH", "PG-NOTES", "PG-TEACHING", "PG-ABOUT", "PG-CV", "PG-CONTACT", "PG-RESOURCES", "PG-SEARCH"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
-  - { id: REP-PAGE-004, path: "src/pages/es/{work,research,notes,teaching,about,cv,contact,resources,search}/index.astro", kind: pattern, purpose: "Landings españolas selectivas.", origin: ["PG-ES-001"], action: create, depends_on: ["src/i18n/routes.ts"] }
+  - { id: REP-PAGE-003, path: "src/pages/{daas-platform,impact-products,teaching,about,cv,contact,resources,search}/index.astro", kind: pattern, purpose: "Landings públicas en inglés.", origin: ["PG-DAAS", "PG-IMPACT", "PG-TEACHING", "PG-ABOUT", "PG-CV", "PG-CONTACT", "PG-RESOURCES", "PG-SEARCH"], action: create, depends_on: ["src/layouts/BaseLayout.astro"] }
+  - { id: REP-PAGE-004, path: "src/pages/es/[...legacy].astro", kind: file, purpose: "Redirects de rutas españolas anteriores hacia la interfaz vigente.", origin: ["IA-SLUG-001"], action: create, depends_on: ["src/data/redirects.yml"] }
   - { id: REP-PAGE-005, path: "src/pages/work/[...slug].astro", kind: file, purpose: "Detalles Work.", origin: ["PG-PROJECT", "PG-VALUATION", "PG-DATA-PRODUCT"], action: create, depends_on: ["src/layouts/WorkLayout.astro"] }
   - { id: REP-PAGE-006, path: "src/pages/research/[...slug].astro", kind: file, purpose: "Research detail.", origin: ["PG-RESEARCH-DETAIL"], action: create, depends_on: ["src/layouts/ResearchLayout.astro"] }
   - { id: REP-PAGE-007, path: "src/pages/notes/[...slug].astro", kind: file, purpose: "Note detail.", origin: ["PG-NOTE-DETAIL"], action: create, depends_on: ["src/layouts/EditorialLayout.astro"] }
   - { id: REP-PAGE-008, path: "src/pages/analysis/[...slug].astro", kind: file, purpose: "Analysis detail.", origin: ["PG-ANALYSIS"], action: create, depends_on: ["src/layouts/EditorialLayout.astro"] }
   - { id: REP-PAGE-009, path: "src/pages/teaching/[...path].astro", kind: file, purpose: "Course, Week y Material.", origin: ["PG-COURSE", "PG-WEEK", "PG-MATERIAL"], action: create, depends_on: ["src/layouts/TeachingLayout.astro"] }
   - { id: REP-PAGE-010, path: "src/pages/404.astro", kind: file, purpose: "404 estático.", origin: ["PG-404"], action: create_or_merge, depends_on: ["src/layouts/BaseLayout.astro"] }
-  - { id: REP-PAGE-011, path: "src/pages/{research,notes}/rss.xml.ts", kind: pattern, purpose: "Feeds ingleses.", origin: ["TECH-SEO-001"], action: create, depends_on: ["src/content.config.ts"] }
-  - { id: REP-PAGE-012, path: "src/pages/es/{research,notes}/rss.xml.ts", kind: pattern, purpose: "Feeds españoles condicionales.", origin: ["TECH-SEO-001"], action: create, depends_on: ["src/content.config.ts"] }
+  - { id: REP-PAGE-013, path: "src/pages/[...legacy].astro", kind: file, purpose: "Redirects estáticos de rutas públicas anteriores.", origin: ["IA-SLUG-001"], action: create, depends_on: ["src/data/redirects.yml"] }
+  - { id: REP-PAGE-014, path: "src/pages/{work,research,notes}/index.astro", kind: pattern, purpose: "Redirects de landings públicas anteriores.", origin: ["IA-SLUG-001"], action: create, depends_on: ["src/components/navigation/LegacyRedirect.astro"] }
 
   - { id: REP-CONTENT-001, path: "src/content/analysis/*/index.mdx", kind: pattern, purpose: "Analysis.", origin: ["CM-ANALYSIS"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
   - { id: REP-CONTENT-002, path: "src/content/work/*/index.mdx", kind: pattern, purpose: "Project, DataProduct y Valuation.", origin: ["CM-PROJECT", "CM-DATA-PRODUCT", "CM-VALUATION"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
@@ -73,6 +74,10 @@ entries:
   - { id: REP-CONTENT-006, path: "src/content/weeks/*/*.mdx", kind: pattern, purpose: "Weeks.", origin: ["CM-WEEK"], action: migrate_then_conserve, depends_on: ["src/content.config.ts"] }
   - { id: REP-CONTENT-007, path: "src/content/materials/*/*.yml", kind: pattern, purpose: "Material metadata.", origin: ["CM-MATERIAL"], action: migrate_then_conserve, depends_on: ["academic/materials-manifest.yml"] }
   - { id: REP-CONTENT-008, path: "src/content/profiles/*.yml", kind: pattern, purpose: "Author profiles.", origin: ["CM-PROFILE"], action: create_or_merge, depends_on: [] }
+  - { id: REP-CONTENT-009, path: "src/content/catalog-entries/**/*", kind: pattern, purpose: "Catálogo de DaaS Platform.", origin: ["CM-CATALOG-ENTRY"], action: create_or_merge, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-010, path: "src/content/dashboards/**/*", kind: pattern, purpose: "Dashboards y monitores.", origin: ["CM-DASHBOARD", "CM-MONITOR"], action: create_or_merge, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-011, path: "src/content/impact-products/**/*", kind: pattern, purpose: "Productos cuantitativos de impacto.", origin: ["CM-IMPACT-PRODUCT"], action: create_or_merge, depends_on: ["src/content.config.ts"] }
+  - { id: REP-CONTENT-012, path: "src/content/video-resources/**/*", kind: pattern, purpose: "Videos y playlists docentes externos.", origin: ["CM-VIDEO-RESOURCE"], action: create_or_merge, depends_on: ["src/content.config.ts"] }
 
   - { id: REP-ASSET-001, path: "src/assets/images/**/*", kind: pattern, purpose: "Imágenes fuente optimizables.", origin: ["TECH-001"], action: migrate_then_conserve, depends_on: [] }
   - { id: REP-ASSET-002, path: "src/assets/figures/**/*", kind: pattern, purpose: "Figuras y diagramas.", origin: ["VIS-DATA-001"], action: migrate_then_conserve, depends_on: [] }
@@ -97,7 +102,7 @@ entries:
   - { id: REP-TEST-002, path: "tests/e2e/**/*", kind: pattern, purpose: "Rutas, interacción y responsive.", origin: ["QA-RESP-001", "QA-FUNC-001"], action: create, depends_on: ["dist/"] }
   - { id: REP-TEST-004, path: "tests/helpers/**/*", kind: pattern, purpose: "Utilidades compartidas para validar despliegues con base path.", origin: ["QA-RESP-001", "QA-VIS-001"], action: create, depends_on: ["playwright.config.ts"] }
   - { id: REP-TEST-003, path: "tests/visual/**/*", kind: pattern, purpose: "Baselines Home, Research y detalles.", origin: ["QA-VIS-001"], action: create, depends_on: ["tests/e2e/"] }
-  - { id: REP-TEST-004, path: "tests/fixtures/**/*", kind: pattern, purpose: "Seed demostrativo para todos los modelos.", origin: ["SEED-001"], action: create, depends_on: ["src/content.config.ts"] }
+  - { id: REP-TEST-005, path: "tests/fixtures/**/*", kind: pattern, purpose: "Fixtures privadas para validación de modelos.", origin: ["SEED-001"], action: create, depends_on: ["src/content.config.ts"] }
 
   - { id: REP-GH-001, path: ".github/workflows/validate.yml", kind: file, purpose: "QA en PR y push.", origin: ["TECH-CI-001"], action: create_or_merge, depends_on: ["package-lock.json"] }
   - { id: REP-GH-002, path: ".github/workflows/deploy.yml", kind: file, purpose: "Deploy GitHub Pages.", origin: ["TECH-DEPLOY-001"], action: create_or_merge, depends_on: [".github/workflows/validate.yml"] }

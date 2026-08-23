@@ -3,7 +3,7 @@ title: "CSV demonstration"
 slug: demo-csv
 language: en
 material_type: csv
-access: public
+access: private
 status: draft
 version: "0.0.0-demo"
 license: "INTERNAL-DEMO-ONLY"

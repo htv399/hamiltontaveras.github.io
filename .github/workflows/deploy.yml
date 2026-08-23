@@ -18,12 +18,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # Temporary visual preview. Keep fixtures clearly identified until
-      # approved production content and a canonical domain are available.
       SITE_ENV: preview
       SITE_URL: https://htv399.github.io/hamiltontaveras.github.io
       BASE_PATH: /hamiltontaveras.github.io
-      DEFAULT_LANGUAGE: ${{ vars.DEFAULT_LANGUAGE || 'es' }}
+      DEFAULT_LANGUAGE: en
       CONTACT_MODE: ${{ vars.CONTACT_MODE || 'pending' }}
       ANALYTICS_MODE: "off"
     steps:

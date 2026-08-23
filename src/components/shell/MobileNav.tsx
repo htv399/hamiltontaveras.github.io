@@ -107,7 +107,7 @@ export default function MobileNav({ items, language, currentPath, menuLabel, clo
         .mobile-nav__close { align-self: flex-end; color: var(--color-white); font-weight: 600; }
         .mobile-nav__list { display: flex; flex-direction: column; gap: var(--space-5); }
         .mobile-nav__list a { font-size: var(--size-h3); font-family: var(--font-ui); color: var(--color-white); }
-        .mobile-nav__list a[aria-current="page"] { text-decoration: underline; text-underline-offset: 0.2em; }
+        .mobile-nav__list a[aria-current="page"] { color: var(--color-focus); font-weight: 600; }
       `
         }}
       />

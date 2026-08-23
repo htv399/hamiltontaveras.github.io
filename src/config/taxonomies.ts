@@ -12,7 +12,7 @@ export const editorialStatuses = [
   "ongoing",
   "archived"
 ] as const;
-export const accessLevels = ["public", "summary-only", "private"] as const;
+export const accessLevels = ["public", "preview", "restricted", "available-on-request", "summary-only", "private"] as const;
 
 export const domains = [
   "data-systems",

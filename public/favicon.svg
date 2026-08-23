@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
-  <title id="title">Hamilton Taveras</title>
+  <title id="title">CaribbeanQuant</title>
   <rect width="64" height="64" rx="8" fill="#0b1f33"/>
-  <path d="M16 16h8v12h16V16h8v32h-8V36H24v12h-8z" fill="#fafbfc"/>
-  <rect x="26" y="30" width="12" height="4" fill="#c58a2a"/>
+  <path d="M45 42a18 18 0 1 1 0-20l-6 5a10 10 0 1 0 0 10z" fill="#fafbfc"/>
+  <rect x="38" y="28" width="12" height="8" fill="#c58a2a"/>
 </svg>

@@ -65,7 +65,7 @@ seo:
     - "Open Graph and social image."
     - "robots directive."
     - "Sitemap."
-    - "RSS for Research and Notes."
+    - "Feeds only for active collections with eligible public content."
     - "JSON-LD."
     - "Favicon and web manifest metadata without PWA behavior."
     - "404."
@@ -151,11 +151,9 @@ search:
   fallback: "If Pagefind is replaced, the alternative must be static, accessible and serverless."
 
 feeds:
-  research: "/research/rss.xml"
-  notes: "/notes/rss.xml"
-  spanish_research: "/es/research/rss.xml"
-  spanish_notes: "/es/notes/rss.xml"
-  rule: "Generate only feeds with at least one eligible item. Never include private or placeholder content."
+  status: disabled_until_eligible_content
+  future_impact_products: "/impact-products/rss.xml"
+  rule: "Generate a feed only when the active collection has at least one eligible public item. Never expose private fixtures."
 
 github_pages:
   id: TECH-DEPLOY-001

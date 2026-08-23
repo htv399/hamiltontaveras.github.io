@@ -1,4 +1,14 @@
 # REP-CONFIG-008. IA-SLUG-001: no chains, no loops, every destination must
 # exist. Empty until a published slug changes or a legacy Quarto route needs
 # preserving. scripts/validate-content.mjs validates this file's shape.
-redirects: []
+redirects:
+  - { from: "/work/", to: "/daas-platform/", status: 301 }
+  - { from: "/research/", to: "/impact-products/", status: 301 }
+  - { from: "/notes/", to: "/impact-products/", status: 301 }
+  - { from: "/work/demo-project/", to: "/daas-platform/", status: 301 }
+  - { from: "/work/demo-data-product/", to: "/daas-platform/", status: 301 }
+  - { from: "/work/demo-valuation/", to: "/impact-products/", status: 301 }
+  - { from: "/research/demo-research/", to: "/impact-products/", status: 301 }
+  - { from: "/notes/demo-note/", to: "/impact-products/", status: 301 }
+  - { from: "/analysis/demo-analysis/", to: "/impact-products/", status: 301 }
+  - { from: "/teaching/econometrics-i-demo/", to: "/teaching/econometrics-i/", status: 301 }

@@ -11,7 +11,7 @@ import { walkFiles, readFrontmatter } from "./lib/frontmatter.mjs";
 const SITE_ENV = process.env.SITE_ENV || "preview";
 const CONTENT_DIR = path.resolve(process.cwd(), "src/content");
 
-const collections = ["analysis", "research", "work", "notes", "courses", "weeks", "materials", "profiles"];
+const collections = ["analysis", "research", "work", "notes", "courses", "weeks", "materials", "profiles", "catalog-entries", "dashboards", "impact-products", "video-resources"];
 let errors = [];
 let placeholderWarnings = [];
 

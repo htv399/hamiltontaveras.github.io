@@ -5,9 +5,8 @@ import { withBase } from "../helpers/basePath";
 import { AxeBuilder } from "@axe-core/playwright";
 
 const templates = [
-  "/", "/work/", "/research/", "/notes/", "/teaching/",
-  "/analysis/demo-analysis/", "/work/demo-project/", "/research/demo-research/", "/notes/demo-note/",
-  "/teaching/econometrics-i-demo/", "/teaching/econometrics-i-demo/week-01-demo/",
+  "/", "/daas-platform/", "/impact-products/", "/teaching/", "/teaching/econometrics-i/",
+  "/work/", "/research/", "/notes/",
   "/about/", "/cv/", "/contact/", "/resources/", "/search/", "/404-check-page-that-does-not-exist/"
 ];
 

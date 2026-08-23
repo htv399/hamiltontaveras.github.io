@@ -36,7 +36,9 @@ for (const file of files) {
     if (!m[field]) errors.push(`${rel}: missing required field "${field}"`);
   }
 
-  if (isLocal) {
+  // Private fixtures validate their metadata but must not require a file in
+  // public/, where it would become directly downloadable in production.
+  if (isLocal && m.access !== "private") {
     for (const field of ["file_size_bytes", "mime_type", "checksum_sha256"]) {
       if (!m[field]) errors.push(`${rel}: missing required_for_local field "${field}"`);
     }

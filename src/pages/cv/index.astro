@@ -1,26 +1,13 @@
 ---
-// PG-CV. No verified CV entries or approved PDF exist yet (APP-008), so
-// production is blocked (05-page-contracts.yml empty_state) and preview
-// shows an honest pending state rather than an invented chronology.
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig, realInventoryApproved } from "../../config/site";
-import { assertNotBlockedInProduction } from "../../lib/productionGate";
-
-assertNotBlockedInProduction(realInventoryApproved, "CV", "APP-008");
-
+import { siteConfig } from "../../config/site";
 const language = "en" as const;
 ---
-<BaseLayout title={`CV — ${siteConfig.name}`} description="Verified curriculum vitae." path="/cv/" language={language}>
+<BaseLayout title={`CV — ${siteConfig.name}`} description="Professional profile and curriculum vitae of Hamilton Taveras." path="/cv/" language={language}>
   <section class="shell section-standard reading-column" style="margin-inline:auto;">
-    <p class="u-tag" data-placeholder="true">Content pending — APP-008</p>
-    <h1 class="text-h1 font-editorial">Curriculum vitae</h1>
-    <p class="text-body-l">
-      This page is reserved for the verified public CV. A structured chronology and a downloadable PDF will appear
-      here only after dates, titles, affiliations and contact details have completed editorial review.
-    </p>
-    <p class="text-body">
-      For a concise overview, visit <a href="/about/">About</a>. For professional inquiries, visit
-      <a href="/contact/">Contact</a>.
-    </p>
+    <p class="text-micro">Curriculum vitae</p>
+    <h1>Hamilton Taveras</h1>
+    <p class="text-body-l">{siteConfig.descriptor}</p>
+    <p>This page intentionally omits unverified dates, affiliations and credentials. The concise approved profile is available on <a href="/about/">About Me</a>.</p>
   </section>
 </BaseLayout>

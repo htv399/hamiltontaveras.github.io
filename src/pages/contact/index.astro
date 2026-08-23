@@ -1,25 +1,13 @@
 ---
-// PG-CONTACT. APP-005 (contact channel) is unresolved: preview shows
-// contact_pending, production build fails (05-page-contracts.yml).
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { siteConfig, contactMode } from "../../config/site";
-import { assertNotBlockedInProduction } from "../../lib/productionGate";
-import { t } from "../../i18n/ui";
-
-assertNotBlockedInProduction(contactMode.resolved, "Contact", "APP-005");
-
+import { siteConfig } from "../../config/site";
 const language = "en" as const;
-const strings = t(language);
 ---
-<BaseLayout title={`Contact — ${siteConfig.name}`} description="Contact for research, teaching and professional inquiries." path="/contact/" language={language}>
+<BaseLayout title={`Contact — ${siteConfig.name}`} description="Professional contact information for CaribbeanQuant." path="/contact/" language={language} noindex={true}>
   <section class="shell section-standard reading-column" style="margin-inline:auto;">
-    <h1 class="text-h1 font-editorial">Contact</h1>
-    <p class="text-body-l">
-      For research, teaching or professional inquiries, use a verified public channel once approved.
-    </p>
-    <p class="text-body" data-placeholder="true">{strings.contactPending}</p>
-    <p class="text-small">
-      This page intentionally contains no placeholder address and no unverified social profile.
-    </p>
+    <p class="text-micro">Contact</p>
+    <h1>Professional inquiries</h1>
+    <p class="text-body-l">No public contact endpoint or meeting service is configured on this static site.</p>
+    <p>When an approved channel is available, it can be enabled centrally without adding an unverified address or link to individual pages.</p>
   </section>
 </BaseLayout>

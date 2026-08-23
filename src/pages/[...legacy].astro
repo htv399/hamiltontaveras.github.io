@@ -1,0 +1,12 @@
+---
+import yaml from "js-yaml";
+import redirectsSource from "../data/redirects.yml?raw";
+import LegacyRedirect from "../components/navigation/LegacyRedirect.astro";
+interface RedirectRecord { from: string; to: string; status: number }
+export function getStaticPaths() {
+  const doc = yaml.load(redirectsSource) as { redirects: RedirectRecord[] };
+  return doc.redirects.filter((entry) => !["/work/", "/research/", "/notes/"].includes(entry.from)).map((entry) => ({ params: { legacy: entry.from.replace(/^\/+|\/+$/g, "") }, props: entry }));
+}
+const redirect = Astro.props as RedirectRecord;
+---
+<LegacyRedirect from={redirect.from} to={redirect.to} />

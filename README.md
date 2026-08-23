@@ -1,88 +1,54 @@
-# Hamilton Taveras — professional portal
+# CaribbeanQuant
 
-Static Astro publication (Home, Work, Research, Notes, Teaching, About and
-utilities) with a separate Quarto/R Markdown pipeline for academic
-materials. Specified by [`01-contratos-site/`](01-contratos-site/00-README.md) — that
-directory is the source of truth and is not edited by this codebase. This
-folder (`Portal_Hamilton_V3/`) holds only the implementation.
+Static Astro portal for CaribbeanQuant, the professional platform led by Hamilton Taveras. The public information architecture is Home, DaaS Platform, Impact Products, Teaching and About Me. The Quarto/R Markdown academic pipeline remains isolated under `academic/`.
 
-## Requirements
+## Local development
 
-- Node.js version pinned in [`.nvmrc`](.nvmrc) (20.14.0 or newer within the
-  same major; Astro 5 also supports Node 22).
-- `npm` (uses `package-lock.json`; CI always runs `npm ci`, never `npm i`).
-
-## Getting started
+Requires the Node.js version declared in `.nvmrc` (or a compatible newer release) and npm.
 
 ```bash
 npm ci
-cp .env.example .env   # edit if you need non-default preview values
 npm run dev
 ```
 
-## Scripts
+The deployment defaults are documented in `.env.example`. No secret belongs in that file or in client-side code.
 
-| Command | What it does |
+## Validation
+
+| Command | Purpose |
 | --- | --- |
-| `npm run dev` | Astro dev server |
-| `npm run build` | Static build to `dist/` |
-| `npm run preview` | Serve the built `dist/` locally |
-| `npm run check` | `astro check` (TypeScript + template diagnostics) |
-| `npm run contracts:validate` | Cross-references ids across `01-contratos-site/*` |
-| `npm run content:validate` | CM-VAL-* rules beyond what zod schemas express |
-| `npm run materials:check` | Validates Material fixtures, checksums and MIME types |
-| `npm run academic:build` | Renders `academic/materials-manifest.yml` bridges via Quarto, if installed |
-| `npm run search:index` | Builds the Pagefind index (run after `build`) |
-| `npm run links:check` / `routes:check` | Crawls `dist/` for broken links / empty routes |
-| `npm run manifest:check` | Compares the repo against `09-repository-manifest.yml` |
-| `npm run placeholders:check` | Blocks `placeholder:true` content and stray "TODO" text in production |
-| `npm run seo:check` | Title/description/canonical/OG/sitemap presence |
-| `npm run perf:budget` | Font and JS-bundle size budgets (TECH-PERF-001) |
-| `npm run og:generate` | Renders `public/og/default.png` |
-| `npm run test:unit` | Vitest (`tests/unit/`) |
-| `npm run test:e2e` / `test:a11y` / `test:responsive` / `test:visual` | Playwright (`tests/e2e/`, `tests/visual/`) — run `npx playwright install chromium` once first |
-| `npm run ci` | The aggregate preview-mode gate (matches `.github/workflows/validate.yml`) |
+| `npm run check` | Astro and TypeScript diagnostics |
+| `npm run contracts:validate` | Contract IDs and references |
+| `npm run content:validate` | Content models and taxonomies |
+| `npm run academic:validate` | Published academic-material metadata |
+| `npm run test:unit` | Unit tests |
+| `npm run build` | Static site build |
+| `npm run search:index` | Pagefind index after the build |
+| `npm run links:check` / `npm run routes:check` | Generated links and routes |
+| `npm run manifest:check` | Repository inventory |
+| `npm run placeholders:check` | Production placeholder guard |
+| `npm run seo:check` | Generated SEO metadata |
+| `npm run perf:budget` | JavaScript and font budgets |
+| `npm run test:e2e` / `npm run test:visual` | Browser and visual regression tests |
+| `npm run ci` | Main continuous-integration gate |
 
-## Environments
+## Content architecture
 
-Set `SITE_ENV=production` to build for release. Production mode:
+- `src/content/catalog-entries/` and `src/content/dashboards/` support the DaaS Platform.
+- `src/content/impact-products/` supports versioned quantitative products.
+- `src/content/courses/`, `weeks/`, `materials/` and `video-resources/` support Teaching.
+- `src/content/profiles/` contains approved public profile facts.
+- Legacy demo records remain private validation fixtures and never generate public pages or downloads.
+- `src/config/platform.ts` controls optional public modules such as indicators, meeting links and Business Data Explorer.
 
-- Fails the build if any content still has `placeholder: true` (SEED-001
-  demo fixtures) or a page gated by an unresolved `approval_required`
-  decision (`src/lib/productionGate.ts`) — currently **About, CV and
-  Contact**, blocked on **APP-008** (real inventory/biography) and
-  **APP-005** (contact channel).
-- Requires `SITE_URL`, `DEFAULT_LANGUAGE` and `CONTACT_MODE` to be set to
-  real, approved values (see `.env.example`).
-
-Preview mode (the default) renders SEED-001's demo fixtures so every page
-template, component and route can be reviewed before real content exists.
-
-## Pending decisions (APP-001..APP-009)
-
-Tracked in `src/config/site.ts` and `src/config/licenses.ts`, never
-inferred. See `01-contratos-site/00-README.md` for the full list and
-`../decisiones-pendientes.md` / `../decisiones-placeholder-en-uso.md`
-(one level up) for the pre-Astro (V1) record of the same open questions.
-
-## Repository layout
-
-- `src/content/` — MDX/YAML content collections (all current entries are
-  SEED-001 demo fixtures; no real content has been authored yet).
-- `src/components/`, `src/layouts/`, `src/pages/` — the Astro site.
-- `academic/` — Quarto/R Markdown sources, isolated from the public
-  framework per TECH-001; `academic/materials-manifest.yml` bridges a
-  source to a `public/materials/` output and a `src/content/materials/*.yml`
-  record once a course is ready to publish.
-- `scripts/` — the validation scripts listed above.
-- `tests/unit/`, `tests/e2e/`, `tests/visual/` — Vitest and Playwright.
-- `01-contratos-site/` — the
-  authoritative specification, conserved and not modified by this build.
+The contracts in `01-contratos-site/` describe the current implementation and are validated in CI. Redirects preserve old public URLs without keeping the retired Work, Research, Notes or Spanish navigation structures in the active interface.
 
 ## Deployment
 
-GitHub Pages via `.github/workflows/deploy.yml` (build) and
-`actions/deploy-pages` (publish), gated by `.github/workflows/validate.yml`
-on every push and pull request. Set repository variables `SITE_URL`,
-`BASE_PATH`, `DEFAULT_LANGUAGE` and `CONTACT_MODE` before the first
-production deploy.
+GitHub Actions validates and publishes `main` to GitHub Pages. The production workflow builds with:
+
+- `SITE_URL=https://htv399.github.io`
+- `BASE_PATH=/hamiltontaveras.github.io`
+- `DEFAULT_LANGUAGE=en`
+
+The generated artifact is `dist/`; dependencies, caches and local environment files are not committed.

@@ -1,5 +1,5 @@
 // QA-FUNC-001 / QA-FUNC-002. Search returns results and announces a count;
-// Work presents the three available fixture kinds without a redundant filter.
+// the public platform does not expose private demonstration records.
 import { test, expect } from "@playwright/test";
 import { withBase } from "../helpers/basePath";
 
@@ -17,13 +17,14 @@ test("search announces zero results distinctly (QA-FUNC-002)", async ({ page }) 
   await expect(page.getByRole("status")).toContainText(/no results/i, { timeout: 10_000 });
 });
 
-test("Work distinguishes the three demonstration formats (QA-FUNC-001)", async ({ page }) => {
-  await page.goto(withBase("/work/"));
-  await expect(page.locator(".work-split article")).toHaveCount(3);
-  await expect(page.locator(".work-visual--flow")).toBeVisible();
-  await expect(page.locator(".work-visual--coverage")).toBeVisible();
-  await expect(page.locator(".work-visual--sensitivity")).toBeVisible();
-  await expect(page.getByRole("link", { name: /Demostración de proyecto/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Producto de datos demostrativo/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Valoración demostrativa/ })).toBeVisible();
+test("DaaS Platform does not fabricate unpublished catalog records", async ({ page }) => {
+  await page.goto(withBase("/daas-platform/"));
+  await expect(page.getByRole("heading", { level: 1, name: "DaaS Platform" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Data catalog" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Dashboards and monitors" })).toHaveCount(0);
+});
+
+test("Teaching exposes the approved Econometrics I course", async ({ page }) => {
+  await page.goto(withBase("/teaching/"));
+  await expect(page.getByRole("link", { name: /Econometrics I/i })).toBeVisible();
 });

@@ -4,17 +4,16 @@ contract:
   status: required_v1
 
 primary_navigation:
-  - { id: IA-NAV-001, key: home, label_en: Home, label_es: Inicio, route_en: "/", route_es: "/es/" }
-  - { id: IA-NAV-002, key: work, label_en: Work, label_es: Trabajo, route_en: "/work/", route_es: "/es/work/" }
-  - { id: IA-NAV-003, key: research, label_en: Research, label_es: Investigación, route_en: "/research/", route_es: "/es/research/" }
-  - { id: IA-NAV-004, key: notes, label_en: Notes, label_es: Notas, route_en: "/notes/", route_es: "/es/notes/" }
-  - { id: IA-NAV-005, key: teaching, label_en: Teaching, label_es: Docencia, route_en: "/teaching/", route_es: "/es/teaching/" }
-  - { id: IA-NAV-006, key: about, label_en: About, label_es: Perfil, route_en: "/about/", route_es: "/es/about/" }
+  - { id: IA-NAV-001, key: home, label_en: Home, route_en: "/" }
+  - { id: IA-NAV-002, key: daas_platform, label_en: DaaS Platform, route_en: "/daas-platform/" }
+  - { id: IA-NAV-003, key: impact_products, label_en: Impact Products, route_en: "/impact-products/" }
+  - { id: IA-NAV-004, key: teaching, label_en: Teaching, route_en: "/teaching/" }
+  - { id: IA-NAV-005, key: about, label_en: About Me, route_en: "/about/" }
 
 utilities:
-  - { id: IA-UTIL-001, key: cv, label_en: CV, label_es: CV, route_en: "/cv/", route_es: "/es/cv/" }
-  - { id: IA-UTIL-002, key: search, label_en: Search, label_es: Buscar, route_en: "/search/", route_es: "/es/search/" }
-  - { id: IA-UTIL-003, key: language, behavior: "Show only when an equivalent route exists. Otherwise link to the language home with an explanatory accessible label." }
+  - { id: IA-UTIL-001, key: cv, label_en: CV, route_en: "/cv/" }
+  - { id: IA-UTIL-002, key: search, label_en: Search, route_en: "/search/" }
+  - { id: IA-UTIL-003, key: language, behavior: "Temporarily hidden until complete, authored and reciprocal translations exist." }
 
 footer_navigation:
   required: ["contact", "resources", "licenses", "accessibility", "rss", "sitemap"]
@@ -23,34 +22,33 @@ footer_navigation:
 forbidden_primary_entries:
   id: IA-NAV-007
   status: required_v1
-  values: ["data", "economics", "finance", "valuation", "quantitative-finance", "projects", "blog"]
+  values: ["work", "research", "notes", "data", "economics", "finance", "valuation", "quantitative-finance", "projects", "blog"]
   reason: "These are taxonomies, formats or legacy labels."
 
 routes:
   static:
-    home: { en: "/", es: "/es/" }
-    work: { en: "/work/", es: "/es/work/" }
-    research: { en: "/research/", es: "/es/research/" }
-    notes: { en: "/notes/", es: "/es/notes/" }
-    teaching: { en: "/teaching/", es: "/es/teaching/" }
-    about: { en: "/about/", es: "/es/about/" }
-    cv: { en: "/cv/", es: "/es/cv/" }
-    contact: { en: "/contact/", es: "/es/contact/" }
-    resources: { en: "/resources/", es: "/es/resources/" }
-    search: { en: "/search/", es: "/es/search/" }
-    licenses: { en: "/licenses/", es: "/es/licenses/" }
-    accessibility: { en: "/accessibility/", es: "/es/accessibility/" }
+    home: { en: "/" }
+    daas_platform: { en: "/daas-platform/" }
+    impact_products: { en: "/impact-products/" }
+    teaching: { en: "/teaching/" }
+    about: { en: "/about/" }
+    cv: { en: "/cv/" }
+    contact: { en: "/contact/" }
+    resources: { en: "/resources/" }
+    search: { en: "/search/" }
+    licenses: { en: "/licenses/" }
+    accessibility: { en: "/accessibility/" }
     not_found: { shared: "/404.html" }
   dynamic:
     analysis: "/analysis/{slug}/"
-    project: "/work/{slug}/"
-    research: "/research/{slug}/"
-    note: "/notes/{slug}/"
+    catalog_entry: "/daas-platform/catalog/{slug}/"
+    dashboard_or_monitor: "/daas-platform/{slug}/"
+    impact_product: "/impact-products/{slug}/"
     course: "/teaching/{course_slug}/"
     week: "/teaching/{course_slug}/{week_slug}/"
     material: "/teaching/{course_slug}/{week_slug}/materials/{material_slug}/"
     thematic: "/topics/{taxonomy_slug}/"
-    spanish_prefix_rule: "Prepend /es to a dynamic route only when the piece language is es or an equivalent translation exists."
+    content_language_rule: "Individual content declares en or es. Interface routes remain English; no automatic translation or hreflang is generated."
 
 slug_rules:
   id: IA-SLUG-001
@@ -63,10 +61,9 @@ slug_rules:
   translation_rule: "Do not translate an existing published slug without a redirect."
 
 hierarchy:
-  - { parent: home, children: ["lead_analysis", "selected_work", "research", "notes", "teaching", "about"] }
-  - { parent: work, children: ["project", "analysis", "data_product", "valuation"] }
-  - { parent: research, children: ["research_detail"] }
-  - { parent: notes, children: ["note_detail"] }
+  - { parent: home, children: ["indicator_strip", "daas_platform", "impact_products", "teaching", "about"] }
+  - { parent: daas_platform, children: ["catalog_entry", "dashboard", "monitor", "business_data_explorer", "resource"] }
+  - { parent: impact_products, children: ["impact_product"] }
   - { parent: teaching, children: ["course"] }
   - { parent: course, children: ["week"] }
   - { parent: week, children: ["material"] }
@@ -108,19 +105,20 @@ taxonomy_landings:
   v1_behavior: "Filters work inside Work, Research and Notes. Do not generate thin topic pages."
 
 bilingual:
-  model: selective
-  default_language:
-    status: approval_required
-    decision_id: APP-001
-    allowed: ["en", "es"]
-  required_equivalent_pages: ["home", "work", "about", "contact"]
-  selective_pages: ["research", "notes", "project", "course", "week", "material", "resources"]
-  fallback: "Never auto-translate. Preserve the original language and provide a short alternate-language summary only when authored."
-  canonical: "Each piece canonicalizes to its own language route."
-  hreflang: ["en", "es", "x-default_only_when_default_language_is_approved"]
+  model: "english_interface_with_multilingual_content"
+  default_language: { status: required_v1, value: en }
+  interface_language: en
+  content_languages: [en, es]
+  language_selector: hidden
+  fallback: "Never auto-translate. Preserve the authored language and optionally show a discreet EN or ES label."
+  hreflang: "Disabled unless a real reciprocal equivalent exists."
 
 redirects:
   source_file: "src/data/redirects.yml"
+  migration_map:
+    work: "/daas-platform/"
+    research: "/impact-products/"
+    notes: "/impact-products/"
   validation:
     - "No chains."
     - "No loops."

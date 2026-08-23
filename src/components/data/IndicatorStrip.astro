@@ -1,50 +1,38 @@
 ---
-// CMP-INDICATOR-STRIP. Renders only verified indicators (4-6); mobile uses
-// horizontal scroll with accessible labels; never implies live data when
-// values are static.
 export interface Indicator {
   label: string;
   value: string;
   unit: string;
-  change?: { direction: "up" | "down" | "flat"; label: string };
-  data_vintage: string;
+  context: string;
+  cutOffDate: string;
   source: string;
+  status: "draft" | "review" | "published";
+  demonstration: boolean;
 }
-interface Props {
-  indicators: Indicator[]; // 4 to 6
-  language: "en" | "es";
-}
-const { indicators, language } = Astro.props;
+interface Props { indicators: Indicator[] }
+const publishable = Astro.props.indicators.filter((item) => item.status === "published");
 ---
-<div class="indicator-strip" role="list" aria-label={language === "es" ? "Indicadores, datos estáticos" : "Indicators, static data"}>
-  {indicators.map((ind) => (
-    <div role="listitem" class="indicator">
-      <div class="indicator__heading"><p class="u-tag">{ind.label}</p><span class="indicator__demo text-micro">{language === "es" ? "Sintético" : "Demo"}</span></div>
-      <p class="indicator__value">{ind.value}<span> {ind.unit}</span></p>
-      {ind.change && (
-        <p class:list={["indicator__change text-small", `indicator__change--${ind.change.direction === "down" ? "negative" : ind.change.direction === "up" ? "positive" : ""}`]}>
-          {ind.change.label}
-        </p>
-      )}
-      <p class="indicator__source text-micro">{ind.data_vintage} · {ind.source}</p>
-    </div>
-  ))}
-</div>
+{publishable.length > 0 && (
+  <div class="indicator-strip" role="list" aria-label="Platform indicators, static data">
+    {publishable.map((item) => (
+      <article role="listitem" class="indicator">
+        <div class="indicator__heading"><p class="u-tag">{item.label}</p>{item.demonstration && <span class="text-micro">Preview</span>}</div>
+        <p class="indicator__value">{item.value}<span> {item.unit}</span></p>
+        <p class="text-small">{item.context}</p>
+        <p class="indicator__source text-micro">{item.cutOffDate} · {item.source}</p>
+      </article>
+    ))}
+  </div>
+)}
 
 <style>
-  .indicator-strip { border-top: var(--border-strong); border-bottom: var(--border-hairline); gap: 0; }
-  .indicator { padding: var(--space-4) var(--space-5); border-right: var(--border-hairline); min-width: 0; }
-  .indicator:first-child { padding-left: 0; }
-  .indicator:last-child { border-right: 0; padding-right: 0; }
+  .indicator-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); border-block: var(--border-strong); }
+  .indicator { padding: var(--space-5); border-right: var(--border-hairline); }
+  .indicator:last-child { border-right: 0; }
   .indicator__heading { display: flex; justify-content: space-between; gap: var(--space-2); }
-  .indicator__demo { color: var(--color-blue-600); }
-  .indicator__value { margin-top: var(--space-3); font: 500 var(--size-feature-title)/1 var(--font-mono); }
-  .indicator__value span { font: 400 var(--size-micro)/1 var(--font-ui); color: var(--color-slate-500); }
-  .indicator__change { margin-top: var(--space-2); font-family: var(--font-mono); }
-  .indicator__source { margin-top: var(--space-3); color: var(--color-slate-500); }
-  @media (max-width: 768px) {
-    .indicator-strip { padding-bottom: var(--space-2); }
-    .indicator { min-width: 220px; padding-inline: var(--space-4); scroll-snap-align: start; }
-    .indicator:first-child { padding-left: 0; }
-  }
+  .indicator__value { margin-block: var(--space-3) var(--space-2); font: 500 var(--size-feature-title)/1 var(--font-mono); }
+  .indicator__value span, .indicator__source { color: var(--color-slate-500); }
+  .indicator__value span { font: 400 var(--size-micro)/1 var(--font-ui); }
+  .indicator__source { margin-top: var(--space-3); }
+  @media (max-width: 768px) { .indicator-strip { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; } .indicator { min-width: 240px; scroll-snap-align: start; } }
 </style>

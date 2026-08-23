@@ -31,6 +31,15 @@ course_rules:
   - id: TCH-COURSE-004
     status: required_v1
     rule: "Teaching behaves as a publication. It does not expose grades, announcements or student administration."
+  - id: TCH-COURSE-005
+    status: required_v1
+    rule: "Functional interface labels remain English while an individual course or material may be authored entirely in Spanish or English and declares its language."
+
+video_resources:
+  model: VideoResource
+  provider: YouTube
+  behavior: ["accessible_link", "responsive_authorized_embed"]
+  prohibitions: ["Do not download or copy videos into the repository.", "Do not publish student data, active exams or restricted solutions."]
 
 week_rules:
   - id: TCH-WEEK-001

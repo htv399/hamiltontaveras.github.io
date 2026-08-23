@@ -1,6 +1,7 @@
 /* REP-STYLE-003. Base surfaces, focus and layout shell (VIS-001, TECH-A11Y-001). */
-html { background: var(--color-white); }
-body { background: var(--color-white); }
+html { background: var(--color-white); min-height: 100%; }
+body { background: var(--color-white); min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1 0 auto; }
 
 .surface-navy { background: var(--color-navy-900); color: var(--color-white); }
 .surface-navy a { color: var(--color-white); }

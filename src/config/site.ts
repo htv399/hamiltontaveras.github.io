@@ -20,28 +20,28 @@ export const SITE_ENV: SiteEnv = (import.meta.env.SITE_ENV as SiteEnv) || "previ
 /** APP-001: default language. Preview placeholder only. */
 export const defaultLanguage: Decision<Language> = {
   id: "APP-001",
-  resolved: false,
-  value: (import.meta.env.DEFAULT_LANGUAGE as Language) || "es"
+  resolved: true,
+  value: "en"
 };
 
 /** APP-002: professional descriptor. PRD-006 records the recommended text. */
 export const descriptor: Decision<string> = {
   id: "APP-002",
-  resolved: false,
-  value: "Economist working across data systems, quantitative analysis, and valuation."
+  resolved: true,
+  value: "Professional website of Hamilton Taveras, M.A. in Economics, CDO."
 };
 
 /** APP-003: canonical domain. Preview uses a non-resolving placeholder host. */
 export const canonicalBase: Decision<string> = {
   id: "APP-003",
-  resolved: false,
-  value: import.meta.env.SITE_URL || "https://example-preview.invalid"
+  resolved: true,
+  value: import.meta.env.SITE_URL || "https://htv399.github.io/hamiltontaveras.github.io"
 };
 
 /** APP-004: public signature and professional email. */
 export const publicSignature: Decision<{ name: string; email: string | null }> = {
   id: "APP-004",
-  resolved: false,
+  resolved: true,
   value: { name: "Hamilton Taveras", email: null }
 };
 
@@ -71,17 +71,16 @@ export const analyticsMode: Decision<"off" | "on"> = {
 /** Faithful Spanish rendering of descriptor.value, used only for <title>
  * and meta description on Spanish pages (never auto-translated editorial
  * content — this is UI/meta chrome, same rule as src/i18n/ui.ts). */
-export const descriptorEs =
-  "Economista que trabaja entre sistemas de datos, análisis cuantitativo y valoración.";
-
-export const siteThesis =
-  "Information, Models, Judgment, and Value: a working method for turning data into economic and financial evidence.";
+export const brandName = "CaribbeanQuant";
+export const siteIntroduction =
+  "Data platforms, quantitative products and teaching resources focused on economics, finance and the Caribbean.";
 
 export const siteConfig = {
   env: SITE_ENV,
-  name: publicSignature.value.name,
+  name: brandName,
+  personName: publicSignature.value.name,
   descriptor: descriptor.value,
-  thesis: siteThesis,
+  introduction: siteIntroduction,
   defaultLanguage: defaultLanguage.value,
   canonicalBase: canonicalBase.value,
   contactMode: contactMode.value,

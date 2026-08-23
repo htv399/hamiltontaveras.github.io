@@ -33,7 +33,7 @@
 
   /* Role-based editorial hierarchy. Home and publication components use
      these tokens instead of defining one-off display sizes. */
-  --size-hero-name: 4.25rem;
+  --size-hero-name: 3.25rem;
   --size-section-title: 2rem;
   --size-feature-title: 1.75rem;
   --size-secondary-title: 1.375rem;
@@ -102,7 +102,7 @@
 
 @media (max-width: 768px) {
   :root {
-    --size-hero-name: 2.75rem;
+    --size-hero-name: 2.375rem;
     --size-section-title: 1.75rem;
     --size-feature-title: 1.5rem;
     --size-secondary-title: 1.25rem;
